@@ -1,0 +1,21 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Design tokens. Views reference these instead of literal colours, so a theme is a different dictionary.
+         Keep AccentColor in sync with the Accent in App.axaml's FluentTheme palette. -->
+    <Color x:Key="AccentColor">#E8456B</Color>
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}" />
+
+    <SolidColorBrush x:Key="AppBackgroundBrush" Color="#121214" />
+    <SolidColorBrush x:Key="SidebarBrush" Color="#1A1A1D" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#232327" />
+    <SolidColorBrush x:Key="SurfaceHoverBrush" Color="#2E2E33" />
+    <SolidColorBrush x:Key="DividerBrush" Color="#2A2A2F" />
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#F2F2F4" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#9A9AA3" />
+
+    <CornerRadius x:Key="RadiusSmall">6</CornerRadius>
+    <CornerRadius x:Key="RadiusMedium">10</CornerRadius>
+
+    <!-- Unfilled part of sliders -->
+    <SolidColorBrush x:Key="TrackBrush" Color="#3A3A40" />
+</ResourceDictionary>

@@ -1,0 +1,51 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="232" d:DesignHeight="600"
+             x:Class="Shirabe.Client.Views.SidebarView">
+    <!-- Only Home exists so far. The library entries are shown disabled until the local library is built. -->
+    <Border Background="{DynamicResource SidebarBrush}" Padding="12,16">
+        <StackPanel Spacing="2">
+            <StackPanel Orientation="Horizontal" Spacing="10" Margin="12,4,0,20">
+                <PathIcon Data="{DynamicResource Icon.Note}" Width="22" Height="22"
+                          Foreground="{DynamicResource AccentBrush}" />
+                <TextBlock Text="Shirabe" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+            </StackPanel>
+
+            <Button Classes="nav selected">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <PathIcon Data="{DynamicResource Icon.Home}" Width="18" Height="18" />
+                    <TextBlock Text="Home" />
+                </StackPanel>
+            </Button>
+
+            <TextBlock Classes="section" Text="LIBRARY" Margin="12,22,0,6" />
+
+            <Button Classes="nav" IsEnabled="False" ToolTip.Tip="Not available yet" ToolTip.ShowOnDisabled="True">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <PathIcon Data="{DynamicResource Icon.Note}" Width="18" Height="18" />
+                    <TextBlock Text="Songs" />
+                </StackPanel>
+            </Button>
+            <Button Classes="nav" IsEnabled="False" ToolTip.Tip="Not available yet" ToolTip.ShowOnDisabled="True">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <PathIcon Data="{DynamicResource Icon.Album}" Width="18" Height="18" />
+                    <TextBlock Text="Albums" />
+                </StackPanel>
+            </Button>
+            <Button Classes="nav" IsEnabled="False" ToolTip.Tip="Not available yet" ToolTip.ShowOnDisabled="True">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <PathIcon Data="{DynamicResource Icon.Artist}" Width="18" Height="18" />
+                    <TextBlock Text="Artists" />
+                </StackPanel>
+            </Button>
+            <Button Classes="nav" IsEnabled="False" ToolTip.Tip="Not available yet" ToolTip.ShowOnDisabled="True">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <PathIcon Data="{DynamicResource Icon.Playlist}" Width="18" Height="18" />
+                    <TextBlock Text="Playlists" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Border>
+</UserControl>

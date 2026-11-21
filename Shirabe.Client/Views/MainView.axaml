@@ -3,11 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Shirabe.Client.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:views="using:Shirabe.Client.Views"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="700"
              x:Class="Shirabe.Client.Views.MainView"
              x:DataType="vm:MainViewModel"
              DragDrop.AllowDrop="True">
-    <Grid>
+    <Grid Background="{DynamicResource AppBackgroundBrush}">
+        <!-- Shown instead of the shell when the audio engine could not start -->
         <TextBlock Text="{Binding StartupError}"
                    IsVisible="{Binding StartupError, Converter={x:Static ObjectConverters.IsNotNull}}"
                    Foreground="IndianRed"
@@ -16,37 +18,33 @@
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center" />
 
-        <Panel IsVisible="{Binding Player, Converter={x:Static ObjectConverters.IsNotNull}}">
-        <StackPanel x:DataType="vm:PlayerViewModel"
-                    DataContext="{Binding Player}"
-                    Spacing="12"
-                    MaxWidth="520"
-                    Margin="24"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Center">
-            <TextBlock Text="{Binding Title}"
-                       FontSize="22"
-                       TextWrapping="Wrap"
-                       HorizontalAlignment="Center" />
-            <TextBlock Text="{Binding ErrorMessage}"
-                       IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}"
-                       Foreground="IndianRed"
-                       TextWrapping="Wrap"
-                       HorizontalAlignment="Center" />
-            <Slider Minimum="0"
-                    Maximum="{Binding DurationSeconds}"
-                    Value="{Binding PositionSeconds, Mode=TwoWay}"
-                    IsEnabled="{Binding HasMedia}" />
-            <Grid ColumnDefinitions="*,*">
-                <TextBlock Grid.Column="0" Text="{Binding PositionText}" />
-                <TextBlock Grid.Column="1" Text="{Binding DurationText}" HorizontalAlignment="Right" />
+        <Grid RowDefinitions="*,Auto"
+              IsVisible="{Binding Player, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <Grid Grid.Row="0" ColumnDefinitions="232,*">
+                <views:SidebarView Grid.Column="0" />
+
+                <!-- Content area. Home is only the drop target for now. -->
+                <Panel Grid.Column="1">
+                    <Panel x:Name="DropZone" Classes="dropzone" Width="440" Height="280"
+                           HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Rectangle IsHitTestVisible="False" />
+                        <StackPanel Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <PathIcon Data="{DynamicResource Icon.Note}" Width="48" Height="48"
+                                      Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="Drop an audio file here" FontSize="20" FontWeight="SemiBold"
+                                       HorizontalAlignment="Center" />
+                            <TextBlock Text="to start listening" HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="{Binding Player.ErrorMessage}"
+                                       IsVisible="{Binding Player.ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                       Foreground="IndianRed" TextWrapping="Wrap" MaxWidth="380"
+                                       TextAlignment="Center" HorizontalAlignment="Center" Margin="0,8,0,0" />
+                        </StackPanel>
+                    </Panel>
+                </Panel>
             </Grid>
-            <Button Command="{Binding TogglePlayPauseCommand}"
-                    Content="{Binding PlayPauseLabel}"
-                    HorizontalAlignment="Center"
-                    MinWidth="96"
-                    HorizontalContentAlignment="Center" />
-        </StackPanel>
-        </Panel>
+
+            <views:PlayerBarView Grid.Row="1" DataContext="{Binding Player}" />
+        </Grid>
     </Grid>
 </UserControl>

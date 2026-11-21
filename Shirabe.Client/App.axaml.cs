@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using Shirabe.Audio;
 using Shirabe.Client.ViewModels;
 using Shirabe.Client.Views;
@@ -29,6 +30,10 @@ public partial class App : Application
                 DataContext = mainViewModel
             };
             desktop.Exit += (_, _) => player?.Dispose();
+
+            // "Open with Shirabe" / `Shirabe.Client.Desktop.exe song.mp3`: play the first argument.
+            if (desktop.Args is [var path, ..] && mainViewModel.Player is { } playerViewModel)
+                Dispatcher.UIThread.Post(async () => await playerViewModel.OpenAsync(path));
         }
         else if (ApplicationLifetime is IActivityApplicationLifetime singleViewFactoryApplicationLifetime)
         {

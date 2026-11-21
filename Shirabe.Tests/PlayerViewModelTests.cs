@@ -18,6 +18,18 @@ public class PlayerViewModelTests
     }
 
     [Fact]
+    public void Volume_starts_at_the_players_volume_and_changes_it()
+    {
+        var player = new FakeAudioPlayer { Volume = 0.6f };
+        var viewModel = new PlayerViewModel(player);
+        Assert.Equal(0.6, viewModel.Volume, precision: 3);
+
+        viewModel.Volume = 0.25;
+
+        Assert.Equal(0.25f, player.Volume);
+    }
+
+    [Fact]
     public async Task OpenAsync_loads_the_file_and_starts_playing()
     {
         await _viewModel.OpenAsync(@"C:\music\Song One.mp3");

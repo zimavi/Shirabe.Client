@@ -15,6 +15,8 @@ public partial class MainView : UserControl
     {
         InitializeComponent();
 
+        AddHandler(DragDrop.DragEnterEvent, (_, _) => DropZone.Classes.Set("dragover", true));
+        AddHandler(DragDrop.DragLeaveEvent, (_, _) => DropZone.Classes.Set("dragover", false));
         AddHandler(DragDrop.DragOverEvent, OnDragOver);
         AddHandler(DragDrop.DropEvent, OnDrop);
         _positionTimer.Tick += (_, _) => Player?.RefreshPosition();
@@ -40,6 +42,7 @@ public partial class MainView : UserControl
     // Only the first dropped file is played; queueing several files comes with the queue.
     private async void OnDrop(object? sender, DragEventArgs e)
     {
+        DropZone.Classes.Set("dragover", false);
         var path = e.DataTransfer.TryGetFiles()?.Select(file => file.TryGetLocalPath()).FirstOrDefault(p => p is not null);
         if (path is not null && Player is { } player)
             await player.OpenAsync(path);

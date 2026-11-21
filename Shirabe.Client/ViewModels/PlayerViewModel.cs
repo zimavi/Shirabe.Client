@@ -19,6 +19,7 @@ public partial class PlayerViewModel : ViewModelBase
     public PlayerViewModel(IAudioPlayer player)
     {
         _player = player;
+        Volume = player.Volume;
         _player.StateChanged += (_, _) => OnUiThread(() => IsPlaying = _player.State == PlaybackState.Playing);
         _player.Ended += (_, _) => OnUiThread(() =>
         {
@@ -28,7 +29,7 @@ public partial class PlayerViewModel : ViewModelBase
     }
 
     [ObservableProperty]
-    public partial string Title { get; set; } = "Drop an audio file here";
+    public partial string Title { get; set; } = "Nothing playing";
 
     [ObservableProperty]
     public partial string? ErrorMessage { get; set; }
@@ -38,8 +39,11 @@ public partial class PlayerViewModel : ViewModelBase
     public partial bool HasMedia { get; set; }
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(PlayPauseLabel))]
     public partial bool IsPlaying { get; set; }
+
+    /// <summary>0.0 (silent) to 1.0 (full), bound two-way to the volume slider.</summary>
+    [ObservableProperty]
+    public partial double Volume { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DurationText))]
@@ -49,8 +53,6 @@ public partial class PlayerViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(PositionText))]
     public partial double PositionSeconds { get; set; }
-
-    public string PlayPauseLabel => IsPlaying ? "Pause" : "Play";
 
     public string PositionText => FormatTime(PositionSeconds);
 
@@ -85,6 +87,8 @@ public partial class PlayerViewModel : ViewModelBase
         if (_player.State == PlaybackState.Playing) _player.Pause();
         else _player.Play();
     }
+
+    partial void OnVolumeChanged(double value) => _player.Volume = (float)value;
 
     partial void OnPositionSecondsChanged(double value)
     {
