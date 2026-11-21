@@ -1,0 +1,10 @@
+<Project>
+    <!-- Copies the BASS native library next to the output of projects that import this file.
+         The binaries are not in git; see native/README.md. Windows only for now. -->
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <None Include="$(MSBuildThisFileDirectory)..\native\win-x64\*.dll"
+              Link="%(Filename)%(Extension)"
+              Visible="false"
+              CopyToOutputDirectory="PreserveNewest"/>
+    </ItemGroup>
+</Project>

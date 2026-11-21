@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Shirabe.Audio/Shirabe.Audio.csproj" />
+  <Project Path="Shirabe.Client.Desktop/Shirabe.Client.Desktop.csproj" />
+  <Project Path="Shirabe.Client/Shirabe.Client.csproj" />
+  <Project Path="Shirabe.Core/Shirabe.Core.csproj" />
+  <Project Path="Shirabe.Tests/Shirabe.Tests.csproj" />
+</Solution>

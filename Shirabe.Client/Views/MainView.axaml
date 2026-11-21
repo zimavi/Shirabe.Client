@@ -1,0 +1,52 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Shirabe.Client.Views.MainView"
+             x:DataType="vm:MainViewModel"
+             DragDrop.AllowDrop="True">
+    <Grid>
+        <TextBlock Text="{Binding StartupError}"
+                   IsVisible="{Binding StartupError, Converter={x:Static ObjectConverters.IsNotNull}}"
+                   Foreground="IndianRed"
+                   TextWrapping="Wrap"
+                   MaxWidth="520"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center" />
+
+        <Panel IsVisible="{Binding Player, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <StackPanel x:DataType="vm:PlayerViewModel"
+                    DataContext="{Binding Player}"
+                    Spacing="12"
+                    MaxWidth="520"
+                    Margin="24"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center">
+            <TextBlock Text="{Binding Title}"
+                       FontSize="22"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center" />
+            <TextBlock Text="{Binding ErrorMessage}"
+                       IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}"
+                       Foreground="IndianRed"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center" />
+            <Slider Minimum="0"
+                    Maximum="{Binding DurationSeconds}"
+                    Value="{Binding PositionSeconds, Mode=TwoWay}"
+                    IsEnabled="{Binding HasMedia}" />
+            <Grid ColumnDefinitions="*,*">
+                <TextBlock Grid.Column="0" Text="{Binding PositionText}" />
+                <TextBlock Grid.Column="1" Text="{Binding DurationText}" HorizontalAlignment="Right" />
+            </Grid>
+            <Button Command="{Binding TogglePlayPauseCommand}"
+                    Content="{Binding PlayPauseLabel}"
+                    HorizontalAlignment="Center"
+                    MinWidth="96"
+                    HorizontalContentAlignment="Center" />
+        </StackPanel>
+        </Panel>
+    </Grid>
+</UserControl>

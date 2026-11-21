@@ -1,0 +1,9 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+# BASS native libraries are not redistributed, see native/README.md
+native/**/*.dll
+native/**/*.so
+native/**/*.dylib
