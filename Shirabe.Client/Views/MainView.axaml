@@ -46,5 +46,8 @@
 
             <views:PlayerBarView Grid.Row="1" DataContext="{Binding Player}" />
         </Grid>
+
+        <!-- Outside the shell, so the window can still be moved and closed when the audio engine failed to start -->
+        <views:TitleBarView VerticalAlignment="Top" />
     </Grid>
 </UserControl>

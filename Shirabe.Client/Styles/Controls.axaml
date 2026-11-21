@@ -44,6 +44,31 @@
         </ControlTheme>
     </Styles.Resources>
 
+    <!-- Window caption buttons (minimize, maximize, close): <Button Classes="caption"> (+ "close") -->
+    <Style Selector="Button.caption">
+        <Setter Property="Width" Value="46" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.caption PathIcon">
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+    </Style>
+    <Style Selector="Button.caption /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+    <Style Selector="Button.caption:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
+    </Style>
+    <Style Selector="Button.caption.close:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#C42B1C" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
     <!-- Sidebar navigation entry: <Button Classes="nav"> (add "selected" for the active one) -->
     <Style Selector="Button.nav">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -95,6 +120,10 @@
     </Style>
     <Style Selector="Slider.shirabe:disabled">
         <Setter Property="Opacity" Value="0.5" />
+    </Style>
+    <!-- Disabled means nothing is loaded: Minimum equals Maximum, which the track would draw as completely filled -->
+    <Style Selector="Slider.shirabe:disabled /template/ RepeatButton#PART_DecreaseButton">
+        <Setter Property="IsVisible" Value="False" />
     </Style>
 
     <!-- Small muted section heading in the sidebar -->

@@ -10,6 +10,8 @@
         Title="Shirabe"
         Width="1180" Height="740"
         MinWidth="900" MinHeight="560"
+        WindowDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
         Background="{DynamicResource AppBackgroundBrush}">
         <views:MainView />
 </Window>

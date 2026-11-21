@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:chrome="using:Avalonia.Controls.Chrome"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="40"
+             x:Class="Shirabe.Client.Views.TitleBarView"
+             Height="40">
+    <!-- The window has no system title bar (WindowDecorations="BorderOnly" in MainWindow), so this view is it.
+         The TitleBar role makes the empty strip drag the window and maximise it on double-click natively.
+         The buttons are ordinary buttons drawn above the strip, so their clicks reach the handlers below. -->
+    <Panel>
+        <Border Background="Transparent" chrome:WindowDecorationProperties.ElementRole="TitleBar" />
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <Button Classes="caption" Click="OnMinimize" ToolTip.Tip="Minimize" AutomationProperties.Name="Minimize">
+                <PathIcon Data="{DynamicResource Icon.Minimize}" />
+            </Button>
+            <Button x:Name="MaximizeButton" Classes="caption" Click="OnToggleMaximize" AutomationProperties.Name="Maximize">
+                <Panel>
+                    <PathIcon x:Name="MaximizeIcon" Data="{DynamicResource Icon.Maximize}" />
+                    <PathIcon x:Name="RestoreIcon" Data="{DynamicResource Icon.Restore}" IsVisible="False" />
+                </Panel>
+            </Button>
+            <Button Classes="caption close" Click="OnClose" ToolTip.Tip="Close" AutomationProperties.Name="Close">
+                <PathIcon Data="{DynamicResource Icon.Close}" />
+            </Button>
+        </StackPanel>
+    </Panel>
+</UserControl>
