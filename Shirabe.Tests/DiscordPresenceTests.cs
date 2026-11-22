@@ -12,7 +12,7 @@ public class DiscordPresenceTests
     [Fact]
     public void Card_shows_title_artist_album_and_a_progress_bar_from_the_position()
     {
-        var presence = DiscordPresence.Build("Силуети", "СТРУКТУРА ЩАСТЯ", "Неонова мрія", "https://example.com/c.jpg",
+        var presence = DiscordPresence.Build("Силуети", "СТРУКТУРА ЩАСТЯ", "Неонова мрія", "https://example.com/c.jpg", true, false, false,
             TimeSpan.FromSeconds(16), TimeSpan.FromSeconds(177), Now);
 
         Assert.Equal(ActivityType.Listening, presence.Type);
@@ -27,7 +27,7 @@ public class DiscordPresenceTests
     [Fact]
     public void Unknown_duration_has_no_end_and_no_cover_falls_back_to_the_main_image()
     {
-        var presence = DiscordPresence.Build("Song", null, null, null, TimeSpan.Zero, TimeSpan.Zero, Now);
+        var presence = DiscordPresence.Build("Song", null, null, null, true, false, false,TimeSpan.Zero, TimeSpan.Zero, Now);
 
         Assert.Null(presence.Timestamps.End);
         Assert.Null(presence.State);
@@ -38,7 +38,7 @@ public class DiscordPresenceTests
     [Fact]
     public void Fields_discord_would_reject_are_fitted()
     {
-        var presence = DiscordPresence.Build(new string('я', 200), null, "A", null, TimeSpan.Zero, TimeSpan.Zero, Now);
+        var presence = DiscordPresence.Build(new string('я', 200), null, "A", null, true, false, false, TimeSpan.Zero, TimeSpan.Zero, Now);
 
         Assert.True(System.Text.Encoding.UTF8.GetByteCount(presence.Details) <= 128);
         Assert.True(presence.Assets.LargeImageText.Length >= 2);
