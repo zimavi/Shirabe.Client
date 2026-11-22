@@ -10,6 +10,10 @@ public static class CoverAccent
 {
     private const int HueBins = 24;
 
+    // Share of the picture the winning hue must cover, else the cover counts as colourless. Counted in pixels, not in
+    // weight: a dull colour (steel blue on a mostly black cover) is still the colour of the cover.
+    private const double MinColourShare = 0.02;
+
     // The accent is a background under white text (accent buttons) and a foreground on near-black surfaces
     // (progress fill, icons), so its luminance has to sit between those two. WCAG relative luminance.
     private const double MinLuminance = 0.12;
@@ -36,6 +40,7 @@ public static class CoverAccent
         Span<double> weight = stackalloc double[HueBins];
         Span<double> hueSum = stackalloc double[HueBins];
         Span<double> satSum = stackalloc double[HueBins];
+        Span<int> pixels = stackalloc int[HueBins];
 
         for (var i = 0; i + 3 < bgra.Length; i += 4)
         {
@@ -46,6 +51,7 @@ public static class CoverAccent
 
             var w = sat * value; // vivid pixels count more than washed out ones
             var bin = Math.Min((int)(hue / 360 * HueBins), HueBins - 1);
+            pixels[bin]++;
             weight[bin] += w;
             hueSum[bin] += w * hue;
             satSum[bin] += w * sat;
@@ -55,8 +61,7 @@ public static class CoverAccent
         for (var bin = 1; bin < HueBins; bin++)
             if (weight[bin] > weight[best]) best = bin;
 
-        // Less than ~5% of the picture in the best hue: treat the cover as colourless.
-        if (weight[best] < 0.05 * (bgra.Length / 4)) return null;
+        if (pixels[best] < MinColourShare * (bgra.Length / 4)) return null;
 
         return Fit(hueSum[best] / weight[best], satSum[best] / weight[best]);
     }

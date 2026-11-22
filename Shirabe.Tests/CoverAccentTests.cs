@@ -43,4 +43,15 @@ public class CoverAccentTests
     {
         Assert.Null(CoverAccent.FromBgra(Pixels((128, 128, 128, 255, 990), (255, 0, 0, 255, 10))));
     }
+
+    [Fact]
+    public void A_mostly_black_and_pale_cover_with_a_dull_blue_part_gets_a_blue_accent()
+    {
+        // Shaped like a black cover with pale skin and steel-blue glass: only the blue is colour, about 10% of it.
+        var accent = CoverAccent.FromBgra(Pixels(
+            (0, 0, 0, 255, 1100), (235, 205, 190, 255, 970), (90, 130, 170, 255, 230)));
+
+        Assert.NotNull(accent);
+        Assert.True(accent.Value.B > accent.Value.R && accent.Value.B > accent.Value.G);
+    }
 }
