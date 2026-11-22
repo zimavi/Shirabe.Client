@@ -23,8 +23,14 @@
                 <StackPanel VerticalAlignment="Center" Spacing="2">
                     <TextBlock Text="{Binding Title}" FontWeight="SemiBold"
                                TextTrimming="CharacterEllipsis" MaxWidth="240" />
-                    <TextBlock Text="Local file" FontSize="12"
-                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <!-- The artist; replaced by the reason when the last attempt to play failed -->
+                    <TextBlock Text="{Binding Subtitle}" FontSize="12" MaxWidth="240" TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
+                               IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNull}}" />
+                    <TextBlock Text="{Binding ErrorMessage}" FontSize="12" MaxWidth="240" MaxLines="2"
+                               TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Foreground="IndianRed"
+                               ToolTip.Tip="{Binding ErrorMessage}"
+                               IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
                 </StackPanel>
             </StackPanel>
 

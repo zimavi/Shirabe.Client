@@ -1,0 +1,78 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:lib="using:Shirabe.Core.Library"
+             xmlns:conv="using:Shirabe.Client.Converters"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
+             x:Class="Shirabe.Client.Views.SongsView"
+             x:DataType="vm:SongsViewModel">
+    <Grid RowDefinitions="Auto,Auto,Auto,*" Margin="32,16,32,0">
+        <!-- Heading and actions -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+            <StackPanel Grid.Column="0" Spacing="2">
+                <TextBlock Classes="page-title" Text="Songs" />
+                <TextBlock Text="{Binding Summary}" Foreground="{DynamicResource TextSecondaryBrush}" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <Button Classes="quiet" Content="Cancel" Command="{Binding CancelScanCommand}"
+                        IsVisible="{Binding IsScanning}" Padding="14,8" />
+                <Button Classes="accent" Content="Add folder" Command="{Binding AddFolderCommand}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Scan progress / last scan summary / errors -->
+        <StackPanel Grid.Row="1" Spacing="6" Margin="0,12,0,0">
+            <ProgressBar Minimum="0" Maximum="{Binding ScanTotal}" Value="{Binding ScanProcessed}"
+                         IsVisible="{Binding IsScanning}" />
+            <TextBlock Text="{Binding ScanText}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"
+                       IsVisible="{Binding ScanText, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            <TextBlock Text="{Binding ErrorMessage}" FontSize="12" Foreground="IndianRed" TextWrapping="Wrap"
+                       IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        </StackPanel>
+
+        <!-- Column headings, aligned with the row template below -->
+        <Grid Grid.Row="2" ColumnDefinitions="3*,2*,2*,56" Margin="12,16,12,6"
+              IsVisible="{Binding HasTracks}">
+            <TextBlock Grid.Column="0" Classes="section" Text="TITLE" />
+            <TextBlock Grid.Column="1" Classes="section" Text="ARTIST" />
+            <TextBlock Grid.Column="2" Classes="section" Text="ALBUM" />
+            <TextBlock Grid.Column="3" Classes="section" Text="TIME" TextAlignment="Right" />
+        </Grid>
+
+        <Panel Grid.Row="3">
+            <ListBox x:Name="SongList" Classes="songs" ItemsSource="{Binding Tracks}" SelectionMode="Single"
+                     IsVisible="{Binding HasTracks}"
+                     DoubleTapped="OnDoubleTapped">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="lib:TrackSummary">
+                        <Grid ColumnDefinitions="3*,2*,2*,56">
+                            <TextBlock Grid.Column="0" Text="{Binding Title}" FontWeight="SemiBold"
+                                       TextTrimming="CharacterEllipsis" Margin="0,0,12,0" />
+                            <TextBlock Grid.Column="1" Text="{Binding Artist, TargetNullValue='Unknown artist'}"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       TextTrimming="CharacterEllipsis" Margin="0,0,12,0" />
+                            <TextBlock Grid.Column="2" Text="{Binding Album}"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       TextTrimming="CharacterEllipsis" Margin="0,0,12,0" />
+                            <TextBlock Grid.Column="3"
+                                       Text="{Binding Duration, Converter={x:Static conv:TimeSpanTextConverter.Instance}}"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" TextAlignment="Right" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!-- Nothing in the library yet -->
+            <StackPanel Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        IsVisible="{Binding ShowEmptyState}">
+                <PathIcon Data="{DynamicResource Icon.Note}" Width="40" Height="40"
+                          Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" />
+                <TextBlock Text="No songs yet" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock Text="Add a folder and Shirabe will find the music in it."
+                           Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Panel>
+    </Grid>
+</UserControl>

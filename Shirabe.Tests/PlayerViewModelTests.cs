@@ -1,4 +1,5 @@
 using Shirabe.Client.ViewModels;
+using Shirabe.Core.Library;
 using Shirabe.Core.Media;
 using Shirabe.Core.Playback;
 using Xunit;
@@ -51,10 +52,65 @@ public class PlayerViewModelTests
 
         await _viewModel.OpenAsync(@"C:\music\notes.txt");
 
-        Assert.Contains("notes.txt", _viewModel.ErrorMessage);
+        Assert.Contains("notes", _viewModel.ErrorMessage);
         Assert.Contains("unsupported format", _viewModel.ErrorMessage);
         Assert.False(_viewModel.HasMedia);
         Assert.Equal(PlaybackState.Stopped, _player.State);
+    }
+
+    [Fact]
+    public async Task A_file_that_was_moved_or_deleted_gets_a_helpful_message()
+    {
+        _player.LoadException = new FileNotFoundException(@"Could not find file 'C:\music\gone.flac'.");
+
+        await _viewModel.OpenAsync(@"C:\music\gone.flac");
+
+        Assert.Contains("moved or deleted", _viewModel.ErrorMessage);
+        Assert.DoesNotContain(@"C:\music", _viewModel.ErrorMessage); // no raw exception text
+        Assert.False(_viewModel.HasMedia);
+    }
+
+    [Fact]
+    public async Task A_dropped_file_is_shown_as_a_local_file()
+    {
+        await _viewModel.OpenAsync(@"C:\music\Song One.mp3");
+
+        Assert.Equal("Local file", _viewModel.Subtitle);
+    }
+
+    [Fact]
+    public async Task PlayAsync_opens_the_track_from_its_media_address_and_shows_its_artist()
+    {
+        var path = Path.Combine(Path.GetTempPath(), "Song One.flac");
+        var track = new TrackSummary(Guid.NewGuid(), "Song One", "Artist A", "Album X", null, new Uri(path).AbsoluteUri);
+
+        await _viewModel.PlayAsync(track);
+
+        Assert.Equal(path, Assert.IsType<LocalFileSource>(_player.Loaded).Path);
+        Assert.Equal(PlaybackState.Playing, _player.State);
+        Assert.Equal(("Song One", "Artist A"), (_viewModel.Title, _viewModel.Subtitle));
+    }
+
+    [Fact]
+    public async Task A_track_without_an_artist_is_shown_as_unknown()
+    {
+        var track = new TrackSummary(Guid.NewGuid(), "Song", null, null, null, new Uri(Path.Combine(Path.GetTempPath(), "s.flac")).AbsoluteUri);
+
+        await _viewModel.PlayAsync(track);
+
+        Assert.Equal("Unknown artist", _viewModel.Subtitle);
+    }
+
+    [Fact]
+    public async Task A_track_from_an_unsupported_kind_of_address_shows_an_error_and_plays_nothing()
+    {
+        var track = new TrackSummary(Guid.NewGuid(), "Remote Song", "A", null, null, "https://example.test/song.mp3");
+
+        await _viewModel.PlayAsync(track);
+
+        Assert.Contains("Remote Song", _viewModel.ErrorMessage);
+        Assert.Null(_player.Loaded);
+        Assert.False(_viewModel.HasMedia);
     }
 
     [Fact]

@@ -17,7 +17,13 @@
     <ItemGroup>
         <ProjectReference Include="..\Shirabe.Core\Shirabe.Core.csproj"/>
         <ProjectReference Include="..\Shirabe.Audio\Shirabe.Audio.csproj"/>
+        <ProjectReference Include="..\Shirabe.Library\Shirabe.Library.csproj"/>
         <ProjectReference Include="..\Shirabe.Client\Shirabe.Client.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Tiny silent FLAC files with known tags, generated with ffmpeg -->
+        <None Include="Fixtures\**" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
     <Import Project="..\build\BassNative.props"/>

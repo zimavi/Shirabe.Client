@@ -24,5 +24,15 @@
     <ItemGroup>
         <ProjectReference Include="..\Shirabe.Core\Shirabe.Core.csproj"/>
         <ProjectReference Include="..\Shirabe.Audio\Shirabe.Audio.csproj"/>
+        <ProjectReference Include="..\Shirabe.Library\Shirabe.Library.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\PlayerBarView.axaml.cs">
+        <DependentUpon>PlayerBarView.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\HomeView.axaml.cs">
+        <DependentUpon>HomeView.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

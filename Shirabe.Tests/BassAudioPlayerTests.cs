@@ -9,6 +9,9 @@ namespace Shirabe.Tests;
 /// Runs the real BASS engine on its "no sound" device, so nothing is audible. Skipped when the
 /// native library has not been downloaded, see native/README.md.
 /// </summary>
+// BASS has process-wide state (one Init/Free per process), so every test class that uses it runs in this collection,
+// i.e. never in parallel with another one.
+[Collection("BASS")]
 public class BassAudioPlayerTests : IDisposable
 {
     private readonly List<string> _files = [];
@@ -125,29 +128,10 @@ public class BassAudioPlayerTests : IDisposable
         return path;
     }
 
-    /// <summary>A 440 Hz mono 16-bit 44.1 kHz sine wave.</summary>
     private string WriteWav(double seconds)
     {
-        const int rate = 44100;
-        var samples = (int)(rate * seconds);
         var path = NewTempPath(".wav");
-
-        using var writer = new BinaryWriter(File.Create(path));
-        writer.Write("RIFF"u8);
-        writer.Write(36 + samples * 2);
-        writer.Write("WAVEfmt "u8);
-        writer.Write(16);
-        writer.Write((short)1); // PCM
-        writer.Write((short)1); // mono
-        writer.Write(rate);
-        writer.Write(rate * 2);
-        writer.Write((short)2);
-        writer.Write((short)16);
-        writer.Write("data"u8);
-        writer.Write(samples * 2);
-        for (var i = 0; i < samples; i++)
-            writer.Write((short)(Math.Sin(2 * Math.PI * 440 * i / rate) * 8000));
-
+        TestAudio.WriteWav(path, seconds);
         return path;
     }
 }

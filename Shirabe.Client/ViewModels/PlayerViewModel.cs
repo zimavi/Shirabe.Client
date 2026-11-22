@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Shirabe.Core.Library;
 using Shirabe.Core.Media;
 using Shirabe.Core.Playback;
 
@@ -8,12 +9,11 @@ namespace Shirabe.Client.ViewModels;
 /// <summary>
 /// Drives a single <see cref="IAudioPlayer"/>. Free of Avalonia types: the view calls
 /// <see cref="RefreshPosition"/> from its own timer, and player events are marshalled back to the
-/// thread that created this view model.
+/// UI thread.
 /// </summary>
 public partial class PlayerViewModel : ViewModelBase
 {
     private readonly IAudioPlayer _player;
-    private readonly SynchronizationContext? _uiContext = SynchronizationContext.Current;
     private bool _updatingPosition;
 
     public PlayerViewModel(IAudioPlayer player)
@@ -31,6 +31,11 @@ public partial class PlayerViewModel : ViewModelBase
     [ObservableProperty]
     public partial string Title { get; set; } = "Nothing playing";
 
+    /// <summary>Second line of the now-playing area: the artist, or "Local file" for a dropped file.</summary>
+    [ObservableProperty]
+    public partial string? Subtitle { get; set; }
+
+    /// <summary>Why the last attempt to play failed. Shown in the player bar, so it is visible on every page.</summary>
     [ObservableProperty]
     public partial string? ErrorMessage { get; set; }
 
@@ -58,20 +63,46 @@ public partial class PlayerViewModel : ViewModelBase
 
     public string DurationText => FormatTime(DurationSeconds);
 
-    public async Task OpenAsync(string path)
+    /// <summary>Plays a file that was not picked from the library (dropped, or passed on the command line).</summary>
+    public Task OpenAsync(string path) =>
+        LoadAndPlayAsync(new LocalFileSource(path), Path.GetFileNameWithoutExtension(path), "Local file");
+
+    public async Task PlayAsync(TrackSummary track)
+    {
+        IMediaSource source;
+        try
+        {
+            source = MediaSources.FromUri(track.MediaUri);
+        }
+        catch (Exception ex) when (ex is UriFormatException or NotSupportedException)
+        {
+            ErrorMessage = $"Cannot play {track.Title}: {ex.Message}";
+            return;
+        }
+
+        await LoadAndPlayAsync(source, track.Title, track.Artist ?? "Unknown artist");
+    }
+
+    private async Task LoadAndPlayAsync(IMediaSource source, string title, string subtitle)
     {
         try
         {
-            await _player.LoadAsync(new LocalFileSource(path));
+            await _player.LoadAsync(source);
+        }
+        catch (Exception ex) when (ex is FileNotFoundException or DirectoryNotFoundException)
+        {
+            ErrorMessage = $"Cannot play {title}: the file was moved or deleted. Add its folder again to update the library.";
+            return;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
         {
-            ErrorMessage = $"Cannot play {Path.GetFileName(path)}: {ex.Message}";
+            ErrorMessage = $"Cannot play {title}: {ex.Message}";
             return;
         }
 
         ErrorMessage = null;
-        Title = Path.GetFileNameWithoutExtension(path);
+        Title = title;
+        Subtitle = subtitle;
         HasMedia = true;
         SetPosition(0); // before the duration changes, so the slider cannot coerce an old position into a seek
         DurationSeconds = _player.Duration?.TotalSeconds ?? 0;
@@ -106,12 +137,6 @@ public partial class PlayerViewModel : ViewModelBase
         {
             _updatingPosition = false;
         }
-    }
-
-    private void OnUiThread(Action action)
-    {
-        if (_uiContext is null) action();
-        else _uiContext.Post(_ => action(), null);
     }
 
     private static string FormatTime(double seconds)

@@ -141,8 +141,69 @@
         <Setter Property="RadiusX" Value="16" />
         <Setter Property="RadiusY" Value="16" />
     </Style>
-    <Style Selector="Panel.dropzone.dragover > Rectangle">
+    <!-- MainView carries the "dragover" class while a drag is over the window -->
+    <Style Selector=".dragover Panel.dropzone > Rectangle">
         <Setter Property="Stroke" Value="{DynamicResource AccentBrush}" />
         <Setter Property="Fill" Value="{DynamicResource SurfaceBrush}" />
+    </Style>
+
+    <!-- Primary action button -->
+    <Style Selector="Button.accent">
+        <Setter Property="Padding" Value="16,8" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.accent /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="CornerRadius" Value="{DynamicResource RadiusSmall}" />
+    </Style>
+    <Style Selector="Button.accent:pointerover">
+        <Setter Property="Opacity" Value="0.9" />
+    </Style>
+    <Style Selector="Button.accent:disabled">
+        <Setter Property="Opacity" Value="0.45" />
+    </Style>
+
+    <!-- Secondary button: quiet, for things like Cancel -->
+    <Style Selector="Button.quiet /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource RadiusSmall}" />
+    </Style>
+    <Style Selector="Button.quiet:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
+    </Style>
+
+    <!-- Page headings -->
+    <Style Selector="TextBlock.page-title">
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <!-- Song list rows -->
+    <Style Selector="ListBox.songs">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+    <Style Selector="ListBox.songs ListBoxItem">
+        <Setter Property="MinHeight" Value="44" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="ListBox.songs ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="{DynamicResource RadiusSmall}" />
+    </Style>
+    <Style Selector="ListBox.songs ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+    </Style>
+    <Style Selector="ListBox.songs ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
+    </Style>
+
+    <Style Selector="ProgressBar">
+        <Setter Property="MinHeight" Value="4" />
+        <Setter Property="Height" Value="4" />
     </Style>
 </Styles>
