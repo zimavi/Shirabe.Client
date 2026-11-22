@@ -58,6 +58,15 @@
                     <TextBlock Text="Playlists" />
                 </StackPanel>
             </Button>
+
+            <TextBlock Classes="section" Text="CREATE" Margin="12,22,0,6" />
+
+            <Button Classes="nav" Classes.selected="{Binding IsStudioSelected}" Command="{Binding ShowStudioCommand}" AutomationProperties.Name="Studio">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <PathIcon Data="{DynamicResource Icon.Studio}" Width="18" Height="18" />
+                    <TextBlock Text="Studio" />
+                </StackPanel>
+            </Button>
         </StackPanel>
         </DockPanel>
     </Border>

@@ -1,12 +1,13 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Shirabe.Core.Library;
+using Shirabe.Core.Metadata;
 using Shirabe.Library.Model;
 
 namespace Shirabe.Library;
 
 /// <summary>The user's local music: a SQLite database filled by scanning folders.</summary>
-public sealed class LocalLibrary : ILibrary, IFolderScanner
+public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataStore, IFileTags
 {
     private static readonly HashSet<string> AudioExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -18,9 +19,9 @@ public sealed class LocalLibrary : ILibrary, IFolderScanner
     /// <summary>
     /// Bump when the scanner starts reading something new from files: unchanged files that an older version
     /// scanned are then read once more (see <see cref="MediaSource.ScannerVersion"/>).
-    /// 1 = tags and covers.
+    /// 1 = tags and covers. 2 = also the metadata documents (sidecar file and embedded tag).
     /// </summary>
-    private const int ScannerVersion = 1;
+    private const int ScannerVersion = 2;
 
     private readonly DbContextOptions<LibraryDbContext> _options;
     private readonly ArtworkCache _artwork;
@@ -163,6 +164,11 @@ public sealed class LocalLibrary : ILibrary, IFolderScanner
             db.ChangeTracker.Clear();
         }
 
+        // Recordings that already have stored documents from files, so a scan deletes only where there is something to delete.
+        var withDocuments = (await db.MetadataDocuments.AsNoTracking()
+            .Where(d => d.Origin != DocumentOrigin.Applied).Select(d => d.RecordingId).Distinct().ToListAsync(ct)).ToHashSet();
+        var documentProblems = new List<ScanFailure>();
+
         int added = 0, updated = 0, unchanged = 0, processed = 0;
         var failed = new List<ScanFailure>();
         var seen = new HashSet<string>();
@@ -190,11 +196,28 @@ public sealed class LocalLibrary : ILibrary, IFolderScanner
                             source.IsMissing = false;
                         }
 
-                        unchanged++;
+                        // The audio did not change, but its sidecar may have appeared, changed or gone.
+                        var stamp = SidecarStampOf(file);
+                        if (stamp == source.SidecarStamp)
+                        {
+                            unchanged++;
+                        }
+                        else
+                        {
+                            var (found, problems) = ReadFileDocuments(file, null, sidecar: true, embedded: false);
+                            var rows = ToRows(source.RecordingId, found, problems);
+                            await ReplaceStoredAsync(db, source.RecordingId, [DocumentOrigin.Sidecar], rows, withDocuments, ct);
+                            db.MediaSources.Attach(source);
+                            source.SidecarStamp = stamp;
+                            documentProblems.AddRange(problems.Select(p => new ScanFailure(file, p)));
+                            updated++;
+                        }
                     }
                     else
                     {
                         var tags = TagReader.Read(file);
+                        var stamp = SidecarStampOf(file);
+                        var (found, problems) = ReadFileDocuments(file, tags.EmbeddedDocument, sidecar: true, embedded: true);
                         if (source is null)
                         {
                             var recording = new Recording { Title = tags.Title };
@@ -205,8 +228,10 @@ public sealed class LocalLibrary : ILibrary, IFolderScanner
                                 SizeBytes = info.Length,
                                 ModifiedUtcTicks = modified,
                                 ScannerVersion = ScannerVersion,
+                                SidecarStamp = stamp,
                             });
                             db.Recordings.Add(recording);
+                            await ReplaceStoredAsync(db, recording.Id, [], ToRows(recording.Id, found, problems), withDocuments, ct);
                             added++;
                         }
                         else
@@ -220,9 +245,15 @@ public sealed class LocalLibrary : ILibrary, IFolderScanner
                             source.SizeBytes = info.Length;
                             source.ModifiedUtcTicks = modified;
                             source.ScannerVersion = ScannerVersion;
+                            source.SidecarStamp = stamp;
                             source.IsMissing = false;
+                            await ReplaceStoredAsync(
+                                db, source.RecordingId, [DocumentOrigin.Sidecar, DocumentOrigin.Embedded],
+                                ToRows(source.RecordingId, found, problems), withDocuments, ct);
                             updated++;
                         }
+
+                        documentProblems.AddRange(problems.Select(p => new ScanFailure(file, p)));
                     }
                 }
                 catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException)
@@ -249,7 +280,7 @@ public sealed class LocalLibrary : ILibrary, IFolderScanner
         }
 
         await SaveBatchAsync(ct);
-        return new ScanResult(added, updated, unchanged, markedMissing, failed);
+        return new ScanResult(added, updated, unchanged, markedMissing, failed, documentProblems);
     }
 
     // A cover that cannot be stored (disk full, folder locked) must not stop the scan: the song just has no cover.

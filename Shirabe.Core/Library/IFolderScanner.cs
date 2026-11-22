@@ -20,4 +20,7 @@ public sealed record ScanFailure(string Path, string Reason);
 /// <param name="Updated">Files that changed since the last scan; their recording was updated in place.</param>
 /// <param name="Unchanged">Files skipped because size and modification time match the last scan.</param>
 /// <param name="MarkedMissing">Previously known files in this folder that were not found. Their data is kept.</param>
-public sealed record ScanResult(int Added, int Updated, int Unchanged, int MarkedMissing, IReadOnlyList<ScanFailure> Failed);
+/// <param name="DocumentProblems">Metadata documents (sidecar or embedded) that could not be read; the audio itself was scanned fine.</param>
+public sealed record ScanResult(
+    int Added, int Updated, int Unchanged, int MarkedMissing, IReadOnlyList<ScanFailure> Failed,
+    IReadOnlyList<ScanFailure>? DocumentProblems = null);

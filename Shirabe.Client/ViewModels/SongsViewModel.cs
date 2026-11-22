@@ -10,7 +10,8 @@ public partial class SongsViewModel(
     ILibrary library,
     IFolderScanner scanner,
     IFolderPicker folderPicker,
-    PlayerViewModel player) : ViewModelBase
+    PlayerViewModel player,
+    Func<TrackSummary, PropertiesViewModel>? propertiesFactory = null) : ViewModelBase
 {
     private CancellationTokenSource? _scanCancellation;
     private bool _loadFailed;
@@ -36,6 +37,10 @@ public partial class SongsViewModel(
 
     [ObservableProperty]
     public partial string? ErrorMessage { get; set; }
+
+    /// <summary>The open properties dialog, or null. It is shown over the page.</summary>
+    [ObservableProperty]
+    public partial PropertiesViewModel? Properties { get; set; }
 
     public bool HasTracks => Tracks.Count > 0;
 
@@ -136,11 +141,26 @@ public partial class SongsViewModel(
         if (track is not null) await player.EnqueueAsync(track);
     }
 
+    /// <summary>Opens the properties dialog (custom fields and file tags) of a song, over this page.</summary>
+    [RelayCommand(CanExecute = nameof(CanShowProperties))]
+    private async Task ShowPropertiesAsync(TrackSummary? track)
+    {
+        if (track is null || propertiesFactory is null) return;
+
+        var dialog = propertiesFactory(track);
+        dialog.Closed += (_, _) => Properties = null;
+        Properties = dialog;
+        await dialog.LoadAsync();
+    }
+
+    private bool CanShowProperties() => propertiesFactory is not null;
+
     private static string Describe(ScanResult result)
     {
         var parts = new List<string> { $"{result.Added:N0} added", $"{result.Updated:N0} updated", $"{result.Unchanged:N0} unchanged" };
         if (result.MarkedMissing > 0) parts.Add($"{result.MarkedMissing:N0} no longer found");
         if (result.Failed.Count > 0) parts.Add($"{result.Failed.Count:N0} could not be read");
+        if (result.DocumentProblems is { Count: > 0 } documents) parts.Add($"{documents.Count:N0} metadata document problems");
         return "Scan finished: " + string.Join(", ", parts);
     }
 

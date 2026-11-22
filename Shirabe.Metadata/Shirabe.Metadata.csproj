@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <!-- The Shirabe Metadata Format (wiki/Metadata-Standard.md): documents, field rules and validation.
+         The reference implementation of the standard. No UI, no database, no dependencies, so any front end
+         (the client, a validator, a server) can use it. -->
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+</Project>

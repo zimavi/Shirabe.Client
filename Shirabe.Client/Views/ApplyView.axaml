@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="560" d:DesignHeight="260"
+             x:Class="Shirabe.Client.Views.ApplyView"
+             x:DataType="vm:ApplyViewModel">
+    <!-- What applying a document to a song would do, then the choice to do it. Used in Studio and in the properties dialog. -->
+    <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="{DynamicResource RadiusSmall}" Padding="16">
+        <StackPanel Spacing="10">
+            <TextBlock Text="{Binding Heading}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+
+            <ItemsControl ItemsSource="{Binding Rows}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ApplyOutcomeRow">
+                        <Grid ColumnDefinitions="72,*" Margin="0,3">
+                            <TextBlock Text="{Binding Label}" FontWeight="SemiBold" Foreground="#6CC38A" IsVisible="{Binding !IsSkip}" />
+                            <TextBlock Text="{Binding Label}" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}"
+                                       IsVisible="{Binding IsSkip}" />
+                            <TextBlock Grid.Column="1" Text="{Binding Text}" TextWrapping="Wrap" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock Text="{Binding Error}" Foreground="IndianRed" FontSize="12" TextWrapping="Wrap" IsVisible="{Binding HasError}" />
+            <TextBlock Text="{Binding Result}" Foreground="#6CC38A" FontSize="12" TextWrapping="Wrap" IsVisible="{Binding HasResult}" />
+
+            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                <Button Classes="quiet" Content="Close" Padding="14,8" Command="{Binding CloseCommand}" />
+                <Button Classes="accent" Content="Apply" Command="{Binding ApplyCommand}" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

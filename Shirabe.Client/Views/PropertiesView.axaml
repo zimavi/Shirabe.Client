@@ -1,0 +1,192 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:core="using:Shirabe.Core.Metadata"
+             xmlns:meta="using:Shirabe.Metadata"
+             mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="600"
+             x:Class="Shirabe.Client.Views.PropertiesView"
+             x:DataType="vm:PropertiesViewModel">
+    <!-- Shown over the Songs page (see SongsView). Edits are staged here and written only by Save. -->
+    <Border Width="640" MaxHeight="640" Background="{DynamicResource SidebarBrush}"
+            BorderBrush="{DynamicResource DividerBrush}" BorderThickness="1"
+            CornerRadius="{DynamicResource RadiusMedium}">
+        <Grid RowDefinitions="Auto,*,Auto">
+            <StackPanel Grid.Row="0" Spacing="2" Margin="24,20,24,12">
+                <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="{Binding Subtitle}" Foreground="{DynamicResource TextSecondaryBrush}"
+                           TextTrimming="CharacterEllipsis" />
+            </StackPanel>
+
+            <ScrollViewer Grid.Row="1">
+                <StackPanel Spacing="28" Margin="24,8,24,24">
+
+                    <!-- Custom fields: yours, editable -->
+                    <StackPanel Spacing="8">
+                        <TextBlock Classes="section" Text="CUSTOM FIELDS" />
+                        <TextBlock Text="Your own notes about this song. They stay in your library and are never written into the file."
+                                   FontSize="12" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondaryBrush}" />
+
+                        <ItemsControl x:Name="FieldList" ItemsSource="{Binding Fields}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:FieldEditorViewModel">
+                                    <Grid ColumnDefinitions="150,*,Auto" RowDefinitions="Auto,Auto" Margin="0,4"
+                                          IsVisible="{Binding !IsRemoved}">
+                                        <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="SemiBold" Margin="0,8,12,0"
+                                                   TextWrapping="Wrap" ToolTip.Tip="{Binding Definition.Key}" />
+                                        <Panel Grid.Column="1">
+                                            <TextBox Text="{Binding Text}" PlaceholderText="{Binding Hint}"
+                                                     AcceptsReturn="{Binding IsMultiline}" TextWrapping="Wrap"
+                                                     IsVisible="{Binding !IsBoolean}" AutomationProperties.Name="{Binding Name}" />
+                                            <ToggleSwitch IsChecked="{Binding Flag}" IsVisible="{Binding IsBoolean}"
+                                                          Margin="0,4,0,0" AutomationProperties.Name="{Binding Name}" />
+                                        </Panel>
+                                        <Button Grid.Column="2" Classes="icon" Margin="8,2,0,0" VerticalAlignment="Top"
+                                                Command="{Binding $parent[ItemsControl].((vm:PropertiesViewModel)DataContext).RemoveFieldCommand}"
+                                                CommandParameter="{Binding}" ToolTip.Tip="Remove this field from the song"
+                                                AutomationProperties.Name="Remove field">
+                                            <PathIcon Data="{DynamicResource Icon.Close}" Width="14" Height="14" />
+                                        </Button>
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Error}" FontSize="12" Foreground="IndianRed"
+                                                   TextWrapping="Wrap" IsVisible="{Binding HasError}" Margin="0,2,0,0" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="No custom fields on this song yet." FontSize="12"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" IsVisible="{Binding !HasFields}" />
+
+                        <!-- Add a field that exists already, or define a new one -->
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" IsVisible="{Binding HasAvailableFields}">
+                            <ComboBox ItemsSource="{Binding AvailableFields}" SelectedItem="{Binding SelectedAvailable}"
+                                      PlaceholderText="Add a field you already use..." HorizontalAlignment="Stretch"
+                                      AutomationProperties.Name="Fields you already use">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="meta:FieldDefinition">
+                                        <TextBlock Text="{Binding DisplayName}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <Button Grid.Column="1" Classes="quiet" Content="Add" Padding="14,8" Command="{Binding AddSelectedCommand}" />
+                        </Grid>
+                        <Button Classes="quiet" Content="New field..." Padding="14,8" HorizontalAlignment="Left"
+                                Command="{Binding StartNewFieldCommand}" IsVisible="{Binding !IsAddingNew}" />
+
+                        <Border IsVisible="{Binding IsAddingNew}" Background="{DynamicResource SurfaceBrush}"
+                                CornerRadius="{DynamicResource RadiusSmall}" Padding="12">
+                            <StackPanel Spacing="8">
+                                <TextBox Text="{Binding NewLabel}" PlaceholderText="Name, for example Mood"
+                                         AutomationProperties.Name="Name of the new field" />
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                    <ComboBox ItemsSource="{x:Static vm:PropertiesViewModel.TypeNames}" SelectedIndex="{Binding NewTypeIndex}"
+                                              HorizontalAlignment="Stretch" AutomationProperties.Name="Type of the new field" />
+                                    <CheckBox Grid.Column="1" Content="Several values" IsChecked="{Binding NewMultiple}"
+                                              IsVisible="{Binding CanBeMultiple}" />
+                                </Grid>
+                                <TextBlock Text="{Binding NewFieldError}" FontSize="12" Foreground="IndianRed" TextWrapping="Wrap"
+                                           IsVisible="{Binding HasNewFieldError}" />
+                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                                    <Button Classes="quiet" Content="Cancel" Padding="14,8" Command="{Binding CancelNewFieldCommand}" />
+                                    <Button Classes="accent" Content="Add field" Command="{Binding CreateNewFieldCommand}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Documents that came with the song (beside the audio, in its tag) or that you attached -->
+                    <StackPanel Spacing="8" IsVisible="{Binding HasDocumentsSection}">
+                        <TextBlock Classes="section" Text="DOCUMENTS WITH THIS SONG" />
+                        <TextBlock Text="Read from the song's files each time you open this. Nothing here changes your own fields unless you copy it."
+                                   FontSize="12" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondaryBrush}" />
+                        <TextBlock Text="{Binding DocumentsNotice}" FontSize="12" Foreground="IndianRed" TextWrapping="Wrap"
+                                   IsVisible="{Binding HasDocumentsNotice}" />
+
+                        <ItemsControl ItemsSource="{Binding Documents}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:FileDocumentViewModel">
+                                    <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="{DynamicResource RadiusSmall}"
+                                            Padding="14,10" Margin="0,0,0,8">
+                                        <StackPanel Spacing="3">
+                                            <TextBlock Text="{Binding Heading}" FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding Where}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                            <TextBlock Text="{Binding Details}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                            <TextBlock Text="{Binding Status}" FontSize="12" Foreground="#6CC38A" TextWrapping="Wrap" IsVisible="{Binding IsValid}" />
+                                            <TextBlock Text="{Binding Status}" FontSize="12" Foreground="IndianRed" TextWrapping="Wrap" IsVisible="{Binding !IsValid}" />
+                                            <ItemsControl ItemsSource="{Binding FieldLines}" Margin="0,4,0,0">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="x:String">
+                                                        <SelectableTextBlock Text="{Binding}" FontFamily="Consolas, Menlo, monospace" FontSize="12"
+                                                                             TextWrapping="Wrap" Margin="0,1" />
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <Button Classes="quiet" Content="Copy into my fields..." Padding="12,6" FontSize="12" Margin="0,6,0,0"
+                                                    HorizontalAlignment="Left" IsVisible="{Binding CanCopy}"
+                                                    Command="{Binding $parent[ItemsControl].((vm:PropertiesViewModel)DataContext).CopyDocumentCommand}"
+                                                    CommandParameter="{Binding}" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <ContentControl Content="{Binding Apply}" />
+                    </StackPanel>
+
+                    <!-- File tags: what the file itself says, read-only -->
+                    <StackPanel Spacing="8">
+                        <TextBlock Classes="section" Text="FILE TAGS" />
+                        <TextBlock Text="{Binding TagsError}" FontSize="12" Foreground="IndianRed" TextWrapping="Wrap"
+                                   IsVisible="{Binding HasTagsError}" />
+                        <ItemsControl ItemsSource="{Binding Tags}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="core:FileTag">
+                                    <Grid ColumnDefinitions="150,*" Margin="0,3">
+                                        <TextBlock Text="{Binding Name}" Foreground="{DynamicResource TextSecondaryBrush}"
+                                                   TextWrapping="Wrap" Margin="0,0,12,0" />
+                                        <SelectableTextBlock Grid.Column="1" Text="{Binding Value}" TextWrapping="Wrap" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <StackPanel Spacing="8" IsVisible="{Binding Audio.Count}">
+                        <TextBlock Classes="section" Text="AUDIO" />
+                        <ItemsControl ItemsSource="{Binding Audio}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="core:FileTag">
+                                    <Grid ColumnDefinitions="150,*" Margin="0,3">
+                                        <TextBlock Text="{Binding Name}" Foreground="{DynamicResource TextSecondaryBrush}"
+                                                   Margin="0,0,12,0" />
+                                        <SelectableTextBlock Grid.Column="1" Text="{Binding Value}" TextWrapping="Wrap" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Border Grid.Row="2" BorderBrush="{DynamicResource DividerBrush}" BorderThickness="0,1,0,0" Padding="24,12">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Spacing="4" VerticalAlignment="Center" Margin="0,0,16,0">
+                        <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding HasExport}">
+                            <Button Classes="quiet" Content="Export..." Padding="12,6" FontSize="12" Command="{Binding ExportCommand}"
+                                    ToolTip.Tip="Save the custom fields as a metadata document, anywhere you choose" />
+                            <Button Classes="quiet" Content="Save next to the audio" Padding="12,6" FontSize="12" Command="{Binding SaveSidecarCommand}"
+                                    ToolTip.Tip="Write a .shirabe.json beside the audio file. Anyone you share the folder with can read it." />
+                        </StackPanel>
+                        <TextBlock Text="{Binding Notice}" FontSize="12" TextWrapping="Wrap" Foreground="#6CC38A" IsVisible="{Binding HasNotice}" />
+                        <TextBlock Text="{Binding Error}" Foreground="IndianRed" FontSize="12" TextWrapping="Wrap" IsVisible="{Binding HasError}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                        <Button Classes="quiet" Content="Cancel" Padding="16,8" Command="{Binding CancelCommand}" />
+                        <Button Classes="accent" Content="Save" Command="{Binding SaveCommand}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

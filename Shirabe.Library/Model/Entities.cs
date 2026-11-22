@@ -69,6 +69,12 @@ public class MediaSource
     /// next scan even if they did not change, so new kinds of data (covers) reach existing libraries.
     /// </summary>
     public int ScannerVersion { get; set; }
+
+    /// <summary>
+    /// Size and modification time of the sidecar file (<c>song.flac.shirabe.json</c>) at the last scan, or null when there was
+    /// none. A change of this (or its disappearance) makes the scan read the sidecar again even if the audio is unchanged.
+    /// </summary>
+    public string? SidecarStamp { get; set; }
 }
 
 /// <summary>A recording's place on a release.</summary>

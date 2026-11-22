@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Shirabe.Client.Services;
+using Shirabe.Client.Studio;
 
 namespace Shirabe.Client.ViewModels;
 
@@ -8,15 +9,19 @@ namespace Shirabe.Client.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     private readonly HomeViewModel _home;
+    private readonly Func<StudioViewModel>? _studioFactory;
+    private StudioViewModel? _studio;
 
     /// <param name="player">Null when the audio engine could not start.</param>
     /// <param name="songs">Null when the music library could not be opened.</param>
     /// <param name="startupError">Why the audio engine could not start, shown instead of the shell.</param>
     /// <param name="libraryNotice">Why the music library could not be opened, shown on the Home page.</param>
     /// <param name="settings">Null in tests: the settings page then works on defaults that are not saved.</param>
+    /// <param name="studioFactory">Builds Studio when it is first opened, so listeners who never open it pay nothing. Null: no Studio.</param>
     public MainViewModel(PlayerViewModel? player, SongsViewModel? songs, string? startupError, string? libraryNotice = null,
-        SettingsViewModel? settings = null)
+        SettingsViewModel? settings = null, Func<StudioViewModel>? studioFactory = null)
     {
+        _studioFactory = studioFactory;
         Player = player;
         Songs = songs;
         StartupError = startupError;
@@ -34,7 +39,7 @@ public partial class MainViewModel : ViewModelBase
     public string? StartupError { get; }
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsHomeSelected), nameof(IsSongsSelected), nameof(IsSettingsSelected))]
+    [NotifyPropertyChangedFor(nameof(IsHomeSelected), nameof(IsSongsSelected), nameof(IsSettingsSelected), nameof(IsStudioSelected))]
     public partial ViewModelBase CurrentPage { get; set; }
 
     public bool IsHomeSelected => CurrentPage is HomeViewModel;
@@ -43,6 +48,10 @@ public partial class MainViewModel : ViewModelBase
 
     public bool IsSettingsSelected => CurrentPage is SettingsViewModel;
 
+    public bool IsStudioSelected => CurrentPage is StudioViewModel;
+
+    public bool HasStudio => _studioFactory is not null;
+
     public bool HasLibrary => Songs is not null;
 
     [RelayCommand]
@@ -50,6 +59,21 @@ public partial class MainViewModel : ViewModelBase
 
     [RelayCommand]
     private void ShowSettings() => CurrentPage = Settings;
+
+    [RelayCommand(CanExecute = nameof(HasStudio))]
+    private void ShowStudio() => CurrentPage = GetStudio();
+
+    /// <summary>Shows a metadata document in Studio: a <c>.shirabe.json</c> the app was asked to open.</summary>
+    public async Task OpenInStudioAsync(string path)
+    {
+        if (_studioFactory is null) return;
+
+        var studio = GetStudio();
+        CurrentPage = studio;
+        await studio.OpenPathAsync(path);
+    }
+
+    private StudioViewModel GetStudio() => _studio ??= _studioFactory!();
 
     [RelayCommand(CanExecute = nameof(HasLibrary))]
     private async Task ShowSongsAsync()

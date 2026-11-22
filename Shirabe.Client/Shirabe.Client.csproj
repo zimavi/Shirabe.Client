@@ -38,5 +38,17 @@
       <Compile Update="Views\CoverView.axaml.cs">
         <DependentUpon>CoverView.axaml</DependentUpon>
       </Compile>
+      <Compile Update="Views\PropertiesView.axaml.cs">
+        <DependentUpon>PropertiesView.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Studio\StudioView.axaml.cs">
+        <DependentUpon>StudioView.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\ApplyView.axaml.cs">
+        <DependentUpon>ApplyView.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Studio\StudioApplyView.axaml.cs">
+        <DependentUpon>StudioApplyView.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

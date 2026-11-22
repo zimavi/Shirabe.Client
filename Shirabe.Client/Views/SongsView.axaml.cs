@@ -60,6 +60,8 @@ public partial class SongsView : UserControl
 
     private void OnAddToQueueClick(object? sender, RoutedEventArgs e) => Run(viewModel => viewModel.AddToQueueCommand);
 
+    private void OnPropertiesClick(object? sender, RoutedEventArgs e) => Run(viewModel => viewModel.ShowPropertiesCommand);
+
     private void Run(Func<SongsViewModel, System.Windows.Input.ICommand> command)
     {
         if (DataContext is SongsViewModel viewModel && _menuTrack is { } track)

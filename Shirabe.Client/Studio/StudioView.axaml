@@ -1,0 +1,110 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:studio="using:Shirabe.Client.Studio"
+             xmlns:meta="using:Shirabe.Metadata"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
+             x:Class="Shirabe.Client.Studio.StudioView"
+             x:DataType="studio:StudioViewModel">
+    <UserControl.Styles>
+        <Style Selector="TextBlock.status-ok"><Setter Property="Foreground" Value="#6CC38A" /></Style>
+        <Style Selector="TextBlock.status-bad"><Setter Property="Foreground" Value="IndianRed" /></Style>
+        <Style Selector="TextBlock.severity-warning"><Setter Property="Foreground" Value="#E0B050" /></Style>
+    </UserControl.Styles>
+
+    <Panel>
+    <Grid RowDefinitions="Auto,Auto,*" Margin="32,16,32,0">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+            <StackPanel Grid.Column="0" Spacing="2">
+                <TextBlock Classes="page-title" Text="Studio" />
+                <TextBlock Text="Check and read Shirabe metadata. Everything stays on this computer."
+                           Foreground="{DynamicResource TextSecondaryBrush}" />
+            </StackPanel>
+            <Button Grid.Column="1" Classes="accent" Content="Open a document..." Command="{Binding OpenCommand}"
+                    VerticalAlignment="Center" />
+        </Grid>
+
+        <StackPanel Grid.Row="1" Spacing="4" Margin="0,12,0,0">
+            <TextBlock Text="{Binding FilePath}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"
+                       TextTrimming="CharacterEllipsis" IsVisible="{Binding FilePath, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            <TextBlock Text="{Binding Error}" FontSize="12" Foreground="IndianRed" TextWrapping="Wrap" IsVisible="{Binding HasError}" />
+        </StackPanel>
+
+        <Panel Grid.Row="2">
+            <ScrollViewer IsVisible="{Binding HasDocuments}">
+                <ItemsControl ItemsSource="{Binding Documents}" Margin="0,12,12,24">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="studio:StudioDocumentViewModel">
+                            <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="{DynamicResource RadiusMedium}"
+                                    Padding="20,16" Margin="0,0,0,12">
+                                <StackPanel Spacing="12">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{Binding Heading}" FontSize="18" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Classes="status-ok" Text="{Binding Status}" IsVisible="{Binding IsValid}" FontWeight="SemiBold" />
+                                        <TextBlock Classes="status-bad" Text="{Binding Status}" IsVisible="{Binding !IsValid}" FontWeight="SemiBold" />
+                                    </StackPanel>
+
+                                    <ItemsControl ItemsSource="{Binding Facts}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="x:String">
+                                                <SelectableTextBlock Text="{Binding}" FontSize="12" TextWrapping="Wrap"
+                                                                     Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <StackPanel Spacing="6" IsVisible="{Binding HasProblems}">
+                                        <TextBlock Classes="section" Text="PROBLEMS" />
+                                        <ItemsControl ItemsSource="{Binding Problems}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="meta:DocumentProblem">
+                                                    <Grid ColumnDefinitions="70,*" Margin="0,3">
+                                                        <TextBlock Classes="status-bad" Text="Error" FontWeight="SemiBold" IsVisible="{Binding IsError}" />
+                                                        <TextBlock Classes="severity-warning" Text="Warning" FontWeight="SemiBold" IsVisible="{Binding !IsError}" />
+                                                        <StackPanel Grid.Column="1" Spacing="1">
+                                                            <SelectableTextBlock Text="{Binding Path}" FontFamily="Consolas, Menlo, monospace" FontSize="12" />
+                                                            <SelectableTextBlock Text="{Binding Message}" TextWrapping="Wrap"
+                                                                                 Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+
+                                    <Button Classes="accent" Content="Apply to a song..." HorizontalAlignment="Left"
+                                            IsVisible="{Binding CanApply}"
+                                            Command="{Binding $parent[ItemsControl].((studio:StudioViewModel)DataContext).ApplyToSongCommand}"
+                                            CommandParameter="{Binding}" />
+
+                                    <Expander Header="The document (JSON)">
+                                        <ScrollViewer MaxHeight="360" HorizontalScrollBarVisibility="Auto">
+                                            <SelectableTextBlock Text="{Binding Json}" FontFamily="Consolas, Menlo, monospace" FontSize="12"
+                                                                 Margin="0,8,0,0" />
+                                        </ScrollViewer>
+                                    </Expander>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <StackPanel Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding ShowEmptyState}">
+                <PathIcon Data="{DynamicResource Icon.Studio}" Width="40" Height="40"
+                          Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" />
+                <TextBlock Text="Open a metadata document" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock Text="Studio checks a .shirabe.json file against the Shirabe Metadata Format and shows what is in it."
+                           Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" TextWrapping="Wrap" MaxWidth="460"
+                           TextAlignment="Center" />
+            </StackPanel>
+        </Panel>
+    </Grid>
+
+        <!-- Choosing the song a document is applied to, over the whole page -->
+        <Border Background="#B0000000" IsVisible="{Binding Applying, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <ContentControl Content="{Binding Applying}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Border>
+    </Panel>
+</UserControl>

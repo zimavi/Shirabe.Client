@@ -83,6 +83,9 @@ namespace Shirabe.Library.Migrations
                     b.Property<int>("ScannerVersion")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("SidecarStamp")
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("SizeBytes")
                         .HasColumnType("INTEGER");
 
@@ -98,6 +101,69 @@ namespace Shirabe.Library.Migrations
                         .IsUnique();
 
                     b.ToTable("MediaSources");
+                });
+
+            modelBuilder.Entity("Shirabe.Library.Model.MetadataDefinition", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Label")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Multiple")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Key")
+                        .IsUnique();
+
+                    b.ToTable("MetadataDefinitions");
+                });
+
+            modelBuilder.Entity("Shirabe.Library.Model.MetadataEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Layer")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RecordingId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ValueJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Key");
+
+                    b.HasIndex("RecordingId", "Layer", "Key")
+                        .IsUnique();
+
+                    b.ToTable("MetadataEntries");
                 });
 
             modelBuilder.Entity("Shirabe.Library.Model.Recording", b =>
@@ -163,6 +229,43 @@ namespace Shirabe.Library.Migrations
                     b.ToTable("ReleaseTracks");
                 });
 
+            modelBuilder.Entity("Shirabe.Library.Model.StoredMetadataDocument", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ErrorCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Json")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Layer")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LoadedUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Origin")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RecordingId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("Revision")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecordingId", "Origin", "Layer")
+                        .IsUnique();
+
+                    b.ToTable("MetadataDocuments");
+                });
+
             modelBuilder.Entity("Shirabe.Library.Model.ArtistCredit", b =>
                 {
                     b.HasOne("Shirabe.Library.Model.Artist", "Artist")
@@ -193,6 +296,17 @@ namespace Shirabe.Library.Migrations
                     b.Navigation("Recording");
                 });
 
+            modelBuilder.Entity("Shirabe.Library.Model.MetadataEntry", b =>
+                {
+                    b.HasOne("Shirabe.Library.Model.Recording", "Recording")
+                        .WithMany()
+                        .HasForeignKey("RecordingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Recording");
+                });
+
             modelBuilder.Entity("Shirabe.Library.Model.ReleaseTrack", b =>
                 {
                     b.HasOne("Shirabe.Library.Model.Recording", "Recording")
@@ -210,6 +324,17 @@ namespace Shirabe.Library.Migrations
                     b.Navigation("Recording");
 
                     b.Navigation("Release");
+                });
+
+            modelBuilder.Entity("Shirabe.Library.Model.StoredMetadataDocument", b =>
+                {
+                    b.HasOne("Shirabe.Library.Model.Recording", "Recording")
+                        .WithMany()
+                        .HasForeignKey("RecordingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Recording");
                 });
 
             modelBuilder.Entity("Shirabe.Library.Model.Recording", b =>

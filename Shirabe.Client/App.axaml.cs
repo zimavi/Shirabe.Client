@@ -6,6 +6,7 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using Shirabe.Audio;
 using Shirabe.Client.Services;
+using Shirabe.Client.Studio;
 using Shirabe.Client.ViewModels;
 using Shirabe.Client.Views;
 using Shirabe.Core.Playback;
@@ -29,7 +30,8 @@ public partial class App : Application
         var dataFolder = Path.GetDirectoryName(Path.GetFullPath(GetLibraryPath()))!;
         var settings = AppSettings.Load(Path.Combine(dataFolder, "settings.json"));
         var themes = ThemeCatalog.Load(Path.Combine(dataFolder, "themes"));
-        var mainViewModel = CreateMainViewModel(new SettingsViewModel(settings, themes), out var player);
+        var mainViewModel = CreateMainViewModel(
+            new SettingsViewModel(settings, themes), library => new StudioViewModel(new FilePicker(GetMainWindow), library, library), out var player);
         _ = new Appearance(this, settings, themes, mainViewModel.Player); // subscribes itself; applies the theme before any window exists
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -84,7 +86,12 @@ public partial class App : Application
                     session.Attach(playerViewModel);
 
                     // "Open with Shirabe" / `Shirabe.Client.Desktop.exe song.mp3`: play the first argument instead of the restored song.
-                    if (desktop.Args is [var path, ..]) await playerViewModel.OpenAsync(path);
+                    // A metadata document opens in Studio; anything else is audio to play.
+                    if (desktop.Args is [var path, ..])
+                    {
+                        if (path.EndsWith(".shirabe.json", StringComparison.OrdinalIgnoreCase)) await mainViewModel.OpenInStudioAsync(path);
+                        else await playerViewModel.OpenAsync(path);
+                    }
                 });
             }
         }
@@ -149,7 +156,8 @@ public partial class App : Application
     }
 
     // The app still opens without a working audio engine so the reason can be shown, e.g. a missing bass.dll.
-    private static MainViewModel CreateMainViewModel(SettingsViewModel settings, out IAudioPlayer? player)
+    private static MainViewModel CreateMainViewModel(
+        SettingsViewModel settings, Func<LocalLibrary?, StudioViewModel> studio, out IAudioPlayer? player)
     {
         try
         {
@@ -170,13 +178,14 @@ public partial class App : Application
         try
         {
             var library = LocalLibrary.Open(libraryPath);
-            var songs = new SongsViewModel(library, library, new FolderPicker(GetMainWindow), playerViewModel);
-            return new MainViewModel(playerViewModel, songs, null, settings: settings);
+            var songs = new SongsViewModel(library, library, new FolderPicker(GetMainWindow), playerViewModel,
+                track => new PropertiesViewModel(library, library, track, new FilePicker(GetMainWindow), library));
+            return new MainViewModel(playerViewModel, songs, null, settings: settings, studioFactory: () => studio(library));
         }
         catch (Exception ex)
         {
             return new MainViewModel(playerViewModel, null, null,
-                $"The music library could not be opened ({libraryPath}): {ex.Message}", settings);
+                $"The music library could not be opened ({libraryPath}): {ex.Message}", settings, () => studio(null));
         }
     }
 
