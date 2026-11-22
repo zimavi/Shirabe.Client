@@ -56,7 +56,11 @@ public partial class PlayerViewModel : ViewModelBase
     public partial bool HasMedia { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PlayPauseText))]
     public partial bool IsPlaying { get; set; }
+
+    /// <summary>What the play/pause command will do now, for menus that have text instead of an icon.</summary>
+    public string PlayPauseText => IsPlaying ? "Pause" : "Play";
 
     /// <summary>0.0 (silent) to 1.0 (full), bound two-way to the volume slider.</summary>
     [ObservableProperty]

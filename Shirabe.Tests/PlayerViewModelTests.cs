@@ -69,6 +69,18 @@ public class PlayerViewModelTests
     }
 
     [Fact]
+    public async Task PlayPauseText_says_what_the_next_press_does()
+    {
+        Assert.Equal("Play", _viewModel.PlayPauseText);
+
+        await _viewModel.OpenAsync(Path.Combine(Path.GetTempPath(), "Song One.mp3"));
+        Assert.Equal("Pause", _viewModel.PlayPauseText);
+
+        _viewModel.TogglePlayPauseCommand.Execute(null);
+        Assert.Equal("Play", _viewModel.PlayPauseText);
+    }
+
+    [Fact]
     public async Task OpenAsync_loads_the_file_and_starts_playing()
     {
         await _viewModel.OpenAsync(Path.Combine(Path.GetTempPath(), "Song One.mp3"));

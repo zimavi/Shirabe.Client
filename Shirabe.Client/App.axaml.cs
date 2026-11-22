@@ -2,6 +2,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
+using Avalonia.Styling;
+using Avalonia.Themes.Fluent;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Shirabe.Audio;
@@ -29,10 +32,13 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
+            var window = new MainWindow
             {
                 DataContext = mainViewModel
             };
+            desktop.MainWindow = window;
+            SetUpTray(desktop, window, mainViewModel.Player);
+            if (mainViewModel.Player is { } accentSource) FollowCoverAccent(accentSource);
             var presence = DiscordPresence.ApplicationId.Length > 0 && mainViewModel.Player is { } shown
                 ? new DiscordPresence(shown)
                 : null;
@@ -60,6 +66,67 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    /// <summary>Recolours the accent to match the cover of the song that is playing; no cover (or a colourless one) restores the default.</summary>
+    private void FollowCoverAccent(PlayerViewModel player)
+    {
+        var defaultAccent = (Color)this.FindResource("AccentColor")!;
+        var palette = Styles.OfType<FluentTheme>().First().Palettes[ThemeVariant.Dark]!;
+
+        player.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName != nameof(PlayerViewModel.ArtworkPath)) return;
+
+            var cover = ArtworkBitmaps.Load(player.ArtworkPath, 48);
+            var accent = (cover is null ? null : CoverAccent.FromBitmap(cover)) ?? defaultAccent;
+            Resources["AccentBrush"] = new SolidColorBrush(accent); // views use DynamicResource, so they follow
+            palette.Accent = accent; // Fluent's own controls (selection, focus)
+        };
+    }
+
+    /// <summary>Tray icon with Open, media controls and Quit. Closing the window hides it instead of ending the app.</summary>
+    private void SetUpTray(IClassicDesktopStyleApplicationLifetime desktop, Window window, PlayerViewModel? player)
+    {
+        if (TrayIcon.GetIcons(this)?.FirstOrDefault() is not { } tray) return;
+
+        void Open()
+        {
+            window.Show();
+            if (window.WindowState == WindowState.Minimized) window.WindowState = WindowState.Normal;
+            window.Activate();
+        }
+
+        var open = new NativeMenuItem("Open Shirabe");
+        open.Click += (_, _) => Open();
+        var quit = new NativeMenuItem("Quit");
+        quit.Click += (_, _) => desktop.Shutdown();
+
+        var menu = new NativeMenu { open, new NativeMenuItemSeparator() };
+        if (player is not null)
+        {
+            var playPause = new NativeMenuItem(player.PlayPauseText) { Command = player.TogglePlayPauseCommand };
+            player.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(PlayerViewModel.PlayPauseText)) playPause.Header = player.PlayPauseText;
+            };
+            menu.Add(new NativeMenuItem("Previous") { Command = player.PreviousCommand });
+            menu.Add(playPause);
+            menu.Add(new NativeMenuItem("Next") { Command = player.NextCommand });
+            menu.Add(new NativeMenuItemSeparator());
+        }
+
+        menu.Add(quit);
+        tray.Menu = menu;
+        tray.Clicked += (_, _) => Open();
+
+        // Only the user's own close (X, Alt+F4) is intercepted: Quit and OS shutdown must still end the app.
+        window.Closing += (_, e) =>
+        {
+            if (e.CloseReason != WindowCloseReason.WindowClosing) return;
+            e.Cancel = true;
+            window.Hide();
+        };
     }
 
     // The app still opens without a working audio engine so the reason can be shown, e.g. a missing bass.dll.

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Shirabe.Client.ViewModels"
              xmlns:views="using:Shirabe.Client.Views"
+             xmlns:conv="using:Shirabe.Client.Converters"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="88"
              x:Class="Shirabe.Client.Views.PlayerBarView"
              x:DataType="vm:PlayerViewModel">
@@ -15,7 +16,9 @@
         <Grid ColumnDefinitions="*,2*,*" VerticalAlignment="Center">
             <!-- Now playing -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                <views:CoverView Width="56" Height="56" ArtworkPath="{Binding ArtworkPath}" />
+                <views:CoverView Width="56" Height="56" ArtworkPath="{Binding ArtworkPath}"
+                                 ToolTip.Tip="{Binding ArtworkPath, Converter={x:Static conv:CoverTooltipConverter.Instance}}"
+                                 ToolTip.Placement="Top" ToolTip.ShowDelay="300" />
                 <StackPanel VerticalAlignment="Center" Spacing="2">
                     <TextBlock Text="{Binding Title}" FontWeight="SemiBold"
                                TextTrimming="CharacterEllipsis" MaxWidth="240" />
