@@ -1,4 +1,6 @@
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Themes.Fluent;
@@ -17,6 +19,7 @@ public sealed class Appearance
     private readonly AppSettings _settings;
     private readonly ThemeCatalog _themes;
     private readonly ColorPaletteResources _palette; // Fluent's own controls (selection, focus, popups)
+    private readonly SolidColorBrush _accentBrush = new(Theme.Dark.Accent); // one brush, so its colour can fade
     private Color? _coverAccent;
 
     public Appearance(Application app, AppSettings settings, ThemeCatalog themes, PlayerViewModel? player)
@@ -26,9 +29,12 @@ public sealed class Appearance
         _themes = themes;
         _palette = app.Styles.OfType<FluentTheme>().First().Palettes[ThemeVariant.Dark]!;
 
+        app.Resources["AccentBrush"] = _accentBrush;
+
         settings.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName is nameof(AppSettings.ThemeName) or nameof(AppSettings.FollowCoverAccent)) Apply();
+            if (e.PropertyName == nameof(AppSettings.ReduceMotion)) UpdateMotion();
         };
 
         if (player is not null)
@@ -43,8 +49,15 @@ public sealed class Appearance
             };
         }
 
-        Apply();
+        Apply(); // before the fade is switched on, so the first colour is not faded to from the default
+        UpdateMotion();
     }
+
+    // The accent fades to its new colour, unless "Reduce motion" is on.
+    private void UpdateMotion() =>
+        _accentBrush.Transitions = _settings.ReduceMotion
+            ? null
+            : [new ColorTransition { Property = SolidColorBrush.ColorProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new CubicEaseOut() }];
 
     private void Apply()
     {
@@ -60,8 +73,8 @@ public sealed class Appearance
         _palette.RegionColor = theme.Background;
 
         var accent = (_settings.FollowCoverAccent ? _coverAccent : null) ?? theme.Accent;
-        Set("AccentBrush", accent);
-        _palette.Accent = accent;
+        _accentBrush.Color = accent;
+        _palette.Accent = accent; // Fluent's own controls (switches, selection) change at once; they cannot fade
     }
 
     private void Set(string key, Color color) => _app.Resources[key] = new SolidColorBrush(color);

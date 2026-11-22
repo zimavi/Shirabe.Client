@@ -25,11 +25,13 @@
 
                 <!-- The current page; the view is found from the view model type (see ViewLocator).
                      The top margin keeps pages clear of the title bar strip. -->
-                <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" Margin="0,40,0,0" />
+                <TransitioningContentControl Grid.Column="1" Classes="pages" Content="{Binding CurrentPage}" Margin="0,40,0,0" />
 
-                <!-- The queue overlays the right side of the page while it is open -->
+                <!-- The queue overlays the right side of the page. Closed, it waits just outside the window (see
+                     Panel.queue-panel in Controls.axaml) and is disabled, so it cannot take focus or clicks. -->
                 <Panel Grid.Column="1" Width="340" HorizontalAlignment="Right" Margin="0,40,0,0"
-                       IsVisible="{Binding Player.IsQueueOpen}">
+                       Classes="queue-panel" Classes.open="{Binding Player.IsQueueOpen}"
+                       IsEnabled="{Binding Player.IsQueueOpen}">
                     <views:QueueView DataContext="{Binding Player}" />
                 </Panel>
             </Grid>

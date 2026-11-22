@@ -27,5 +27,12 @@
                 <ToggleSwitch IsChecked="{Binding Settings.FollowCoverAccent}" AutomationProperties.Name="Follow the cover" />
             </views:SettingRow>
         </StackPanel>
+
+        <StackPanel Spacing="6">
+            <TextBlock Classes="section" Text="MOTION" />
+            <views:SettingRow Title="Reduce motion" Description="Turns off the fade and slide animations.">
+                <ToggleSwitch IsChecked="{Binding Settings.ReduceMotion}" AutomationProperties.Name="Reduce motion" />
+            </views:SettingRow>
+        </StackPanel>
     </StackPanel>
 </UserControl>

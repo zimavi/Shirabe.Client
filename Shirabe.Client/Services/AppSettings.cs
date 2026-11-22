@@ -30,6 +30,10 @@ public partial class AppSettings : ObservableObject
     [ObservableProperty]
     public partial bool FollowCoverAccent { get; set; } = true;
 
+    /// <summary>Turns off the fade and slide animations (see the <c>.motion</c> class in Styles/Controls.axaml).</summary>
+    [ObservableProperty]
+    public partial bool ReduceMotion { get; set; }
+
     /// <summary>Name of the chosen <see cref="Theme"/>.</summary>
     [ObservableProperty]
     public partial string ThemeName { get; set; } = Theme.Dark.Name;

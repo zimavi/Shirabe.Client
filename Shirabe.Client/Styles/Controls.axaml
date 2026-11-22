@@ -264,6 +264,61 @@
         <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
     </Style>
 
+    <!-- Queue panel: closed it is invisible and just outside the window on the right; "open" brings it in. -->
+    <Style Selector="Panel.queue-panel">
+        <Setter Property="Opacity" Value="0" />
+        <Setter Property="RenderTransform" Value="translateX(340px)" />
+    </Style>
+    <Style Selector="Panel.queue-panel.open">
+        <Setter Property="Opacity" Value="1" />
+        <Setter Property="RenderTransform" Value="none" />
+    </Style>
+
+    <!-- Motion. Everything animated is under ".motion", a class the main window carries unless the
+         "Reduce motion" setting is on (see App), so one switch turns all of it off. Keep durations short. -->
+    <Style Selector=".motion TransitioningContentControl.pages">
+        <Setter Property="PageTransition">
+            <CrossFade Duration="0:0:0.15" />
+        </Setter>
+    </Style>
+    <Style Selector=".motion Panel.queue-panel">
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector=".motion Button.cover-play">
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector=".motion Slider.shirabe /template/ Thumb">
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.15" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector=".motion Button.icon /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Foreground" Duration="0:0:0.12" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector=".motion Button.nav /template/ ContentPresenter#PART_ContentPresenter, .motion ListBox.songs ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.12" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.12" />
+            </Transitions>
+        </Setter>
+    </Style>
+
     <Style Selector="ProgressBar">
         <Setter Property="MinHeight" Value="4" />
         <Setter Property="Height" Value="4" />

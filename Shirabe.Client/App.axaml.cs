@@ -41,6 +41,14 @@ public partial class App : Application
             desktop.MainWindow = window;
             SetUpTray(desktop, window, mainViewModel.Player);
 
+            // Animation styles apply under ".motion" (Styles/Controls.axaml); "Reduce motion" removes the class.
+            void SyncMotion() => window.Classes.Set("motion", !settings.ReduceMotion);
+            settings.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(AppSettings.ReduceMotion)) SyncMotion();
+            };
+            SyncMotion();
+
             // Follows the "Discord presence" setting while the app runs.
             DiscordPresence? presence = null;
             void SyncPresence()

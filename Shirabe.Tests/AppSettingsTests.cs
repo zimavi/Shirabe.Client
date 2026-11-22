@@ -19,6 +19,7 @@ public sealed class AppSettingsTests : IDisposable
         var settings = AppSettings.Load(SettingsFile);
 
         Assert.True(settings.ResumeLastSession);
+        Assert.False(settings.ReduceMotion);
         Assert.True(settings.DiscordPresenceEnabled);
         Assert.True(settings.CoverLookupEnabled);
         Assert.True(settings.FollowCoverAccent);
