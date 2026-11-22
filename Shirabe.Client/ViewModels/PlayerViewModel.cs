@@ -40,6 +40,10 @@ public partial class PlayerViewModel : ViewModelBase
     [ObservableProperty]
     public partial string? Album { get; set; }
 
+    /// <summary>The song that is loaded, playing or not; null until the first one.</summary>
+    [ObservableProperty]
+    public partial TrackSummary? CurrentTrack { get; set; }
+
     /// <summary>Raised when the user (not the playback clock) moves the position.</summary>
     public event EventHandler? Seeked;
 
@@ -151,6 +155,36 @@ public partial class PlayerViewModel : ViewModelBase
         else _queue.PlayNext(track);
     }
 
+    /// <summary>What <see cref="RestoreAsync"/> needs to bring the player back after a restart.</summary>
+    public PlayerSession Capture() =>
+        new(Volume, _lastAudibleVolume, IsShuffleOn, Repeat, CurrentTrack, PositionSeconds);
+
+    /// <summary>
+    /// Brings back volume, shuffle, repeat and the last song, loaded but paused at the position it was left at.
+    /// A song that can no longer be loaded (file moved) is skipped without a message: the user did not ask for it.
+    /// </summary>
+    public async Task RestoreAsync(PlayerSession session)
+    {
+        Volume = Math.Clamp(session.Volume, 0, 1);
+        _lastAudibleVolume = session.LastAudibleVolume is > 0 and <= 1 ? session.LastAudibleVolume : 1;
+        _queue.Shuffle = IsShuffleOn = session.Shuffle;
+        _queue.Repeat = Repeat = session.Repeat;
+
+        if (session.Track is not { } track) return;
+
+        // Load before queueing, so a song that is gone leaves the queue empty instead of stuck on it.
+        if (!await TryLoadAsync(track, play: false))
+        {
+            ErrorMessage = null;
+            return;
+        }
+
+        _queue.SetQueue([track], 0);
+        var position = Math.Clamp(session.PositionSeconds, 0, DurationSeconds);
+        _player.Seek(TimeSpan.FromSeconds(position));
+        SetPosition(position);
+    }
+
     /// <summary>Copies the player's position to <see cref="PositionSeconds"/> without seeking.</summary>
     public void RefreshPosition() => SetPosition(_player.Position.TotalSeconds);
 
@@ -240,14 +274,14 @@ public partial class PlayerViewModel : ViewModelBase
         for (var attempt = 0; attempt < _queue.Items.Count; attempt++)
         {
             if (_queue.Current is not { } item) return false;
-            if (await TryPlayAsync(item.Track)) return true;
+            if (await TryLoadAsync(item.Track, play: true)) return true;
             if (!skipFailures || _queue.MoveNext(autoAdvance: false) is null) return false;
         }
 
         return false;
     }
 
-    private async Task<bool> TryPlayAsync(TrackSummary track)
+    private async Task<bool> TryLoadAsync(TrackSummary track, bool play)
     {
         try
         {
@@ -270,10 +304,11 @@ public partial class PlayerViewModel : ViewModelBase
         Subtitle = track.Artist ?? "Unknown artist";
         Album = track.Album;
         ArtworkPath = track.ArtworkPath;
+        CurrentTrack = track;
         HasMedia = true;
         SetPosition(0); // before the duration changes, so the slider cannot coerce an old position into a seek
         DurationSeconds = _player.Duration?.TotalSeconds ?? 0;
-        _player.Play();
+        if (play) _player.Play();
         return true;
     }
 

@@ -2,9 +2,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Avalonia.Media;
-using Avalonia.Styling;
-using Avalonia.Themes.Fluent;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Shirabe.Audio;
@@ -28,7 +25,12 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        var mainViewModel = CreateMainViewModel(out var player);
+        // Settings and custom themes live next to the library database.
+        var dataFolder = Path.GetDirectoryName(Path.GetFullPath(GetLibraryPath()))!;
+        var settings = AppSettings.Load(Path.Combine(dataFolder, "settings.json"));
+        var themes = ThemeCatalog.Load(Path.Combine(dataFolder, "themes"));
+        var mainViewModel = CreateMainViewModel(new SettingsViewModel(settings, themes), out var player);
+        _ = new Appearance(this, settings, themes, mainViewModel.Player); // subscribes itself; applies the theme before any window exists
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -38,19 +40,45 @@ public partial class App : Application
             };
             desktop.MainWindow = window;
             SetUpTray(desktop, window, mainViewModel.Player);
-            if (mainViewModel.Player is { } accentSource) FollowCoverAccent(accentSource);
-            var presence = DiscordPresence.ApplicationId.Length > 0 && mainViewModel.Player is { } shown
-                ? new DiscordPresence(shown)
-                : null;
+
+            // Follows the "Discord presence" setting while the app runs.
+            DiscordPresence? presence = null;
+            void SyncPresence()
+            {
+                var wanted = settings.DiscordPresenceEnabled && DiscordPresence.ApplicationId.Length > 0 && mainViewModel.Player is not null;
+                if (wanted && presence is null) presence = new DiscordPresence(mainViewModel.Player!, settings);
+                else if (!wanted && presence is not null)
+                {
+                    presence.Dispose();
+                    presence = null;
+                }
+            }
+
+            settings.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(AppSettings.DiscordPresenceEnabled)) SyncPresence();
+            };
+            SyncPresence();
+            var session = new SessionStore(Path.Combine(dataFolder, "session.json"), settings);
             desktop.Exit += (_, _) =>
             {
+                session.Flush(); // before the player goes away: it reads the position
                 presence?.Dispose();
                 player?.Dispose();
             };
 
-            // "Open with Shirabe" / `Shirabe.Client.Desktop.exe song.mp3`: play the first argument.
-            if (desktop.Args is [var path, ..] && mainViewModel.Player is { } playerViewModel)
-                Dispatcher.UIThread.Post(async () => await playerViewModel.OpenAsync(path));
+            if (mainViewModel.Player is { } playerViewModel)
+            {
+                Dispatcher.UIThread.Post(async () =>
+                {
+                    // Bring back the last session (paused), then save changes from here on.
+                    if (settings.ResumeLastSession && session.Load() is { } saved) await playerViewModel.RestoreAsync(saved);
+                    session.Attach(playerViewModel);
+
+                    // "Open with Shirabe" / `Shirabe.Client.Desktop.exe song.mp3`: play the first argument instead of the restored song.
+                    if (desktop.Args is [var path, ..]) await playerViewModel.OpenAsync(path);
+                });
+            }
         }
         else if (ApplicationLifetime is IActivityApplicationLifetime singleViewFactoryApplicationLifetime)
         {
@@ -66,23 +94,6 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
-    }
-
-    /// <summary>Recolours the accent to match the cover of the song that is playing; no cover (or a colourless one) restores the default.</summary>
-    private void FollowCoverAccent(PlayerViewModel player)
-    {
-        var defaultAccent = (Color)this.FindResource("AccentColor")!;
-        var palette = Styles.OfType<FluentTheme>().First().Palettes[ThemeVariant.Dark]!;
-
-        player.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName != nameof(PlayerViewModel.ArtworkPath)) return;
-
-            var cover = ArtworkBitmaps.Load(player.ArtworkPath, 48);
-            var accent = (cover is null ? null : CoverAccent.FromBitmap(cover)) ?? defaultAccent;
-            Resources["AccentBrush"] = new SolidColorBrush(accent); // views use DynamicResource, so they follow
-            palette.Accent = accent; // Fluent's own controls (selection, focus)
-        };
     }
 
     /// <summary>Tray icon with Open, media controls and Quit. Closing the window hides it instead of ending the app.</summary>
@@ -130,7 +141,7 @@ public partial class App : Application
     }
 
     // The app still opens without a working audio engine so the reason can be shown, e.g. a missing bass.dll.
-    private static MainViewModel CreateMainViewModel(out IAudioPlayer? player)
+    private static MainViewModel CreateMainViewModel(SettingsViewModel settings, out IAudioPlayer? player)
     {
         try
         {
@@ -145,24 +156,25 @@ public partial class App : Application
 
         var playerViewModel = new PlayerViewModel(player);
 
-        // SHIRABE_LIBRARY_DB points the app at another database file (testing, portable setups).
-        var libraryPath = Environment.GetEnvironmentVariable("SHIRABE_LIBRARY_DB") is { Length: > 0 } custom
-            ? custom
-            : LocalLibrary.DefaultPath;
+        var libraryPath = GetLibraryPath();
 
         // A library that cannot be opened (damaged file, locked folder...) must not stop the player from working.
         try
         {
             var library = LocalLibrary.Open(libraryPath);
             var songs = new SongsViewModel(library, library, new FolderPicker(GetMainWindow), playerViewModel);
-            return new MainViewModel(playerViewModel, songs, null);
+            return new MainViewModel(playerViewModel, songs, null, settings: settings);
         }
         catch (Exception ex)
         {
             return new MainViewModel(playerViewModel, null, null,
-                $"The music library could not be opened ({libraryPath}): {ex.Message}");
+                $"The music library could not be opened ({libraryPath}): {ex.Message}", settings);
         }
     }
+
+    // SHIRABE_LIBRARY_DB points the app at another database file (testing, portable setups); settings and themes follow it.
+    private static string GetLibraryPath() =>
+        Environment.GetEnvironmentVariable("SHIRABE_LIBRARY_DB") is { Length: > 0 } custom ? custom : LocalLibrary.DefaultPath;
 
     private static TopLevel? GetMainWindow() =>
         (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;

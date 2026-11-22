@@ -1,5 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="using:Shirabe.Client.Views">
     <Styles.Resources>
         <!-- Horizontal slider: thin track, accent fill. A ControlTheme, because a plain Style cannot replace
              Fluent's template. Same part names as Fluent's, so seeking and dragging keep working. -->
@@ -266,5 +267,52 @@
     <Style Selector="ProgressBar">
         <Setter Property="MinHeight" Value="4" />
         <Setter Property="Height" Value="4" />
+    </Style>
+
+    <!-- Settings: the list of pages, and SettingRow (title and description left, its content right) -->
+    <Style Selector="ListBox.settings-pages">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+    <Style Selector="ListBox.settings-pages ListBoxItem">
+        <Setter Property="Padding" Value="12,4" />
+    </Style>
+    <Style Selector="ListBox.settings-pages ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="{DynamicResource RadiusMedium}" />
+    </Style>
+    <Style Selector="ListBox.settings-pages ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+    </Style>
+    <Style Selector="ListBox.settings-pages ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
+    </Style>
+
+    <Style Selector="views|SettingRow">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="{DynamicResource RadiusMedium}" Padding="16,12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="2" VerticalAlignment="Center" Margin="0,0,24,0">
+                            <TextBlock Text="{TemplateBinding Title}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                            <TextBlock Text="{TemplateBinding Description}" FontSize="12" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       IsVisible="{TemplateBinding Description, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        </StackPanel>
+                        <ContentPresenter Grid.Column="1" Name="PART_ContentPresenter" VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="views|SettingRow:disabled">
+        <Setter Property="Opacity" Value="0.5" />
+    </Style>
+    <!-- No "On"/"Off" text next to a switch -->
+    <Style Selector="ToggleSwitch">
+        <Setter Property="OnContent" Value="" />
+        <Setter Property="OffContent" Value="" />
     </Style>
 </Styles>

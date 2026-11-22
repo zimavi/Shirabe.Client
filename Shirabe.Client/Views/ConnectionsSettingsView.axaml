@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:views="using:Shirabe.Client.Views"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
+             x:Class="Shirabe.Client.Views.ConnectionsSettingsView"
+             x:DataType="vm:ConnectionsSettingsViewModel">
+    <StackPanel Spacing="6">
+        <TextBlock Classes="section" Text="DISCORD" />
+        <views:SettingRow Title="Show what I'm listening to"
+                          Description="Shows the song as a &quot;Listening to&quot; card on your Discord profile while it plays. Needs Discord running.">
+            <ToggleSwitch IsChecked="{Binding Settings.DiscordPresenceEnabled}" AutomationProperties.Name="Discord presence" />
+        </views:SettingRow>
+        <views:SettingRow Title="Look up album covers online"
+                          Description="Sends the artist and album name to Apple's iTunes Search to find a cover for the Discord card. Nothing else leaves your computer."
+                          IsEnabled="{Binding Settings.DiscordPresenceEnabled}">
+            <ToggleSwitch IsChecked="{Binding Settings.CoverLookupEnabled}" AutomationProperties.Name="Cover lookup" />
+        </views:SettingRow>
+    </StackPanel>
+</UserControl>

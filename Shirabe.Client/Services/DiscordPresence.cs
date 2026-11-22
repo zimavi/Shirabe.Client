@@ -17,23 +17,29 @@ public sealed class DiscordPresence : IDisposable
     private const string FallbackImage = "main";
 
     private readonly PlayerViewModel _player;
+    private readonly AppSettings _settings;
     private readonly DiscordRpcClient _client;
     private readonly CoverLookup _covers = new();
 
-    public DiscordPresence(PlayerViewModel player)
+    public DiscordPresence(PlayerViewModel player, AppSettings settings)
     {
         _player = player;
+        _settings = settings;
         _client = new DiscordRpcClient(ApplicationId);
         _client.Initialize();
         _player.PropertyChanged += OnPlayerPropertyChanged;
-        _player.Seeked += (_, _) => Update();
+        _player.Seeked += OnSeeked;
+        if (_player.IsPlaying) Update(); // switched on while a song is playing
     }
 
     public void Dispose()
     {
         _player.PropertyChanged -= OnPlayerPropertyChanged;
+        _player.Seeked -= OnSeeked;
         _client.Dispose();
     }
+
+    private void OnSeeked(object? sender, EventArgs e) => Update();
 
     private void OnPlayerPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -51,7 +57,7 @@ public sealed class DiscordPresence : IDisposable
         string? cover = null;
         var artist = _player.Subtitle;
         var album = _player.Album;
-        var lookup = artist is not (null or "Unknown artist") && !string.IsNullOrWhiteSpace(album);
+        var lookup = _settings.CoverLookupEnabled && artist is not (null or "Unknown artist") && !string.IsNullOrWhiteSpace(album);
         var cached = lookup && _covers.TryGetCached(artist!, album!, out cover);
 
         SetPresence(cover);

@@ -48,6 +48,18 @@ public class MainViewModelTests
     }
 
     [Fact]
+    public void Showing_settings_navigates_there_and_selects_the_sidebar_entry()
+    {
+        var viewModel = new MainViewModel(_player, _songs, null);
+
+        viewModel.ShowSettingsCommand.Execute(null);
+
+        Assert.Same(viewModel.Settings, viewModel.CurrentPage);
+        Assert.True(viewModel.IsSettingsSelected);
+        Assert.False(viewModel.IsHomeSelected);
+    }
+
+    [Fact]
     public void Without_a_library_songs_is_unavailable_and_the_reason_is_on_the_home_page()
     {
         var viewModel = new MainViewModel(_player, songs: null, startupError: null, libraryNotice: "library is damaged");
