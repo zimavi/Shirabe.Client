@@ -31,6 +31,44 @@ public class PlayerViewModelTests
     }
 
     [Fact]
+    public void ToggleMute_zeroes_the_volume_and_restores_the_previous_one()
+    {
+        _viewModel.Volume = 0.4;
+
+        _viewModel.ToggleMuteCommand.Execute(null);
+        Assert.Equal(0, _viewModel.Volume);
+        Assert.Equal(0f, _player.Volume);
+
+        _viewModel.ToggleMuteCommand.Execute(null);
+        Assert.Equal(0.4, _viewModel.Volume);
+    }
+
+    [Fact]
+    public void ToggleMute_restores_full_volume_when_the_player_started_silent()
+    {
+        var viewModel = new PlayerViewModel(new FakeAudioPlayer { Volume = 0f });
+
+        viewModel.ToggleMuteCommand.Execute(null);
+
+        Assert.Equal(1, viewModel.Volume);
+    }
+
+    [Theory]
+    [InlineData(0.0, "0%", true, false, false, false)]
+    [InlineData(0.2, "20%", false, true, false, false)]
+    [InlineData(0.5, "50%", false, false, true, false)]
+    [InlineData(0.9, "90%", false, false, false, true)]
+    public void Volume_text_and_icon_state_follow_the_volume(
+        double volume, string text, bool muted, bool low, bool medium, bool high)
+    {
+        _viewModel.Volume = volume;
+
+        Assert.Equal(text, _viewModel.VolumeText);
+        Assert.Equal((muted, low, medium, high),
+            (_viewModel.IsVolumeMuted, _viewModel.IsVolumeLow, _viewModel.IsVolumeMedium, _viewModel.IsVolumeHigh));
+    }
+
+    [Fact]
     public async Task OpenAsync_loads_the_file_and_starts_playing()
     {
         await _viewModel.OpenAsync(Path.Combine(Path.GetTempPath(), "Song One.mp3"));

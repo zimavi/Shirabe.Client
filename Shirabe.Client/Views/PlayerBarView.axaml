@@ -36,7 +36,10 @@
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
                     <Button Classes="icon" Classes.active="{Binding IsShuffleOn}" Command="{Binding ToggleShuffleCommand}"
                             ToolTip.Tip="Shuffle" AutomationProperties.Name="Shuffle">
-                        <PathIcon Data="{DynamicResource Icon.Shuffle}" />
+                        <Panel>
+                            <PathIcon Data="{DynamicResource Icon.Shuffle}" IsVisible="{Binding IsShuffleOn}"/>
+                            <PathIcon Data="{DynamicResource Icon.ShuffleOff}" IsVisible="{Binding !IsShuffleOn}"/>
+                        </Panel>
                     </Button>
                     <Button Classes="icon" Command="{Binding PreviousCommand}"
                             ToolTip.Tip="Previous" AutomationProperties.Name="Previous">
@@ -58,6 +61,7 @@
                     <Button Classes="icon" Classes.active="{Binding IsRepeatActive}" Command="{Binding CycleRepeatCommand}"
                             ToolTip.Tip="{Binding RepeatText}" AutomationProperties.Name="Repeat">
                         <Panel>
+                            <PathIcon Data="{DynamicResource Icon.RepeatOff}" IsVisible="{Binding !IsRepeatActive}" />
                             <PathIcon Data="{DynamicResource Icon.Repeat}" IsVisible="{Binding !IsRepeatOne}" />
                             <PathIcon Data="{DynamicResource Icon.RepeatOne}" IsVisible="{Binding IsRepeatOne}" />
                         </Panel>
@@ -82,9 +86,19 @@
                         ToolTip.Tip="Queue" AutomationProperties.Name="Queue">
                     <PathIcon Data="{DynamicResource Icon.Playlist}" />
                 </Button>
-                <PathIcon Data="{DynamicResource Icon.Volume}" Width="18" Height="18"
-                          Foreground="{DynamicResource TextSecondaryBrush}" />
-                <Slider Classes="shirabe" Theme="{StaticResource ShirabeSlider}" Minimum="0" Maximum="1" Width="110" Value="{Binding Volume, Mode=TwoWay}" />
+                <Button Classes="icon" Command="{Binding ToggleMuteCommand}" AutomationProperties.Name="Mute">
+                    <Panel>
+                        <PathIcon Data="{DynamicResource Icon.VolumeOff}" IsVisible="{Binding IsVolumeMuted}" />
+                        <PathIcon Data="{DynamicResource Icon.VolumeMute}" IsVisible="{Binding IsVolumeLow}" />
+                        <PathIcon Data="{DynamicResource Icon.VolumeDown}" IsVisible="{Binding IsVolumeMedium}" />
+                        <PathIcon Data="{DynamicResource Icon.Volume}" IsVisible="{Binding IsVolumeHigh}" />
+                    </Panel>
+                </Button>
+                <!-- No "shirabe" class: that one hides the thumb until hovered, the volume thumb stays visible -->
+                <Slider Theme="{StaticResource ShirabeSlider}" Minimum="0" Maximum="1" Width="110"
+                        Value="{Binding Volume, Mode=TwoWay}" AutomationProperties.Name="Volume"
+                        ToolTip.Tip="{Binding VolumeText}" ToolTip.ShowDelay="0"
+                        PointerWheelChanged="OnVolumeWheel" />
             </StackPanel>
         </Grid>
     </Border>

@@ -19,6 +19,7 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm"/>
+        <PackageReference Include="DiscordRichPresence"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -33,6 +34,9 @@
       </Compile>
       <Compile Update="Views\HomeView.axaml.cs">
         <DependentUpon>HomeView.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\CoverView.axaml.cs">
+        <DependentUpon>CoverView.axaml</DependentUpon>
       </Compile>
     </ItemGroup>
 </Project>

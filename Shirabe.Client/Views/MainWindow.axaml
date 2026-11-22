@@ -6,7 +6,7 @@
         xmlns:views="using:Shirabe.Client.Views"
         mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="700"
         x:Class="Shirabe.Client.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/app.ico"
         Title="Shirabe"
         Width="1180" Height="740"
         MinWidth="900" MinHeight="560"

@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Platform;
 using Avalonia.Threading;
 using Shirabe.Audio;
 using Shirabe.Client.Services;
@@ -32,7 +33,14 @@ public partial class App : Application
             {
                 DataContext = mainViewModel
             };
-            desktop.Exit += (_, _) => player?.Dispose();
+            var presence = DiscordPresence.ApplicationId.Length > 0 && mainViewModel.Player is { } shown
+                ? new DiscordPresence(shown)
+                : null;
+            desktop.Exit += (_, _) =>
+            {
+                presence?.Dispose();
+                player?.Dispose();
+            };
 
             // "Open with Shirabe" / `Shirabe.Client.Desktop.exe song.mp3`: play the first argument.
             if (desktop.Args is [var path, ..] && mainViewModel.Player is { } playerViewModel)

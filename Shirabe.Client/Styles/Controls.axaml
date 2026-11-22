@@ -229,6 +229,32 @@
         <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
     </Style>
 
+    <!-- Play button over a song's cover: dark veil, hidden until the row is hovered -->
+    <Style Selector="Button.cover-play">
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Opacity" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.cover-play PathIcon">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+    </Style>
+    <Style Selector="Button.cover-play /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#99000000" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="CornerRadius" Value="{DynamicResource RadiusSmall}" />
+    </Style>
+    <Style Selector="Button.cover-play:pointerover /template/ ContentPresenter#PART_ContentPresenter, Button.cover-play:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#99000000" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="ListBox.songs ListBoxItem:pointerover Button.cover-play">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+
     <!-- Queue rows: the song that is playing is highlighted -->
     <Style Selector="Border.queue-row.current">
         <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />

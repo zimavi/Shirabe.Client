@@ -19,6 +19,7 @@ public partial class PlayerViewModel : ViewModelBase
     private readonly IAudioPlayer _player;
     private readonly PlaybackQueue _queue = new();
     private bool _updatingPosition;
+    private double _lastAudibleVolume = 1;
 
     public PlayerViewModel(IAudioPlayer player)
     {
@@ -35,6 +36,12 @@ public partial class PlayerViewModel : ViewModelBase
     /// <summary>Second line of the now-playing area: the artist, or "Local file" for a dropped file.</summary>
     [ObservableProperty]
     public partial string? Subtitle { get; set; }
+
+    [ObservableProperty]
+    public partial string? Album { get; set; }
+
+    /// <summary>Raised when the user (not the playback clock) moves the position.</summary>
+    public event EventHandler? Seeked;
 
     /// <summary>Full path of the cover of the song that is playing, if its file has one.</summary>
     [ObservableProperty]
@@ -53,7 +60,20 @@ public partial class PlayerViewModel : ViewModelBase
 
     /// <summary>0.0 (silent) to 1.0 (full), bound two-way to the volume slider.</summary>
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(VolumeText), nameof(IsVolumeMuted), nameof(IsVolumeLow), nameof(IsVolumeMedium), nameof(IsVolumeHigh))]
     public partial double Volume { get; set; }
+
+    /// <summary>Shown in the volume slider's tooltip.</summary>
+    public string VolumeText => $"{Math.Round(Volume * 100)}%";
+
+    // Icon states: muted, then thirds of the range.
+    public bool IsVolumeMuted => Volume <= 0;
+
+    public bool IsVolumeLow => Volume > 0 && Volume < 1.0 / 3;
+
+    public bool IsVolumeMedium => Volume >= 1.0 / 3 && Volume < 2.0 / 3;
+
+    public bool IsVolumeHigh => Volume >= 2.0 / 3;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DurationText))]
@@ -155,6 +175,7 @@ public partial class PlayerViewModel : ViewModelBase
         {
             _player.Seek(TimeSpan.Zero);
             RefreshPosition();
+            Seeked?.Invoke(this, EventArgs.Empty);
             return;
         }
 
@@ -243,6 +264,7 @@ public partial class PlayerViewModel : ViewModelBase
         ErrorMessage = null;
         Title = track.Title;
         Subtitle = track.Artist ?? "Unknown artist";
+        Album = track.Album;
         ArtworkPath = track.ArtworkPath;
         HasMedia = true;
         SetPosition(0); // before the duration changes, so the slider cannot coerce an old position into a seek
@@ -251,11 +273,21 @@ public partial class PlayerViewModel : ViewModelBase
         return true;
     }
 
-    partial void OnVolumeChanged(double value) => _player.Volume = (float)value;
+    partial void OnVolumeChanged(double value)
+    {
+        _player.Volume = (float)value;
+        if (value > 0) _lastAudibleVolume = value;
+    }
+
+    /// <summary>Mutes by moving the volume to 0; the next call restores the last non-zero volume.</summary>
+    [RelayCommand]
+    private void ToggleMute() => Volume = Volume > 0 ? 0 : _lastAudibleVolume;
 
     partial void OnPositionSecondsChanged(double value)
     {
-        if (!_updatingPosition) _player.Seek(TimeSpan.FromSeconds(value));
+        if (_updatingPosition) return;
+        _player.Seek(TimeSpan.FromSeconds(value));
+        Seeked?.Invoke(this, EventArgs.Empty);
     }
 
     private void SetPosition(double seconds)

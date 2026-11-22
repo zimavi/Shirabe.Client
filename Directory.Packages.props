@@ -20,6 +20,8 @@
         <!-- Audio. Bindings only: the native BASS libraries are not redistributed here, see native/README.md -->
         <PackageVersion Include="ManagedBass" Version="4.0.2" />
 
+        <PackageVersion Include="DiscordRichPresence" Version="1.6.1.70" />
+
         <PackageVersion Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.15" />
 
         <!-- Local library. EF Core 10.x on purpose: the project targets net10.0 and the installed dotnet-ef tool is 10.x -->

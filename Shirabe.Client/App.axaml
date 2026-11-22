@@ -9,6 +9,17 @@
         <local:ViewLocator />
     </Application.DataTemplates>
 
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon ToolTipText="Shirabe" 
+                      Icon="{OnPlatform '/Assets/app.ico',
+                                        macOS='/Assets/tray.png',
+                                        Linux='/Assets/tray.png',
+                                        x:TypeArguments='WindowIcon'}">
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
+    
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
