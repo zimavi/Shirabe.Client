@@ -11,12 +11,14 @@ public class SongsViewModelTests
     private readonly FakeScanner _scanner = new();
     private readonly FakeFolderPicker _picker = new();
     private readonly FakeAudioPlayer _audio = new();
+    private readonly PlayerViewModel _playerViewModel;
     private readonly SongsViewModel _viewModel;
 
     public SongsViewModelTests()
     {
         SynchronizationContext.SetSynchronizationContext(null); // run UI-thread hops inline
-        _viewModel = new SongsViewModel(_library, _scanner, _picker, new PlayerViewModel(_audio));
+        _playerViewModel = new PlayerViewModel(_audio);
+        _viewModel = new SongsViewModel(_library, _scanner, _picker, _playerViewModel);
     }
 
     [Fact]
@@ -140,16 +142,40 @@ public class SongsViewModelTests
     }
 
     [Fact]
-    public async Task Playing_a_row_plays_that_track()
+    public async Task Playing_a_row_plays_that_song_and_queues_the_whole_list()
     {
-        var path = Path.Combine(Path.GetTempPath(), "one.flac");
-        var track = Track("One") with { MediaUri = new Uri(path).AbsoluteUri };
+        _library.Tracks = [Track("One"), Track("Two"), Track("Three")];
+        await _viewModel.LoadAsync();
 
-        await _viewModel.PlayCommand.ExecuteAsync(track);
+        await _viewModel.PlayCommand.ExecuteAsync(_viewModel.Tracks[1]);
 
-        Assert.Equal(path, Assert.IsType<LocalFileSource>(_audio.Loaded).Path);
+        Assert.Equal(new Uri(Path.Combine(Path.GetTempPath(), "Two.flac")).LocalPath, Assert.IsType<LocalFileSource>(_audio.Loaded).Path);
+        Assert.Equal(["One", "Two", "Three"], _playerViewModel.QueueItems.Select(i => i.Track.Title));
+        Assert.Equal("Two", _playerViewModel.QueueItems[_playerViewModel.QueueItems.ToList().FindIndex(i => i.IsCurrent)].Track.Title);
+    }
+
+    [Fact]
+    public async Task A_row_that_is_no_longer_in_the_list_still_plays()
+    {
+        await _viewModel.PlayCommand.ExecuteAsync(Track("Gone"));
+
+        Assert.Equal("Gone", _playerViewModel.Title);
+    }
+
+    [Fact]
+    public async Task The_row_menu_can_queue_a_song_next_or_last()
+    {
+        _library.Tracks = [Track("One"), Track("Two")];
+        await _viewModel.LoadAsync();
+        await _viewModel.PlayCommand.ExecuteAsync(_viewModel.Tracks[0]);
+
+        await _viewModel.AddToQueueCommand.ExecuteAsync(Track("Last"));
+        await _viewModel.PlayNextCommand.ExecuteAsync(Track("Next"));
+
+        Assert.Equal(["One", "Next", "Two", "Last"], _playerViewModel.QueueItems.Select(i => i.Track.Title));
     }
 
     private static TrackSummary Track(string title) =>
-        new(Guid.NewGuid(), title, "Artist", "Album", TimeSpan.FromMinutes(3), $"file:///music/{title}.flac");
+        new(Guid.NewGuid(), title, "Artist", "Album", TimeSpan.FromMinutes(3),
+            new Uri(Path.Combine(Path.GetTempPath(), title + ".flac")).AbsoluteUri);
 }

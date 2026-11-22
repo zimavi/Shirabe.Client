@@ -8,7 +8,8 @@ internal sealed record FileTags(
     int? Year,
     int? DiscNumber,
     int? TrackNumber,
-    TimeSpan? Duration);
+    TimeSpan? Duration,
+    byte[]? Cover);
 
 internal static class TagReader
 {
@@ -33,7 +34,15 @@ internal static class TagReader
             Year: Positive(track.Year),
             DiscNumber: Positive(track.DiscNumber),
             TrackNumber: Positive(track.TrackNumber),
-            Duration: track.DurationMs > 0 ? TimeSpan.FromMilliseconds(track.DurationMs) : null);
+            Duration: track.DurationMs > 0 ? TimeSpan.FromMilliseconds(track.DurationMs) : null,
+            Cover: FrontCover(track));
+    }
+
+    private static byte[]? FrontCover(ATL.Track track)
+    {
+        var pictures = track.EmbeddedPictures;
+        var picture = pictures.FirstOrDefault(p => p.PicType == ATL.PictureInfo.PIC_TYPE.Front) ?? pictures.FirstOrDefault();
+        return picture?.PictureData is { Length: > 0 } data ? data : null;
     }
 
     private static string? Clean(string? text) => string.IsNullOrWhiteSpace(text) ? null : text.Trim();

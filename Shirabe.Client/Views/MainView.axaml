@@ -26,6 +26,12 @@
                 <!-- The current page; the view is found from the view model type (see ViewLocator).
                      The top margin keeps pages clear of the title bar strip. -->
                 <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" Margin="0,40,0,0" />
+
+                <!-- The queue overlays the right side of the page while it is open -->
+                <Panel Grid.Column="1" Width="340" HorizontalAlignment="Right" Margin="0,40,0,0"
+                       IsVisible="{Binding Player.IsQueueOpen}">
+                    <views:QueueView DataContext="{Binding Player}" />
+                </Panel>
             </Grid>
 
             <views:PlayerBarView Grid.Row="1" DataContext="{Binding Player}" />

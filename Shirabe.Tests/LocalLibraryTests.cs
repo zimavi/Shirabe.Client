@@ -1,5 +1,7 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Shirabe.Library;
 using Xunit;
 
@@ -202,6 +204,98 @@ public class LocalLibraryTests : IDisposable
         await cts.CancelAsync();
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => library.ScanFolderAsync(_music, cancellationToken: cts.Token));
+    }
+
+    [Fact]
+    public async Task Embedded_covers_are_stored_once_per_image_and_attached_to_their_songs()
+    {
+        Fixture("cover-a1.flac", "cover-a1.flac");
+        Fixture("cover-a2.mp3", "cover-a2.mp3"); // same picture as the FLAC, in a different container
+        Fixture("cover-b1.flac", "cover-b1.flac");
+        Fixture("a1.flac", "a1.flac"); // no cover
+        var library = LocalLibrary.Open(_dbPath);
+
+        await library.ScanFolderAsync(_music, cancellationToken: TestContext.Current.CancellationToken);
+
+        var tracks = (await library.GetTracksAsync(TestContext.Current.CancellationToken)).ToDictionary(t => t.Title);
+        Assert.Null(tracks["First Song"].ArtworkPath);
+        Assert.Equal(tracks["Covered One"].ArtworkPath, tracks["Covered Two"].ArtworkPath);
+        Assert.NotEqual(tracks["Covered One"].ArtworkPath, tracks["Covered Three"].ArtworkPath);
+        Assert.Equal(2, Directory.GetFiles(Path.Combine(Path.GetDirectoryName(_dbPath)!, "artwork")).Length);
+
+        var cover = tracks["Covered One"].ArtworkPath!;
+        Assert.EndsWith(".jpg", cover);
+        Assert.Equal(await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "Fixtures", "coverA.jpg"), TestContext.Current.CancellationToken),
+            await File.ReadAllBytesAsync(cover, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task A_song_whose_file_lost_its_cover_loses_it_in_the_library_too()
+    {
+        Fixture("cover-a1.flac", "song.flac");
+        var library = LocalLibrary.Open(_dbPath);
+        await library.ScanFolderAsync(_music, cancellationToken: TestContext.Current.CancellationToken);
+        Assert.NotNull(Assert.Single(await library.GetTracksAsync(TestContext.Current.CancellationToken)).ArtworkPath);
+
+        Fixture("a1-retagged.flac", "song.flac"); // same path, no picture
+        await library.ScanFolderAsync(_music, cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.Null(Assert.Single(await library.GetTracksAsync(TestContext.Current.CancellationToken)).ArtworkPath);
+    }
+
+    [Fact]
+    public async Task A_cover_that_cannot_be_stored_does_not_stop_the_scan()
+    {
+        Fixture("cover-a1.flac", "cover-a1.flac");
+        Directory.CreateDirectory(Path.GetDirectoryName(_dbPath)!);
+        await File.WriteAllTextAsync(Path.Combine(Path.GetDirectoryName(_dbPath)!, "artwork"), "a file where the folder should be",
+            TestContext.Current.CancellationToken);
+        var library = LocalLibrary.Open(_dbPath);
+
+        var result = await library.ScanFolderAsync(_music, cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.Equal(1, result.Added);
+        var track = Assert.Single(await library.GetTracksAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("Covered One", track.Title);
+        Assert.Null(track.ArtworkPath);
+    }
+
+    [Fact]
+    public async Task Upgrading_an_older_library_keeps_its_data_makes_a_backup_and_the_next_scan_adds_covers()
+    {
+        // A library as the first version created it (the Initial migration only), with one song in it.
+        var file = Fixture("cover-a1.flac", "cover-a1.flac");
+        var info = new FileInfo(file);
+        var recordingId = Guid.CreateVersion7();
+        Directory.CreateDirectory(Path.GetDirectoryName(_dbPath)!);
+        await using (var old = OpenDb())
+        {
+            old.GetService<IMigrator>().Migrate("Initial");
+            await old.Database.ExecuteSqlInterpolatedAsync(
+                $"INSERT INTO Recordings (Id, Title, Duration) VALUES ({recordingId.ToString().ToUpperInvariant()}, 'Old Title', NULL)",
+                TestContext.Current.CancellationToken);
+            await old.Database.ExecuteSqlInterpolatedAsync(
+                $"INSERT INTO MediaSources (Id, RecordingId, Uri, SizeBytes, ModifiedUtcTicks, IsMissing) VALUES ({Guid.CreateVersion7().ToString().ToUpperInvariant()}, {recordingId.ToString().ToUpperInvariant()}, {new Uri(file).AbsoluteUri}, {info.Length}, {info.LastWriteTimeUtc.Ticks}, 0)",
+                TestContext.Current.CancellationToken);
+        }
+
+        var library = LocalLibrary.Open(_dbPath); // applies AddArtwork
+
+        Assert.Single(Directory.GetFiles(Path.GetDirectoryName(_dbPath)!, "*.bak-*")); // a copy of the old database
+        var before = Assert.Single(await library.GetTracksAsync(TestContext.Current.CancellationToken));
+        Assert.Equal(("Old Title", recordingId), (before.Title, before.RecordingId)); // nothing lost
+        Assert.Null(before.ArtworkPath);
+
+        var result = await library.ScanFolderAsync(_music, cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.Equal(1, result.Updated); // the file did not change, but the old scanner never looked for covers
+        var after = Assert.Single(await library.GetTracksAsync(TestContext.Current.CancellationToken));
+        Assert.Equal(recordingId, after.RecordingId);
+        Assert.Equal("Covered One", after.Title);
+        Assert.NotNull(after.ArtworkPath);
+
+        var again = await library.ScanFolderAsync(_music, cancellationToken: TestContext.Current.CancellationToken);
+        Assert.Equal((0, 1), (again.Updated, again.Unchanged)); // and only once
     }
 
     // Copies a fixture file to a relative path inside the music folder and returns the new path.

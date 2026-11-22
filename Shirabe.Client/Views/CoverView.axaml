@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="56" d:DesignHeight="56"
+             x:Class="Shirabe.Client.Views.CoverView"
+             Width="56" Height="56">
+    <!-- A cover image, or a note icon when the song has none. Set Width and Height; the image is decoded at twice that. -->
+    <Border CornerRadius="{DynamicResource RadiusSmall}" Background="{DynamicResource SurfaceBrush}" ClipToBounds="True">
+        <Panel>
+            <PathIcon x:Name="Placeholder" Data="{DynamicResource Icon.Note}"
+                      Foreground="{DynamicResource TextSecondaryBrush}"
+                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <Image x:Name="Picture" Stretch="UniformToFill" />
+        </Panel>
+    </Border>
+</UserControl>

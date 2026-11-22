@@ -8,10 +8,12 @@ public interface ILibrary
 }
 
 /// <param name="MediaUri">Where to open the audio from, e.g. <c>file:///C:/Music/a.flac</c>.</param>
+/// <param name="ArtworkPath">Full path of the cover image, or null when the file has no embedded cover.</param>
 public sealed record TrackSummary(
     Guid RecordingId,
     string Title,
     string? Artist,
     string? Album,
     TimeSpan? Duration,
-    string MediaUri);
+    string MediaUri,
+    string? ArtworkPath = null);

@@ -80,6 +80,9 @@ namespace Shirabe.Library.Migrations
                     b.Property<Guid>("RecordingId")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("ScannerVersion")
+                        .HasColumnType("INTEGER");
+
                     b.Property<long>("SizeBytes")
                         .HasColumnType("INTEGER");
 
@@ -100,6 +103,9 @@ namespace Shirabe.Library.Migrations
             modelBuilder.Entity("Shirabe.Library.Model.Recording", b =>
                 {
                     b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ArtworkFile")
                         .HasColumnType("TEXT");
 
                     b.Property<TimeSpan?>("Duration")

@@ -17,6 +17,12 @@ internal sealed class FakeAudioPlayer : IAudioPlayer
 
     public Exception? LoadException { get; set; }
 
+    /// <summary>Makes loading fail for particular sources only.</summary>
+    public Func<IMediaSource, Exception?>? FailWhen { get; set; }
+
+    /// <summary>Every source that was loaded successfully, in order.</summary>
+    public List<IMediaSource> Loads { get; } = [];
+
     public List<TimeSpan> Seeks { get; } = [];
 
     public event EventHandler? StateChanged;
@@ -26,8 +32,10 @@ internal sealed class FakeAudioPlayer : IAudioPlayer
     public Task LoadAsync(IMediaSource source, CancellationToken cancellationToken = default)
     {
         if (LoadException is not null) throw LoadException;
+        if (FailWhen?.Invoke(source) is { } failure) throw failure;
 
         Loaded = source;
+        Loads.Add(source);
         Position = TimeSpan.Zero;
         SetState(PlaybackState.Paused);
         return Task.CompletedTask;

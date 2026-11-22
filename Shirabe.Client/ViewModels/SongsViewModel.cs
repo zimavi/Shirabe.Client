@@ -109,10 +109,31 @@ public partial class SongsViewModel(
     [RelayCommand]
     private void CancelScan() => _scanCancellation?.Cancel();
 
+    /// <summary>Plays a song and queues the whole list after it, so playback carries on down the list.</summary>
     [RelayCommand]
     private async Task PlayAsync(TrackSummary? track)
     {
-        if (track is not null) await player.PlayAsync(track);
+        if (track is null) return;
+
+        var tracks = Tracks;
+        var index = 0;
+        while (index < tracks.Count && tracks[index].RecordingId != track.RecordingId) index++;
+
+        // Not in the list (it changed under us): still play the song that was asked for.
+        if (index == tracks.Count) await player.PlayTracksAsync([track], 0);
+        else await player.PlayTracksAsync(tracks, index);
+    }
+
+    [RelayCommand]
+    private async Task PlayNextAsync(TrackSummary? track)
+    {
+        if (track is not null) await player.PlayNextAsync(track);
+    }
+
+    [RelayCommand]
+    private async Task AddToQueueAsync(TrackSummary? track)
+    {
+        if (track is not null) await player.EnqueueAsync(track);
     }
 
     private static string Describe(ScanResult result)

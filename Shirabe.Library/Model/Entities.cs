@@ -34,6 +34,9 @@ public class Recording
 
     public TimeSpan? Duration { get; set; }
 
+    /// <summary>Name of the cover image in the artwork cache (&lt;sha256&gt;.jpg), taken from the file's embedded picture.</summary>
+    public string? ArtworkFile { get; set; }
+
     public List<MediaSource> Sources { get; } = [];
 
     public List<ArtistCredit> Credits { get; } = [];
@@ -60,6 +63,12 @@ public class MediaSource
 
     /// <summary>The file was not found by the last scan of its folder. Rows are never deleted: personal data hangs off them.</summary>
     public bool IsMissing { get; set; }
+
+    /// <summary>
+    /// Which version of the scanner last read this file. Files read by an older version are read again on the
+    /// next scan even if they did not change, so new kinds of data (covers) reach existing libraries.
+    /// </summary>
+    public int ScannerVersion { get; set; }
 }
 
 /// <summary>A recording's place on a release.</summary>

@@ -15,9 +15,21 @@ public sealed class LocalLibrary : ILibrary, IFolderScanner
 
     private const int SaveEvery = 200;
 
-    private readonly DbContextOptions<LibraryDbContext> _options;
+    /// <summary>
+    /// Bump when the scanner starts reading something new from files: unchanged files that an older version
+    /// scanned are then read once more (see <see cref="MediaSource.ScannerVersion"/>).
+    /// 1 = tags and covers.
+    /// </summary>
+    private const int ScannerVersion = 1;
 
-    private LocalLibrary(DbContextOptions<LibraryDbContext> options) => _options = options;
+    private readonly DbContextOptions<LibraryDbContext> _options;
+    private readonly ArtworkCache _artwork;
+
+    private LocalLibrary(DbContextOptions<LibraryDbContext> options, ArtworkCache artwork)
+    {
+        _options = options;
+        _artwork = artwork;
+    }
 
     public static string DefaultPath { get; } =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Shirabe", "library.db");
@@ -40,7 +52,9 @@ public sealed class LocalLibrary : ILibrary, IFolderScanner
         }
 
         db.Database.Migrate();
-        return new LocalLibrary(options);
+
+        // Covers live in a folder next to the database, so moving or testing with another database moves them too.
+        return new LocalLibrary(options, new ArtworkCache(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!, "artwork")));
     }
 
     public async Task<IReadOnlyList<TrackSummary>> GetTracksAsync(CancellationToken cancellationToken = default)
@@ -57,7 +71,8 @@ public sealed class LocalLibrary : ILibrary, IFolderScanner
                 r.Credits.Where(c => c.Role == CreditRoles.Artist).OrderBy(c => c.SortOrder).Select(c => c.Artist.Name).FirstOrDefault(),
                 r.ReleaseTracks.Select(t => t.Release.Title).FirstOrDefault(),
                 r.Duration,
-                r.Sources.Where(s => !s.IsMissing).OrderBy(s => s.Uri).Select(s => s.Uri).First()))
+                r.Sources.Where(s => !s.IsMissing).OrderBy(s => s.Uri).Select(s => s.Uri).First(),
+                r.ArtworkFile == null ? null : Path.Combine(_artwork.Directory, r.ArtworkFile)))
             .ToListAsync(cancellationToken);
     }
 
@@ -126,6 +141,7 @@ public sealed class LocalLibrary : ILibrary, IFolderScanner
         {
             recording.Title = tags.Title;
             recording.Duration = tags.Duration;
+            recording.ArtworkFile = SaveCover(tags);
 
             db.ArtistCredits.RemoveRange(recording.Credits.Where(c => c.Role == CreditRoles.Artist));
             db.ReleaseTracks.RemoveRange(recording.ReleaseTracks);
@@ -165,7 +181,8 @@ public sealed class LocalLibrary : ILibrary, IFolderScanner
                     var modified = info.LastWriteTimeUtc.Ticks;
                     known.TryGetValue(uri, out var source);
 
-                    if (source is not null && source.SizeBytes == info.Length && source.ModifiedUtcTicks == modified)
+                    if (source is not null && source.SizeBytes == info.Length && source.ModifiedUtcTicks == modified
+                        && source.ScannerVersion == ScannerVersion)
                     {
                         if (source.IsMissing)
                         {
@@ -182,7 +199,13 @@ public sealed class LocalLibrary : ILibrary, IFolderScanner
                         {
                             var recording = new Recording { Title = tags.Title };
                             Apply(recording, tags);
-                            recording.Sources.Add(new MediaSource { Uri = uri, SizeBytes = info.Length, ModifiedUtcTicks = modified });
+                            recording.Sources.Add(new MediaSource
+                            {
+                                Uri = uri,
+                                SizeBytes = info.Length,
+                                ModifiedUtcTicks = modified,
+                                ScannerVersion = ScannerVersion,
+                            });
                             db.Recordings.Add(recording);
                             added++;
                         }
@@ -196,6 +219,7 @@ public sealed class LocalLibrary : ILibrary, IFolderScanner
                             db.MediaSources.Attach(source);
                             source.SizeBytes = info.Length;
                             source.ModifiedUtcTicks = modified;
+                            source.ScannerVersion = ScannerVersion;
                             source.IsMissing = false;
                             updated++;
                         }
@@ -226,6 +250,20 @@ public sealed class LocalLibrary : ILibrary, IFolderScanner
 
         await SaveBatchAsync(ct);
         return new ScanResult(added, updated, unchanged, markedMissing, failed);
+    }
+
+    // A cover that cannot be stored (disk full, folder locked) must not stop the scan: the song just has no cover.
+    private string? SaveCover(FileTags tags)
+    {
+        if (tags.Cover is null) return null;
+        try
+        {
+            return _artwork.Save(tags.Cover);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            return null;
+        }
     }
 
     private static (string, string) ReleaseKey(string title, string albumArtist) =>

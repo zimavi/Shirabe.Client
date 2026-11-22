@@ -1,0 +1,55 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:core="using:Shirabe.Core.Playback"
+             xmlns:views="using:Shirabe.Client.Views"
+             mc:Ignorable="d" d:DesignWidth="340" d:DesignHeight="600"
+             x:Class="Shirabe.Client.Views.QueueView"
+             x:DataType="vm:PlayerViewModel">
+    <Border Background="{DynamicResource SidebarBrush}" BorderBrush="{DynamicResource DividerBrush}" BorderThickness="1,0,0,0">
+        <Grid RowDefinitions="Auto,*">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="20,16,12,8">
+                <TextBlock Grid.Column="0" Text="Queue" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Classes="quiet" Content="Clear" Padding="12,6" FontSize="12"
+                        Command="{Binding ClearQueueCommand}" ToolTip.Tip="Remove everything except the song that is playing" />
+            </Grid>
+
+            <ListBox x:Name="QueueList" Grid.Row="1" Classes="songs" ItemsSource="{Binding QueueItems}" SelectionMode="Single"
+                     Margin="8,0" DoubleTapped="OnDoubleTapped">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="core:QueueItem">
+                        <Border Classes="queue-row" Classes.current="{Binding IsCurrent}"
+                                CornerRadius="{DynamicResource RadiusSmall}" Padding="0,4">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <views:CoverView Grid.Column="0" Width="36" Height="36" Margin="0,0,10,0"
+                                                 ArtworkPath="{Binding Track.ArtworkPath}" />
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Classes="title" Text="{Binding Track.Title}" FontWeight="SemiBold"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{Binding Track.Artist, TargetNullValue='Unknown artist'}" FontSize="12"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"
+                                               TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                                <Button Grid.Column="2" Classes="icon" IsVisible="{Binding !IsCurrent}"
+                                        ToolTip.Tip="Remove from queue" AutomationProperties.Name="Remove from queue"
+                                        Command="{Binding $parent[ListBox].((vm:PlayerViewModel)DataContext).RemoveQueueItemCommand}"
+                                        CommandParameter="{Binding}">
+                                    <PathIcon Data="{DynamicResource Icon.Close}" Width="14" Height="14" />
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <StackPanel Grid.Row="1" Spacing="6" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        IsVisible="{Binding !HasQueue}">
+                <TextBlock Text="The queue is empty" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock Text="Play a song from the list to start one." FontSize="12"
+                           Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

@@ -33,10 +33,10 @@ public class PlayerViewModelTests
     [Fact]
     public async Task OpenAsync_loads_the_file_and_starts_playing()
     {
-        await _viewModel.OpenAsync(@"C:\music\Song One.mp3");
+        await _viewModel.OpenAsync(Path.Combine(Path.GetTempPath(), "Song One.mp3"));
 
         var source = Assert.IsType<LocalFileSource>(_player.Loaded);
-        Assert.Equal(@"C:\music\Song One.mp3", source.Path);
+        Assert.Equal(Path.Combine(Path.GetTempPath(), "Song One.mp3"), source.Path);
         Assert.Equal(PlaybackState.Playing, _player.State);
         Assert.Equal("Song One", _viewModel.Title);
         Assert.Equal(120, _viewModel.DurationSeconds);
@@ -50,7 +50,7 @@ public class PlayerViewModelTests
     {
         _player.LoadException = new InvalidOperationException("unsupported format");
 
-        await _viewModel.OpenAsync(@"C:\music\notes.txt");
+        await _viewModel.OpenAsync(Path.Combine(Path.GetTempPath(), "notes.txt"));
 
         Assert.Contains("notes", _viewModel.ErrorMessage);
         Assert.Contains("unsupported format", _viewModel.ErrorMessage);
@@ -63,17 +63,17 @@ public class PlayerViewModelTests
     {
         _player.LoadException = new FileNotFoundException(@"Could not find file 'C:\music\gone.flac'.");
 
-        await _viewModel.OpenAsync(@"C:\music\gone.flac");
+        await _viewModel.OpenAsync(Path.Combine(Path.GetTempPath(), "gone.flac"));
 
         Assert.Contains("moved or deleted", _viewModel.ErrorMessage);
-        Assert.DoesNotContain(@"C:\music", _viewModel.ErrorMessage); // no raw exception text
+        Assert.DoesNotContain("Could not find file", _viewModel.ErrorMessage); // no raw exception text
         Assert.False(_viewModel.HasMedia);
     }
 
     [Fact]
     public async Task A_dropped_file_is_shown_as_a_local_file()
     {
-        await _viewModel.OpenAsync(@"C:\music\Song One.mp3");
+        await _viewModel.OpenAsync(Path.Combine(Path.GetTempPath(), "Song One.mp3"));
 
         Assert.Equal("Local file", _viewModel.Subtitle);
     }
@@ -138,7 +138,7 @@ public class PlayerViewModelTests
         _player.Position = TimeSpan.FromSeconds(100);
         _viewModel.RefreshPosition();
 
-        await _viewModel.OpenAsync(@"C:\music\short.mp3");
+        await _viewModel.OpenAsync(Path.Combine(Path.GetTempPath(), "short.mp3"));
 
         Assert.Empty(_player.Seeks);
         Assert.Equal(0, _viewModel.PositionSeconds);
@@ -148,7 +148,7 @@ public class PlayerViewModelTests
     public async Task TogglePlayPause_pauses_and_resumes()
     {
         Assert.False(_viewModel.TogglePlayPauseCommand.CanExecute(null));
-        await _viewModel.OpenAsync(@"C:\music\a.mp3");
+        await _viewModel.OpenAsync(Path.Combine(Path.GetTempPath(), "a.mp3"));
         Assert.True(_viewModel.TogglePlayPauseCommand.CanExecute(null));
 
         _viewModel.TogglePlayPauseCommand.Execute(null);
@@ -163,7 +163,7 @@ public class PlayerViewModelTests
     [Fact]
     public async Task When_playback_ends_the_position_returns_to_the_start()
     {
-        await _viewModel.OpenAsync(@"C:\music\a.mp3");
+        await _viewModel.OpenAsync(Path.Combine(Path.GetTempPath(), "a.mp3"));
         _player.Position = TimeSpan.FromSeconds(120);
         _viewModel.RefreshPosition();
 

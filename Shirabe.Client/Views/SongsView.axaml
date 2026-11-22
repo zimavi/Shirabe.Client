@@ -5,6 +5,7 @@
              xmlns:vm="using:Shirabe.Client.ViewModels"
              xmlns:lib="using:Shirabe.Core.Library"
              xmlns:conv="using:Shirabe.Client.Converters"
+             xmlns:views="using:Shirabe.Client.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
              x:Class="Shirabe.Client.Views.SongsView"
              x:DataType="vm:SongsViewModel">
@@ -32,31 +33,40 @@
                        IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
         </StackPanel>
 
-        <!-- Column headings, aligned with the row template below -->
-        <Grid Grid.Row="2" ColumnDefinitions="3*,2*,2*,56" Margin="12,16,12,6"
+        <!-- Column headings, aligned with the row template below (the first column holds the cover) -->
+        <Grid Grid.Row="2" ColumnDefinitions="44,3*,2*,2*,56" Margin="12,16,12,6"
               IsVisible="{Binding HasTracks}">
-            <TextBlock Grid.Column="0" Classes="section" Text="TITLE" />
-            <TextBlock Grid.Column="1" Classes="section" Text="ARTIST" />
-            <TextBlock Grid.Column="2" Classes="section" Text="ALBUM" />
-            <TextBlock Grid.Column="3" Classes="section" Text="TIME" TextAlignment="Right" />
+            <TextBlock Grid.Column="1" Classes="section" Text="TITLE" />
+            <TextBlock Grid.Column="2" Classes="section" Text="ARTIST" />
+            <TextBlock Grid.Column="3" Classes="section" Text="ALBUM" />
+            <TextBlock Grid.Column="4" Classes="section" Text="TIME" TextAlignment="Right" />
         </Grid>
 
         <Panel Grid.Row="3">
             <ListBox x:Name="SongList" Classes="songs" ItemsSource="{Binding Tracks}" SelectionMode="Single"
                      IsVisible="{Binding HasTracks}"
                      DoubleTapped="OnDoubleTapped">
+                <ListBox.ContextMenu>
+                    <ContextMenu x:Name="RowMenu" Opening="OnMenuOpening" Closed="OnMenuClosed">
+                        <MenuItem Header="Play" Click="OnPlayClick" />
+                        <MenuItem Header="Play next" Click="OnPlayNextClick" />
+                        <MenuItem Header="Add to queue" Click="OnAddToQueueClick" />
+                    </ContextMenu>
+                </ListBox.ContextMenu>
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="lib:TrackSummary">
-                        <Grid ColumnDefinitions="3*,2*,2*,56">
-                            <TextBlock Grid.Column="0" Text="{Binding Title}" FontWeight="SemiBold"
+                        <Grid ColumnDefinitions="44,3*,2*,2*,56" Margin="0,4">
+                            <views:CoverView Grid.Column="0" Width="36" Height="36" HorizontalAlignment="Left"
+                                             ArtworkPath="{Binding ArtworkPath}" />
+                            <TextBlock Grid.Column="1" Text="{Binding Title}" FontWeight="SemiBold" VerticalAlignment="Center"
                                        TextTrimming="CharacterEllipsis" Margin="0,0,12,0" />
-                            <TextBlock Grid.Column="1" Text="{Binding Artist, TargetNullValue='Unknown artist'}"
+                            <TextBlock Grid.Column="2" Text="{Binding Artist, TargetNullValue='Unknown artist'}" VerticalAlignment="Center"
                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                        TextTrimming="CharacterEllipsis" Margin="0,0,12,0" />
-                            <TextBlock Grid.Column="2" Text="{Binding Album}"
+                            <TextBlock Grid.Column="3" Text="{Binding Album}" VerticalAlignment="Center"
                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                        TextTrimming="CharacterEllipsis" Margin="0,0,12,0" />
-                            <TextBlock Grid.Column="3"
+                            <TextBlock Grid.Column="4" VerticalAlignment="Center"
                                        Text="{Binding Duration, Converter={x:Static conv:TimeSpanTextConverter.Instance}}"
                                        Foreground="{DynamicResource TextSecondaryBrush}" TextAlignment="Right" />
                         </Grid>
