@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Shirabe.Client.ViewModels;
 
@@ -8,38 +9,72 @@ namespace Shirabe.Client.Views;
 
 public partial class LyricsView : UserControl
 {
-    private static readonly TimeSpan ScrollDuration = TimeSpan.FromMilliseconds(300);
+    private static readonly TimeSpan GlideDuration = TimeSpan.FromMilliseconds(300);
 
-    private readonly DispatcherTimer _scrollTimer = new() { Interval = TimeSpan.FromMilliseconds(16) };
     private LyricsViewModel? _model;
-    private DateTime _scrollStarted;
-    private double _scrollFrom, _scrollTo;
+    private bool _frameRequested;
+    private bool _attached;
+
+    // The glide to the current line: from, to, and the frame time it started at (taken from the first frame after it was asked for).
+    private bool _gliding;
+    private TimeSpan? _glideStarted;
+    private double _glideFrom, _glideTo;
     private bool _jumpNext = true; // new lyrics are shown at once; only the move from one line to the next glides
 
     public LyricsView()
     {
         InitializeComponent();
-        _scrollTimer.Tick += OnScrollTick;
         DataContextChanged += (_, _) =>
         {
             if (_model is not null) _model.PropertyChanged -= OnModelChanged;
             _model = DataContext as LyricsViewModel;
             if (_model is not null) _model.PropertyChanged += OnModelChanged;
+            RequestFrame();
         };
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        _attached = true;
+        RequestFrame();
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        _attached = false;
     }
 
     private void OnModelChanged(object? sender, PropertyChangedEventArgs e)
     {
-        // After layout, so rows that were only just created have a position.
         if (e.PropertyName == nameof(LyricsViewModel.Lines)) _jumpNext = true;
         if (e.PropertyName is nameof(LyricsViewModel.CurrentIndex) or nameof(LyricsViewModel.Lines))
+            // After layout, so rows that were only just created have a position.
             Dispatcher.UIThread.Post(KeepCurrentLineInView, DispatcherPriority.Loaded);
+        if (e.PropertyName == nameof(LyricsViewModel.NeedsFrames)) RequestFrame();
     }
 
-    protected override void OnUnloaded(Avalonia.Interactivity.RoutedEventArgs e)
+    // Frames come from the display (TopLevel.RequestAnimationFrame), not from a timer: a timer at Background priority is late
+    // and uneven when the UI is busy, which shows as lines and words stepping unevenly. The loop runs only while something
+    // needs it: the lyrics follow a song that is playing, or a glide is under way.
+    private void RequestFrame()
     {
-        base.OnUnloaded(e);
-        _scrollTimer.Stop();
+        if (_frameRequested || !_attached || TopLevel.GetTopLevel(this) is not { } top) return;
+        if (_model is not { } model || !(model.NeedsFrames || _gliding)) return;
+
+        _frameRequested = true;
+        top.RequestAnimationFrame(OnFrame);
+    }
+
+    private void OnFrame(TimeSpan time)
+    {
+        _frameRequested = false;
+        if (!_attached || _model is not { } model) return;
+
+        if (model.NeedsFrames) model.Tick();
+        if (_gliding) AdvanceGlide(time);
+        RequestFrame();
     }
 
     // The current line sits near the middle of the panel; before the first line (or in plain lyrics) the text starts at the top.
@@ -65,25 +100,27 @@ public partial class LyricsView : UserControl
         var near = Math.Abs(target - Scroller.Offset.Y) < Scroller.Viewport.Height * 2;
         var glide = motion && near && !_jumpNext;
         _jumpNext = false;
-        _scrollTimer.Stop();
 
         if (!glide)
         {
+            _gliding = false;
             Scroller.Offset = new Vector(0, target);
             return;
         }
 
-        _scrollFrom = Scroller.Offset.Y;
-        _scrollTo = target;
-        _scrollStarted = DateTime.UtcNow;
-        _scrollTimer.Start();
+        _glideFrom = Scroller.Offset.Y;
+        _glideTo = target;
+        _glideStarted = null;
+        _gliding = true;
+        RequestFrame();
     }
 
-    private void OnScrollTick(object? sender, EventArgs e)
+    private void AdvanceGlide(TimeSpan time)
     {
-        var done = Math.Min(1, (DateTime.UtcNow - _scrollStarted) / ScrollDuration);
+        _glideStarted ??= time;
+        var done = Math.Min(1, (time - _glideStarted.Value) / GlideDuration);
         var eased = 1 - Math.Pow(1 - done, 3); // fast start, soft landing
-        Scroller.Offset = new Vector(0, _scrollFrom + (_scrollTo - _scrollFrom) * eased);
-        if (done >= 1) _scrollTimer.Stop();
+        Scroller.Offset = new Vector(0, _glideFrom + (_glideTo - _glideFrom) * eased);
+        if (done >= 1) _gliding = false;
     }
 }

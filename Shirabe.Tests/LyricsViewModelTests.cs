@@ -50,6 +50,13 @@ public class LyricsViewModelTests
 
     private static async Task Settle() => await Task.Yield();
 
+    // While a song plays the view calls Tick on every frame, which reads the engine's clock.
+    private void At(double seconds)
+    {
+        _audio.Position = TimeSpan.FromSeconds(seconds);
+        _lyrics.Tick();
+    }
+
     [Fact]
     public async Task Nothing_is_looked_up_while_the_panel_is_closed_and_opening_it_looks_up_the_song_that_is_loaded()
     {
@@ -94,18 +101,18 @@ public class LyricsViewModelTests
         await Settle();
         Assert.Equal(-1, _lyrics.CurrentIndex); // before the first line
 
-        _player.PositionSeconds = 12;
+        At(12);
         Assert.Equal(1, _lyrics.CurrentIndex);
         Assert.Equal([false, true, false], _lyrics.Lines.Select(l => l.IsCurrent));
 
-        _player.PositionSeconds = 25;
+        At(25);
         Assert.Equal([false, false, true], _lyrics.Lines.Select(l => l.IsCurrent));
 
-        _player.PositionSeconds = 6; // seek back
+        At(6); // seek back
         Assert.Equal(0, _lyrics.CurrentIndex);
         Assert.Equal([true, false, false], _lyrics.Lines.Select(l => l.IsCurrent));
 
-        _player.PositionSeconds = 0;
+        At(0);
         Assert.Equal(-1, _lyrics.CurrentIndex);
         Assert.All(_lyrics.Lines, l => Assert.False(l.IsCurrent));
     }
@@ -133,20 +140,119 @@ public class LyricsViewModelTests
         Assert.True(_lyrics.Lines[0].HasWords);
         Assert.True(_lyrics.Lines[1].HasNoWords);
 
-        _player.PositionSeconds = 1;
+        At(1);
         Assert.All(words, w => Assert.False(w.IsSung));
 
-        _player.PositionSeconds = 3.5;
+        At(3.5);
         Assert.Equal([true, true, false], words.Select(w => w.IsSung));
 
-        _player.PositionSeconds = 5;
+        At(5);
         Assert.Equal([true, true, true], words.Select(w => w.IsSung));
 
-        _player.PositionSeconds = 3.2; // seek back inside the line
+        At(3.2); // seek back inside the line
         Assert.Equal([true, true, false], words.Select(w => w.IsSung));
 
-        _player.PositionSeconds = 11; // the next line is current: this one starts over
+        At(11); // the next line is current: this one starts over
         Assert.All(words, w => Assert.False(w.IsSung));
+    }
+
+    [Fact]
+    public async Task A_background_vocal_lights_up_by_its_own_word_times_inside_the_current_line()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, SongLyrics.Of(
+        [
+            new LyricLine(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(8), "lead (ooh aah)",
+                [new LyricWord(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3), "lead")], "(ooh aah)",
+                [new LyricWord(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(6), "(ooh", true), new LyricWord(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(7), "aah)")]),
+        ], "x"));
+        await Settle();
+        var line = _lyrics.Lines[0];
+        Assert.True(line.HasBackgroundWords);
+        Assert.False(line.HasBackgroundText);
+
+        At(5.5);
+        Assert.Equal([true, false], line.BackgroundWords.Select(w => w.IsSung));
+
+        At(6.5);
+        Assert.Equal([true, true], line.BackgroundWords.Select(w => w.IsSung));
+
+        At(0.5); // before the line: starts over
+        Assert.All(line.BackgroundWords, w => Assert.False(w.IsSung));
+    }
+
+    [Fact]
+    public async Task A_background_vocal_without_word_times_is_shown_as_text()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, SongLyrics.Of([new LyricLine(TimeSpan.FromSeconds(1), null, "lead (ooh)", null, "(ooh)")], "x"));
+        await Settle();
+
+        Assert.True(_lyrics.Lines[0].HasBackgroundText);
+        Assert.False(_lyrics.Lines[0].HasBackgroundWords);
+    }
+
+    [Fact]
+    public async Task A_timed_line_with_no_text_is_a_pause_marker_but_a_stanza_break_in_plain_lyrics_is_not()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, SongLyrics.Of(
+            [new LyricLine(TimeSpan.Zero, TimeSpan.FromSeconds(9), ""), new LyricLine(TimeSpan.FromSeconds(9), null, "first line", null, null, null, true)], "x"));
+        await Settle();
+
+        Assert.True(_lyrics.Lines[0].IsPause);
+        Assert.False(_lyrics.Lines[0].ShowsText);
+        Assert.True(_lyrics.Lines[1].ShowsText);
+        Assert.False(_lyrics.Lines[0].IsSecondVoice);
+        Assert.True(_lyrics.Lines[1].IsSecondVoice);
+        At(1);
+        Assert.Equal(0, _lyrics.CurrentIndex); // the pause is the current line during the break
+
+        var stanzaBreak = new LyricLineViewModel(new LyricLine(null, null, ""));
+        Assert.False(stanzaBreak.IsPause);
+    }
+
+    [Fact]
+    public async Task The_dots_of_a_pause_fill_in_over_its_length_and_start_over_when_it_is_left()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _player.IsLyricsOpen = true;
+        // The break has no end of its own (like an empty line in LRC): it lasts until the next line.
+        _source.Answer(a, SongLyrics.Of(
+            [new LyricLine(TimeSpan.FromSeconds(10), null, ""), new LyricLine(TimeSpan.FromSeconds(20), null, "next")], "x"));
+        await Settle();
+        var pause = _lyrics.Lines[0];
+
+        At(10);
+        Assert.Equal(0, pause.PauseProgress);
+        Assert.Equal([0.35, 0.35, 0.35], [pause.Dot1, pause.Dot2, pause.Dot3], new DotComparer());
+
+        At(15); // halfway: the first dot is full, the second half way, the third not started
+        Assert.Equal(0.5, pause.PauseProgress, precision: 3);
+        Assert.Equal([1.0, 0.675, 0.35], [pause.Dot1, pause.Dot2, pause.Dot3], new DotComparer());
+
+        At(19.99);
+        Assert.Equal([1.0, 1.0, 1.0], [pause.Dot1, pause.Dot2, pause.Dot3], new DotComparer(0.01));
+
+        At(21); // the next line is current: the dots start over
+        Assert.Equal(0, pause.PauseProgress);
+
+        At(12); // a seek back into the break
+        Assert.Equal(0.2, pause.PauseProgress, precision: 3);
+    }
+
+    private sealed class DotComparer(double tolerance = 0.001) : IEqualityComparer<double>
+    {
+        public bool Equals(double x, double y) => Math.Abs(x - y) <= tolerance;
+
+        public int GetHashCode(double value) => 0;
     }
 
     [Fact]
@@ -183,6 +289,58 @@ public class LyricsViewModelTests
         _lyrics.SeekToLineCommand.Execute(_lyrics.Lines[1]);
 
         Assert.Equal(7, _player.PositionSeconds);
+    }
+
+    [Fact]
+    public async Task Frames_are_needed_only_for_timed_lyrics_of_a_song_that_is_playing_with_the_panel_open()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        Assert.False(_lyrics.NeedsFrames); // panel closed
+
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, Timed((1, "one")));
+        await Settle();
+        Assert.True(_lyrics.NeedsFrames);
+
+        _audio.Pause();
+        Assert.False(_lyrics.NeedsFrames);
+
+        _audio.Play();
+        _player.IsLyricsOpen = false;
+        Assert.False(_lyrics.NeedsFrames);
+    }
+
+    [Fact]
+    public async Task Paused_a_seek_still_moves_the_current_line_through_the_position_the_slider_reports()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _audio.Pause();
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, Timed((5, "one"), (10, "two")));
+        await Settle();
+
+        _player.PositionSeconds = 12;
+
+        Assert.Equal(1, _lyrics.CurrentIndex);
+    }
+
+    [Fact]
+    public async Task While_playing_the_engine_clock_decides_and_a_stale_copy_of_the_position_cannot_move_the_line_back()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, Timed((5, "one"), (10, "two")));
+        await Settle();
+        At(10.02);
+        Assert.Equal(1, _lyrics.CurrentIndex);
+
+        _audio.Position = TimeSpan.FromSeconds(9.95); // the 100 ms copy lags behind the clock the frames just read
+        _player.RefreshPosition();
+
+        Assert.Equal(1, _lyrics.CurrentIndex);
     }
 
     [Fact]

@@ -21,11 +21,17 @@
                 <ItemsControl x:Name="LinesList" ItemsSource="{Binding Lines}" Classes.timed="{Binding IsSynced}" Margin="20,8,20,120">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:LyricLineViewModel">
-                            <Button Classes="lyric-line" Classes.current="{Binding IsCurrent}" IsHitTestVisible="{Binding !IsGap}"
+                            <Button Classes="lyric-line" Classes.current="{Binding IsCurrent}" Classes.second="{Binding IsSecondVoice}" IsHitTestVisible="{Binding !IsGap}"
                                     Command="{Binding $parent[UserControl].((vm:LyricsViewModel)DataContext).SeekToLineCommand}"
                                     CommandParameter="{Binding}" AutomationProperties.Name="{Binding Text}">
                                 <StackPanel>
-                                    <TextBlock Classes="lyric" Text="{Binding Text}" TextWrapping="Wrap" IsVisible="{Binding HasNoWords}" />
+                                    <TextBlock Classes="lyric" Text="{Binding Text}" TextWrapping="Wrap" IsVisible="{Binding ShowsText}" />
+                                    <!-- An instrumental break: three dots that fill in over its length -->
+                                    <StackPanel Classes="pause" Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsPause}">
+                                        <TextBlock Classes="lyric" Text="●" Opacity="{Binding Dot1}" />
+                                        <TextBlock Classes="lyric" Text="●" Opacity="{Binding Dot2}" />
+                                        <TextBlock Classes="lyric" Text="●" Opacity="{Binding Dot3}" />
+                                    </StackPanel>
                                     <ItemsControl ItemsSource="{Binding Words}" IsVisible="{Binding HasWords}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
@@ -39,8 +45,20 @@
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
-                                    <TextBlock Classes="lyric aside" Text="{Binding Background}" TextWrapping="Wrap"
-                                               IsVisible="{Binding Background, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                    <TextBlock Classes="lyric aside" Text="{Binding Background}" TextWrapping="Wrap" IsVisible="{Binding HasBackgroundText}" />
+                                    <ItemsControl ItemsSource="{Binding BackgroundWords}" IsVisible="{Binding HasBackgroundWords}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:LyricWordViewModel">
+                                                <TextBlock Classes="lyric word aside" Classes.sung="{Binding IsSung}" Classes.spaced="{Binding SpaceAfter}"
+                                                           Text="{Binding Text}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </StackPanel>
                             </Button>
                         </DataTemplate>

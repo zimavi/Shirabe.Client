@@ -40,17 +40,63 @@ public static partial class TtmlParser
 
         if (document.Root is not { } root || root.Name.LocalName != "tt") return null;
 
+        var voices = new Voices(root);
         var lines = new List<LyricLine>();
         foreach (var p in root.Descendants().Where(e => e.Name.LocalName == "p"))
-            if (ReadLine(p) is { } line) lines.Add(line);
+            if (ReadLine(p, voices) is { } line) lines.Add(line);
 
-        return [.. lines.OrderBy(l => l.Start)];
+        return WithInterludes([.. lines.OrderBy(l => l.Start)]);
     }
 
-    private static LyricLine? ReadLine(XElement p)
+    /// <summary>A break between lines this long (or before the first line) is a line of its own with no text: the view shows a pause there.</summary>
+    private static readonly TimeSpan InterludeLength = TimeSpan.FromSeconds(5);
+
+    private static List<LyricLine> WithInterludes(List<LyricLine> lines)
+    {
+        var result = new List<LyricLine>();
+        TimeSpan? sungUntil = TimeSpan.Zero; // the latest end so far (lines can overlap a little)
+        foreach (var line in lines)
+        {
+            if (sungUntil is { } from && line.Start - from >= InterludeLength) result.Add(new LyricLine(from, line.Start, ""));
+            result.Add(line);
+            // A line with no end leaves the answer open: no pause is guessed after it.
+            sungUntil = line.End is { } end ? (sungUntil is { } before && before > end ? before : end) : null;
+        }
+
+        return result;
+    }
+
+    /// <summary>Which singer a line belongs to: the first person is on the left, other people on the right, a group (harmony) with the first.</summary>
+    private sealed class Voices
+    {
+        private readonly Dictionary<string, bool> _isGroup = [];
+        private string? _first;
+
+        public Voices(XElement root)
+        {
+            foreach (var agent in root.Descendants().Where(e => e.Name.LocalName == "agent" && e.Parent?.Name.LocalName == "metadata"))
+                if (Attribute(agent, "id") is { } id)
+                {
+                    var group = Attribute(agent, "type") == "group";
+                    _isGroup[id] = group;
+                    if (!group) _first ??= id;
+                }
+        }
+
+        public bool IsSecond(XElement line)
+        {
+            if (Attribute(line, "agent") is not { } id || _isGroup.GetValueOrDefault(id)) return false;
+
+            _first ??= id; // a file without a head: the first singer met is the first one
+            return id != _first;
+        }
+    }
+
+    private static LyricLine? ReadLine(XElement p, Voices voices)
     {
         var text = new StringBuilder();
         var background = new List<string>();
+        var backgroundWords = new List<LyricWord>();
         var words = new List<LyricWord>();
 
         foreach (var node in p.Nodes())
@@ -71,6 +117,7 @@ public static partial class TtmlParser
                             break;
                         case "x-bg":
                             if (Clean(span.Value) is { Length: > 0 } sung) background.Add(sung);
+                            backgroundWords.AddRange(BackgroundWords(span));
                             break;
                         default:
                             // shortcut: spacing comes from the file's own whitespace between spans (Apple's rule); a file with
@@ -98,7 +145,24 @@ public static partial class TtmlParser
             : string.Join(" ", background.Select(sung => sung.StartsWith('(') ? sung : $"({sung})"));
         if (sungBackground is not null) line = Clean($"{line} {sungBackground}");
 
-        return new LyricLine(start, end, line, words.Count > 0 ? words : null, sungBackground);
+        return new LyricLine(start, end, line, words.Count > 0 ? words : null, sungBackground,
+            backgroundWords.Count > 0 ? backgroundWords : null, voices.IsSecond(p));
+    }
+
+    // The timed spans inside a background vocal; the parentheses are put on the first and last word when the file left them off.
+    private static List<LyricWord> BackgroundWords(XElement background)
+    {
+        var words = new List<LyricWord>();
+        foreach (var node in background.Nodes())
+        {
+            if (node is XText t && words.Count > 0 && t.Value.Length > 0 && char.IsWhiteSpace(t.Value[0])) MarkSpaceAfterLastWord(words);
+            else if (node is XElement { Name.LocalName: "span" } span && Time(span, "begin") is { } from && Time(span, "end") is { } to)
+                words.Add(new LyricWord(from, to, span.Value.Trim(), span.Value.Length > 0 && char.IsWhiteSpace(span.Value[^1])));
+        }
+
+        if (words.Count > 0 && !words[0].Text.StartsWith('(')) words[0] = words[0] with { Text = "(" + words[0].Text };
+        if (words.Count > 0 && !words[^1].Text.EndsWith(')')) words[^1] = words[^1] with { Text = words[^1].Text + ")" };
+        return words;
     }
 
     private static void MarkSpaceAfterLastWord(List<LyricWord> words) => words[^1] = words[^1] with { SpaceAfter = true };

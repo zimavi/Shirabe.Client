@@ -113,14 +113,14 @@ public class TtmlParserTests
             {Header}
             <tt xmlns="http://www.w3.org/ns/ttml" xmlns:itunes="http://music.apple.com/lyric-ttml-internal" itunes:timing="Line">
               <body>
-                <div><p begin="0:05.000" end="0:08.500">First line</p></div>
+                <div><p begin="0:04.000" end="0:08.500">First line</p></div>
                 <div><p begin="00:10.2" end="00:12">Second line</p></div>
               </body>
             </tt>
             """);
 
         Assert.Equal(["First line", "Second line"], lines.Select(l => l.Text));
-        Assert.Equal([5, 10.2], lines.Select(l => l.Start!.Value.TotalSeconds));
+        Assert.Equal([4, 10.2], lines.Select(l => l.Start!.Value.TotalSeconds));
         Assert.Equal([8.5, 12], lines.Select(l => l.End!.Value.TotalSeconds));
         Assert.All(lines, l => Assert.Null(l.Words));
     }
@@ -132,8 +132,8 @@ public class TtmlParserTests
             {Header}
             <tt xmlns="http://www.w3.org/ns/ttml" xmlns:itunes="http://music.apple.com/lyric-ttml-internal" itunes:timing="Word">
               <body><div>
-                <p begin="5.100s" end="7.2s">
-                  <span begin="5.100s" end="5.800s">Hello</span> <span begin="5.900s" end="7.2s">wor</span><span begin="7.2s" end="7.3s">ld</span>
+                <p begin="2.100s" end="7.2s">
+                  <span begin="2.100s" end="5.800s">Hello</span> <span begin="5.900s" end="7.2s">wor</span><span begin="7.2s" end="7.3s">ld</span>
                 </p>
               </div></body>
             </tt>
@@ -144,6 +144,114 @@ public class TtmlParserTests
         Assert.Equal([true, false], line.Words!.Take(2).Select(w => w.SpaceAfter)); // "wor" and "ld" are one word
         Assert.Equal(5.9, line.Words![1].Start.TotalSeconds, precision: 3);
         Assert.Equal(7.3, line.Words![2].End.TotalSeconds, precision: 3);
+    }
+
+    // The structure of a real Better Lyrics export (composer namespace, head metadata, agents, a background vocal with timed
+    // words, a word whose times overlap its neighbour's, lines that overlap a little), with invented words.
+    [Fact]
+    public void A_better_lyrics_export_reads_like_any_other_ttml_and_its_head_is_not_lyrics()
+    {
+        var lines = Parse($"""
+            {Header}
+            <tt xmlns="http://www.w3.org/ns/ttml" xmlns:ttm="http://www.w3.org/ns/ttml#metadata" xmlns:ttp="http://www.w3.org/ns/ttml#parameter" xmlns:itunes="http://music.apple.com/lyric-ttml-internal" xmlns:composer="https://composer.betterlyrics.org/ttml" ttp:timeBase="media" xml:lang="en" itunes:timing="Word" composer:timing="Word">
+              <head>
+                <metadata>
+                  <ttm:title>A Song</ttm:title>
+                  <composer:meta key="artists" value="Someone"/>
+                  <ttm:agent xml:id="v1" type="person"><ttm:name>Someone</ttm:name></ttm:agent>
+                  <composer:groups><composer:group id="g1" label="Group 1" sharesTiming="true" ownTimingInstances="1,2"/></composer:groups>
+                </metadata>
+              </head>
+              <body>
+                <div>
+                  <p begin="0:31.557" end="0:34.180" itunes:key="L1" ttm:agent="v1"><span begin="0:31.557" end="0:32.177">Words</span> <span begin="0:32.177" end="0:32.678">come,</span> <span begin="0:33.077" end="0:34.180">slowly</span></p>
+                  <p begin="0:34.100" end="0:37.474" itunes:key="L2" ttm:agent="v1"><span begin="0:34.100" end="0:35.160">Second</span> <span begin="0:35.000" end="0:36.000">line</span> <span ttm:role="x-bg"><span begin="0:36.243" end="0:37.148">(softly)</span></span></p>
+                </div>
+              </body>
+            </tt>
+            """);
+
+        // The 31 s before the first line is an interlude: a line of its own with no text.
+        Assert.Equal(["", "Words come, slowly", "Second line (softly)"], lines.Select(l => l.Text));
+        Assert.Equal([0, 31.557, 34.1], lines.Select(l => l.Start!.Value.TotalSeconds));
+        Assert.Equal([3, 2], lines.Skip(1).Select(l => l.Words!.Count));
+        Assert.Equal("(softly)", lines[2].Background);
+        Assert.Equal(["(softly)"], lines[2].BackgroundWords!.Select(w => w.Text));
+    }
+
+    [Fact]
+    public void A_background_vocal_keeps_its_own_word_times_with_parentheses_added_where_the_file_has_none()
+    {
+        var line = Assert.Single(Parse("""
+            <tt xmlns="http://www.w3.org/ns/ttml" xmlns:ttm="http://www.w3.org/ns/ttml#metadata"><body><div>
+              <p begin="1s" end="6s"><span begin="1s" end="2s">Lead</span> <span ttm:role="x-bg"><span begin="3s" end="4s">ooh</span> <span begin="4s" end="5s">aah</span></span></p>
+            </div></body></tt>
+            """));
+
+        Assert.Equal(["(ooh", "aah)"], line.BackgroundWords!.Select(w => w.Text));
+        Assert.Equal([3, 4], line.BackgroundWords!.Select(w => w.Start.TotalSeconds));
+        Assert.True(line.BackgroundWords![0].SpaceAfter);
+    }
+
+    [Fact]
+    public void A_break_of_five_seconds_or_more_becomes_a_line_with_no_text_and_shorter_ones_do_not()
+    {
+        var lines = Parse("""
+            <tt xmlns="http://www.w3.org/ns/ttml"><body><div>
+              <p begin="1s" end="4s">one</p>
+              <p begin="7s" end="9s">two</p>
+              <p begin="14s" end="16s">three</p>
+              <p begin="15s" end="20s">overlaps three</p>
+              <p begin="21s" end="22s">four</p>
+            </div></body></tt>
+            """);
+
+        // 4 s to 7 s is only 3 s; 9 s to 14 s is a pause of 5 s; the overlapping line keeps 20 s as the end of the sung part.
+        Assert.Equal(["one", "two", "", "three", "overlaps three", "four"], lines.Select(l => l.Text));
+        var pause = lines[2];
+        Assert.Equal((9, 14), (pause.Start!.Value.TotalSeconds, pause.End!.Value.TotalSeconds));
+    }
+
+    [Fact]
+    public void A_line_with_no_end_does_not_guess_a_pause_after_it()
+    {
+        var lines = Parse("""
+            <tt xmlns="http://www.w3.org/ns/ttml"><body><div>
+              <p begin="1s">no end given</p>
+              <p begin="30s" end="32s">far later</p>
+            </div></body></tt>
+            """);
+
+        Assert.Equal(["no end given", "far later"], lines.Select(l => l.Text));
+    }
+
+    [Fact]
+    public void In_a_duet_the_second_person_is_on_the_right_and_a_group_sings_with_the_first()
+    {
+        var lines = Parse("""
+            <tt xmlns="http://www.w3.org/ns/ttml" xmlns:ttm="http://www.w3.org/ns/ttml#metadata"><head><metadata>
+              <ttm:agent xml:id="v1" type="person"><ttm:name>One</ttm:name></ttm:agent>
+              <ttm:agent xml:id="v2" type="person"><ttm:name>Two</ttm:name></ttm:agent>
+              <ttm:agent xml:id="v1000" type="group"><ttm:name>Harmony</ttm:name></ttm:agent>
+            </metadata></head><body><div>
+              <p begin="1s" end="2s" ttm:agent="v1">a</p><p begin="3s" end="4s" ttm:agent="v2">b</p>
+              <p begin="5s" end="6s" ttm:agent="v1000">c</p><p begin="7s" end="8s">d</p>
+            </div></body></tt>
+            """);
+
+        Assert.Equal([false, true, false, false], lines.Select(l => l.IsSecondVoice));
+    }
+
+    [Fact]
+    public void Without_a_head_the_first_singer_met_is_the_first_voice()
+    {
+        var lines = Parse("""
+            <tt xmlns="http://www.w3.org/ns/ttml" xmlns:ttm="http://www.w3.org/ns/ttml#metadata"><body><div>
+              <p begin="1s" end="2s" ttm:agent="b">a</p><p begin="3s" end="4s" ttm:agent="a">b</p>
+            </div></body></tt>
+            """);
+
+        Assert.Equal([false, true], lines.Select(l => l.IsSecondVoice));
     }
 
     [Fact]

@@ -285,7 +285,7 @@
         <Setter Property="Padding" Value="0" />
         <Setter Property="Margin" Value="0,7" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" /> <!-- so the second singer's lines can sit on the right -->
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
     </Style>
     <Style Selector="Button.lyric-line:pointerover /template/ ContentPresenter#PART_ContentPresenter">
@@ -300,6 +300,16 @@
     </Style>
     <Style Selector="TextBlock.lyric.spaced">
         <Setter Property="Margin" Value="0,0,5,0" />
+    </Style>
+    <Style Selector="StackPanel.pause TextBlock.lyric">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Margin" Value="0,6" />
+    </Style>
+    <Style Selector="Button.lyric-line.second TextBlock.lyric">
+        <Setter Property="TextAlignment" Value="Right" />
+    </Style>
+    <Style Selector="Button.lyric-line.second ItemsControl">
+        <Setter Property="HorizontalAlignment" Value="Right" />
     </Style>
     <Style Selector="TextBlock.lyric.aside">
         <Setter Property="FontSize" Value="14" />

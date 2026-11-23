@@ -21,15 +21,43 @@ public sealed partial class LyricWordViewModel(LyricWord word) : ObservableObjec
 /// <summary>One row of the lyrics panel.</summary>
 public sealed partial class LyricLineViewModel : ObservableObject
 {
-    public LyricLineViewModel(LyricLine line)
+    /// <param name="until">When the line is over: its own end, or the start of the next line. Only a pause needs it.</param>
+    public LyricLineViewModel(LyricLine line, TimeSpan? until = null)
     {
         Line = line;
+        _until = line.End ?? until;
         Words = line.Words is { Count: > 0 } words ? [.. words.Select(w => new LyricWordViewModel(w))] : [];
+        BackgroundWords = line.BackgroundWords is { Count: > 0 } sung ? [.. sung.Select(w => new LyricWordViewModel(w))] : [];
     }
+
+    private readonly TimeSpan? _until;
 
     public LyricLine Line { get; }
 
     public string Text => Line.Text;
+
+    /// <summary>A timed line with no text is an instrumental break, shown as three dots that fill in as it passes.</summary>
+    public bool IsPause => Line.Text.Length == 0 && Line.Start is not null;
+
+    /// <summary>The row shows text (and not the dots of a pause) when the file does not time its words.</summary>
+    public bool ShowsText => Words.Count == 0 && !IsPause;
+
+    /// <summary>How far through the break we are, 0 to 1; only moves while the pause is the current line.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Dot1), nameof(Dot2), nameof(Dot3))]
+    public partial double PauseProgress { get; set; }
+
+    // Each dot fills in over its own third of the break: dim at 0, full at 1.
+    public double Dot1 => DotOpacity(0);
+
+    public double Dot2 => DotOpacity(1);
+
+    public double Dot3 => DotOpacity(2);
+
+    private double DotOpacity(int index) => 0.35 + 0.65 * Math.Clamp(PauseProgress * 3 - index, 0, 1);
+
+    /// <summary>Sung by the second singer of a duet: shown on the right.</summary>
+    public bool IsSecondVoice => Line.IsSecondVoice;
 
     /// <summary>The words, when the file times them; empty otherwise (the line is then shown as text).</summary>
     public IReadOnlyList<LyricWordViewModel> Words { get; }
@@ -38,8 +66,14 @@ public sealed partial class LyricLineViewModel : ObservableObject
 
     public bool HasNoWords => Words.Count == 0;
 
-    /// <summary>The background vocal, shown after the words.</summary>
+    /// <summary>The background vocal, shown after the words: as text, or as words of its own when the file times them.</summary>
     public string? Background => Line.Background;
+
+    public IReadOnlyList<LyricWordViewModel> BackgroundWords { get; }
+
+    public bool HasBackgroundWords => BackgroundWords.Count > 0;
+
+    public bool HasBackgroundText => Background is not null && BackgroundWords.Count == 0;
 
     /// <summary>A pause between lines (an empty line) is shown as a gap and cannot be clicked.</summary>
     public bool IsGap => Line.Text.Length == 0;
@@ -51,12 +85,16 @@ public sealed partial class LyricLineViewModel : ObservableObject
     /// <summary>Marks the words that have started at <paramref name="position"/>.</summary>
     public void UpdateWords(TimeSpan position)
     {
-        foreach (var word in Words) word.IsSung = word.Word.Start <= position;
+        foreach (var word in Words.Concat(BackgroundWords)) word.IsSung = word.Word.Start <= position;
+
+        if (IsPause && _until is { } until && Line.Start is { } start && until > start)
+            PauseProgress = Math.Clamp((position - start) / (until - start), 0, 1);
     }
 
     public void ResetWords()
     {
-        foreach (var word in Words) word.IsSung = false;
+        foreach (var word in Words.Concat(BackgroundWords)) word.IsSung = false;
+        PauseProgress = 0;
     }
 }
 
@@ -171,7 +209,7 @@ public partial class LyricsViewModel : ViewModelBase
         SourceText = lyrics is null ? null : $"Lyrics {lyrics.Source}";
         CurrentIndex = -1;
         _timeline = lyrics?.Lines ?? [];
-        Lines = lyrics is null ? [] : [.. lyrics.Lines.Select(l => new LyricLineViewModel(l))];
+        Lines = lyrics is null ? [] : [.. lyrics.Lines.Select((l, i) => new LyricLineViewModel(l, i + 1 < lyrics.Lines.Count ? lyrics.Lines[i + 1].Start : null))];
         OnPropertyChanged(nameof(NoLyricsText));
         OnPropertyChanged(nameof(NoLyricsHint));
         UpdateCurrent(_player.EnginePosition);

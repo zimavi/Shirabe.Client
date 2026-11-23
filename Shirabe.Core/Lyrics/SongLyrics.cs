@@ -7,9 +7,13 @@ public sealed record LyricWord(TimeSpan Start, TimeSpan End, string Text, bool S
 /// <summary>
 /// One line of lyrics. <see cref="Start"/> is null for plain (unsynchronized) lyrics. <see cref="End"/> is only known
 /// for some formats; a line is current from its start until the next line starts. An empty <see cref="Text"/> is a pause.
-/// <see cref="Background"/> is the background vocal (already in <see cref="Text"/>), which is not part of <see cref="Words"/>.
+/// <see cref="Background"/> is the background vocal (already in <see cref="Text"/>), which is not part of <see cref="Words"/>;
+/// <see cref="BackgroundWords"/> are its words when the file times them. <see cref="IsSecondVoice"/> marks a line sung by
+/// another singer than the first (a duet), which is shown on the right.
 /// </summary>
-public sealed record LyricLine(TimeSpan? Start, TimeSpan? End, string Text, IReadOnlyList<LyricWord>? Words = null, string? Background = null);
+public sealed record LyricLine(
+    TimeSpan? Start, TimeSpan? End, string Text, IReadOnlyList<LyricWord>? Words = null, string? Background = null,
+    IReadOnlyList<LyricWord>? BackgroundWords = null, bool IsSecondVoice = false);
 
 /// <summary>The lyrics of one song, and where they came from.</summary>
 /// <param name="Source">A sentence for the person: where these lyrics were found.</param>
