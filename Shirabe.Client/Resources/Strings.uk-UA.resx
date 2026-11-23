@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+  </resheader>
+  <!-- Sidebar -->
+  <data name="Nav_Home" xml:space="preserve">
+    <value>Домівка</value>
+  </data>
+  <data name="Nav_Songs" xml:space="preserve">
+    <value>Пісні</value>
+  </data>
+  <data name="Nav_Albums" xml:space="preserve">
+    <value>Альбоми</value>
+  </data>
+  <data name="Nav_Artists" xml:space="preserve">
+    <value>Виконавці</value>
+  </data>
+  <data name="Nav_Playlists" xml:space="preserve">
+    <value>Плейлисти</value>
+  </data>
+  <data name="Nav_Studio" xml:space="preserve">
+    <value>Студія</value>
+  </data>
+  <data name="Nav_Settings" xml:space="preserve">
+    <value>Налаштування</value>
+  </data>
+  <data name="Nav_SectionLibrary" xml:space="preserve"><value>БІБЛІОТЕКА</value>
+        <comment>Small heading above the library entries in the sidebar.</comment></data>
+  <data name="Nav_SectionCreate" xml:space="preserve"><value>СТВОРИТИ</value>
+        <comment>Small heading above the Studio entry in the sidebar.</comment></data>
+  <data name="Nav_NotAvailable" xml:space="preserve"><value>Ще недоступно</value>
+        <comment>Tooltip of a sidebar entry whose page does not exist yet.</comment></data>
+  <!-- Window buttons -->
+  <data name="Window_Minimize" xml:space="preserve">
+    <value>Згорнути</value>
+  </data>
+  <data name="Window_Maximize" xml:space="preserve">
+    <value>Розгорнути</value>
+  </data>
+  <data name="Window_Restore" xml:space="preserve">
+    <value>Відновити</value>
+  </data>
+  <data name="Window_Close" xml:space="preserve">
+    <value>Закрити</value>
+  </data>
+  <!-- Player bar and tray menu -->
+  <data name="Player_Shuffle" xml:space="preserve">
+    <value>Перемішати</value>
+  </data>
+  <data name="Player_Previous" xml:space="preserve">
+    <value>Попередня</value>
+  </data>
+  <data name="Player_Next" xml:space="preserve">
+    <value>Наступна</value>
+  </data>
+  <data name="Player_Play" xml:space="preserve">
+    <value>Грати</value>
+  </data>
+  <data name="Player_Pause" xml:space="preserve">
+    <value>Пауза</value>
+  </data>
+  <data name="Player_PlayPause" xml:space="preserve">
+    <value>Відтворити або призупинити</value>
+  </data>
+  <data name="Player_Repeat" xml:space="preserve">
+    <value>Повторення</value>
+  </data>
+  <data name="Player_RepeatOff" xml:space="preserve">
+    <value>Повтор: вимкнуто</value>
+  </data>
+  <data name="Player_RepeatAll" xml:space="preserve">
+    <value>Повтор: усі пісні</value>
+  </data>
+  <data name="Player_RepeatOne" xml:space="preserve">
+    <value>Повтор: ця пісня</value>
+  </data>
+  <data name="Player_Lyrics" xml:space="preserve">
+    <value>Текст</value>
+  </data>
+  <data name="Player_Queue" xml:space="preserve">
+    <value>Черга</value>
+  </data>
+  <data name="Player_Mute" xml:space="preserve">
+    <value>Вимкнути звук</value>
+  </data>
+  <data name="Player_Volume" xml:space="preserve">
+    <value>Гучність</value>
+  </data>
+  <data name="Tray_Open" xml:space="preserve">
+    <value>Відкрити Shirabe</value>
+  </data>
+  <data name="Tray_Quit" xml:space="preserve">
+    <value>Вийти</value>
+  </data>
+  <!-- Settings: General -->
+  <data name="General_Title" xml:space="preserve">
+    <value>Загальне</value>
+  </data>
+  <data name="General_Description" xml:space="preserve">
+    <value>Запуск і мова</value>
+  </data>
+  <data name="General_SectionStartup" xml:space="preserve">
+    <value>ЗАПУСК</value>
+  </data>
+  <data name="General_Resume" xml:space="preserve">
+    <value>Відновити останню сесію</value>
+  </data>
+  <data name="General_ResumeDescription" xml:space="preserve">
+    <value>Відновлює попередню пісню (паузу, та де зупинилась), гучність, перемішування та повтор коли Shirabe запускається. Вимкнене забуває це.</value>
+  </data>
+  <data name="General_SectionLanguage" xml:space="preserve">
+    <value>МОВА</value>
+  </data>
+  <data name="General_Language" xml:space="preserve">
+    <value>Мова</value>
+  </data>
+  <data name="General_LanguageDescription" xml:space="preserve">
+    <value>Мова програми. Частини, які не перекладені, залишаються англійською мовою.</value>
+  </data>
+  <data name="Language_System" xml:space="preserve">
+    <value>За замовчуванням</value>
+  </data>
+  <!-- Settings: Appearance -->
+  <data name="Appearance_Title" xml:space="preserve">
+    <value>Вигляд</value>
+  </data>
+  <data name="Appearance_Description" xml:space="preserve">
+    <value>Тема та колір акцентів</value>
+  </data>
+  <data name="Appearance_SectionTheme" xml:space="preserve">
+    <value>ТЕМА</value>
+  </data>
+  <data name="Appearance_Theme" xml:space="preserve">
+    <value>Тема</value>
+  </data>
+  <data name="Appearance_ThemeDescription" xml:space="preserve">
+    <value>Кольори всього додатку.</value>
+  </data>
+  <data name="Appearance_CustomThemesHint" xml:space="preserve"><value>Додайте власне: створіть .json файл з "name" і будь-яким з цих кольорів, як #RRGBB (accent, background, sidebar, surface, surfaceHover, divider, textPrimary, textSecondary, track) в {0}, потім перезавантажте додаток. Викинуті кольори беруться з Dark.</value>
+        <comment>{0} is a folder path, or the text of Appearance_ThemesFolder. Keep the colour names (accent, background...) and "name" as they are: they are keys in the file.</comment></data>
+  <data name="Appearance_ThemesFolder" xml:space="preserve">
+    <value>тека з темами</value>
+  </data>
+  <data name="Appearance_SectionAccent" xml:space="preserve">
+    <value>АКЦЕНТ</value>
+  </data>
+  <data name="Appearance_Follow" xml:space="preserve">
+    <value>Брати з обкладинки</value>
+  </data>
+  <data name="Appearance_FollowDescription" xml:space="preserve">
+    <value>Змінює колір акценту з обкладинки композиції, яка грає. Якщо вимкнуто, залишається тільки акцент теми.</value>
+  </data>
+  <data name="Appearance_SectionMotion" xml:space="preserve">
+    <value>АНІМАЦІЇ</value>
+  </data>
+  <data name="Appearance_ReduceMotion" xml:space="preserve">
+    <value>Обмеження анімацій</value>
+  </data>
+  <data name="Appearance_ReduceMotionDescription" xml:space="preserve">
+    <value>Вимикає більшість анімацій.</value>
+  </data>
+  <!-- Settings: Lyrics -->
+  <data name="Lyrics_Title" xml:space="preserve">
+    <value>Текст</value>
+  </data>
+  <data name="Lyrics_Description" xml:space="preserve">
+    <value>Розмір тексту, вокал та таймінг</value>
+  </data>
+  <data name="Lyrics_SectionText" xml:space="preserve">
+    <value>ТЕКСТ</value>
+  </data>
+  <data name="Lyrics_TextSize" xml:space="preserve">
+    <value>Розмір тексту</value>
+  </data>
+  <data name="Lyrics_TextSizeDescription" xml:space="preserve">
+    <value>Наскільки текст пісні великий.</value>
+  </data>
+  <data name="Lyrics_TextSizeName" xml:space="preserve"><value>Розмір тексту пісні</value>
+        <comment>Accessible name of the slider.</comment></data>
+  <data name="Lyrics_TextSizeValue" xml:space="preserve">
+    <value>{0} пт</value>
+  </data>
+  <data name="Lyrics_SectionShown" xml:space="preserve">
+    <value>ЩО ПОКАЗУЄТЬСЯ</value>
+  </data>
+  <data name="Lyrics_BackgroundVocals" xml:space="preserve">
+    <value>Фоновий вокал</value>
+  </data>
+  <data name="Lyrics_BackgroundVocalsDescription" xml:space="preserve">
+    <value>Показує фонові вокали (частини в дужках), які є в деяких текстах.</value>
+  </data>
+  <data name="Lyrics_BreakMarkers" xml:space="preserve">
+    <value>Маркери паузи у тексті</value>
+  </data>
+  <data name="Lyrics_BreakMarkersDescription" xml:space="preserve">
+    <value>Показує три точки, які заповнюються під час інструментальної перерви.</value>
+  </data>
+  <data name="Lyrics_SectionTiming" xml:space="preserve">
+    <value>ТАЙМІНГ</value>
+  </data>
+  <data name="Lyrics_Delay" xml:space="preserve">
+    <value>Затримка підсвічування</value>
+  </data>
+  <data name="Lyrics_DelayDescription" xml:space="preserve">
+    <value>Якщо підсвічування біжить попереду звуку, підніміть це; якщо він забігає, то нижчий його. Звук залишає динаміками після позиції звітів програвача.</value>
+  </data>
+  <data name="Lyrics_DelayName" xml:space="preserve"><value>Затримка підсвічування текстів</value>
+        <comment>Accessible name of the slider.</comment></data>
+  <data name="Lyrics_NoDelay" xml:space="preserve">
+    <value>Без затримки</value>
+  </data>
+  <data name="Lyrics_DelayValue" xml:space="preserve"><value>{0} мс</value>
+        <comment>{0} is a number with a sign, such as +120 or -50.</comment></data>
+  <!-- Settings: Connections -->
+  <data name="Connections_Title" xml:space="preserve">
+    <value>З'єднання</value>
+  </data>
+  <data name="Connections_Description" xml:space="preserve">
+    <value>Discord та онлайн пошуки</value>
+  </data>
+  <data name="Connections_SectionDiscord" xml:space="preserve">
+    <value>DISCORD</value>
+  </data>
+  <data name="Connections_Presence" xml:space="preserve">
+    <value>Покажіть те, що я слухаю</value>
+  </data>
+  <data name="Connections_PresenceDescription" xml:space="preserve">
+    <value>Показує пісню як картку "Слухаю" у вашому профілі Discord, поки вона грає. Потрібен запущений клієнт Discord.</value>
+  </data>
+  <data name="Connections_PresenceName" xml:space="preserve"><value>Discord presence</value>
+        <comment>Accessible name of the switch.</comment></data>
+  <data name="Connections_CoverLookup" xml:space="preserve">
+    <value>Шукати обкладинки альбому в мережі</value>
+  </data>
+  <data name="Connections_CoverLookupDescription" xml:space="preserve">
+    <value>Відправляє виконавця та назву альбому до iTunes Search від Apple, щоб знайти обкладинку для картки Discord. Нічого більше не залишає ваш комп'ютер.</value>
+  </data>
+  <data name="Connections_CoverLookupName" xml:space="preserve"><value>Пошук обкладинки</value>
+        <comment>Accessible name of the switch.</comment></data>
+  <data name="Connections_SectionArtwork" xml:space="preserve">
+    <value>ОБКЛАДИНКИ</value>
+  </data>
+  <data name="Connections_DownloadArtwork" xml:space="preserve">
+    <value>Завантажувати пов'язані обкладинки</value>
+  </data>
+  <data name="Connections_DownloadArtworkDescription" xml:space="preserve">
+    <value>Коли метадані пісні посилаються на обкладинку, вона завантажується, як пісня показується і зберігається на цьому комп'ютері. Вебсайт, з якого він надходить, може бачити вашу IP-адресу і що ви грали в цю пісню.</value>
+  </data>
+</root>
