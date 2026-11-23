@@ -18,14 +18,21 @@
     </resheader>
 
     <!-- Sidebar -->
-    <data name="Nav_Home" xml:space="preserve"><value>Home</value></data>
-    <data name="Nav_Songs" xml:space="preserve"><value>Songs</value></data>
-    <data name="Nav_Albums" xml:space="preserve"><value>Albums</value></data>
-    <data name="Nav_Artists" xml:space="preserve"><value>Artists</value></data>
-    <data name="Nav_Playlists" xml:space="preserve"><value>Playlists</value></data>
-    <data name="Nav_Studio" xml:space="preserve"><value>Studio</value></data>
-    <data name="Nav_Settings" xml:space="preserve"><value>Settings</value></data>
-    <data name="Nav_SectionLibrary" xml:space="preserve"><value>LIBRARY</value>
+    <data name="Nav_Home" xml:space="preserve"><value>Home</value>
+        <comment>Sidebar entry for the start page. Short: it has to fit the sidebar.</comment></data>
+    <data name="Nav_Songs" xml:space="preserve"><value>Songs</value>
+        <comment>Sidebar entry for the page that lists every song (track) in the user's music library.</comment></data>
+    <data name="Nav_Albums" xml:space="preserve"><value>Albums</value>
+        <comment>Sidebar entry for the page that will list albums. Shown greyed out for now.</comment></data>
+    <data name="Nav_Artists" xml:space="preserve"><value>Artists</value>
+        <comment>Sidebar entry for the page that will list artists (singers, bands, musicians). Shown greyed out for now.</comment></data>
+    <data name="Nav_Playlists" xml:space="preserve"><value>Playlists</value>
+        <comment>Sidebar entry for the page that will list the user's own playlists. Shown greyed out for now.</comment></data>
+    <data name="Nav_Studio" xml:space="preserve"><value>Studio</value>
+        <comment>Sidebar entry for the editor where music metadata (credits, covers, custom fields) is created. "Studio" means a creative workspace; a feature name, so a commonly used loanword is fine.</comment></data>
+    <data name="Nav_Settings" xml:space="preserve"><value>Settings</value>
+        <comment>Sidebar entry, title of the settings page and accessible name of the sidebar button.</comment></data>
+    <data name="Nav_SectionLibrary" xml:space="preserve"><value>LIBRARY</value>s
         <comment>Small heading above the library entries in the sidebar.</comment></data>
     <data name="Nav_SectionCreate" xml:space="preserve"><value>CREATE</value>
         <comment>Small heading above the Studio entry in the sidebar.</comment></data>
@@ -33,92 +40,158 @@
         <comment>Tooltip of a sidebar entry whose page does not exist yet.</comment></data>
 
     <!-- Window buttons -->
-    <data name="Window_Minimize" xml:space="preserve"><value>Minimize</value></data>
-    <data name="Window_Maximize" xml:space="preserve"><value>Maximize</value></data>
-    <data name="Window_Restore" xml:space="preserve"><value>Restore</value></data>
-    <data name="Window_Close" xml:space="preserve"><value>Close</value></data>
+    <data name="Window_Minimize" xml:space="preserve"><value>Minimize</value>
+        <comment>Tooltip and accessible name of the title bar button that minimizes the window to the taskbar.</comment></data>
+    <data name="Window_Maximize" xml:space="preserve"><value>Maximize</value>
+        <comment>Accessible name (read by screen readers) of the title bar button that makes the window fill the screen. Not shown as text.</comment></data>
+    <data name="Window_Restore" xml:space="preserve"><value>Restore</value>
+        <comment>Accessible name of the same button while the window is maximized: it returns the window to its previous size. Not shown as text.</comment></data>
+    <data name="Window_Close" xml:space="preserve"><value>Close</value>
+        <comment>Tooltip and accessible name of the title bar button that closes the window.</comment></data>
 
     <!-- Player bar and tray menu -->
-    <data name="Player_Shuffle" xml:space="preserve"><value>Shuffle</value></data>
-    <data name="Player_Previous" xml:space="preserve"><value>Previous</value></data>
-    <data name="Player_Next" xml:space="preserve"><value>Next</value></data>
-    <data name="Player_Play" xml:space="preserve"><value>Play</value></data>
-    <data name="Player_Pause" xml:space="preserve"><value>Pause</value></data>
-    <data name="Player_PlayPause" xml:space="preserve"><value>Play or pause</value></data>
-    <data name="Player_Repeat" xml:space="preserve"><value>Repeat</value></data>
-    <data name="Player_RepeatOff" xml:space="preserve"><value>Repeat: off</value></data>
-    <data name="Player_RepeatAll" xml:space="preserve"><value>Repeat: all songs</value></data>
-    <data name="Player_RepeatOne" xml:space="preserve"><value>Repeat: this song</value></data>
-    <data name="Player_Lyrics" xml:space="preserve"><value>Lyrics</value></data>
-    <data name="Player_Queue" xml:space="preserve"><value>Queue</value></data>
-    <data name="Player_Mute" xml:space="preserve"><value>Mute</value></data>
-    <data name="Player_Volume" xml:space="preserve"><value>Volume</value></data>
-    <data name="Tray_Open" xml:space="preserve"><value>Open Shirabe</value></data>
-    <data name="Tray_Quit" xml:space="preserve"><value>Quit</value></data>
+    <data name="Player_Shuffle" xml:space="preserve"><value>Shuffle</value>
+        <comment>Tooltip and accessible name of the button that plays the queue in random order (verb or noun, as is usual on music players).</comment></data>
+    <data name="Player_Previous" xml:space="preserve"><value>Previous</value>
+        <comment>Tooltip of the button that goes to the previous song, and an item of the tray icon menu.</comment></data>
+    <data name="Player_Next" xml:space="preserve"><value>Next</value>
+        <comment>Tooltip of the button that goes to the next song, and an item of the tray icon menu.</comment></data>
+    <data name="Player_Play" xml:space="preserve"><value>Play</value>
+        <comment>Tray icon menu item that starts playback. Verb. Shown while the music is paused.</comment></data>
+    <data name="Player_Pause" xml:space="preserve"><value>Pause</value>
+        <comment>Tray icon menu item that pauses playback. Verb. Shown while the music is playing.</comment></data>
+    <data name="Player_PlayPause" xml:space="preserve"><value>Play or pause</value>
+        <comment>Accessible name (read by screen readers) of the one round button that switches between playing and pausing. Not shown as text.</comment></data>
+    <data name="Player_Repeat" xml:space="preserve"><value>Repeat</value>
+        <comment>Accessible name of the repeat button. Its tooltip shows one of the three "Repeat: ..." texts below.</comment></data>
+    <data name="Player_RepeatOff" xml:space="preserve"><value>Repeat: off</value>
+        <comment>Tooltip of the repeat button when nothing repeats: the queue stops after the last song.</comment></data>
+    <data name="Player_RepeatAll" xml:space="preserve"><value>Repeat: all songs</value>
+        <comment>Tooltip of the repeat button when the whole queue starts over after the last song.</comment></data>
+    <data name="Player_RepeatOne" xml:space="preserve"><value>Repeat: this song</value>
+        <comment>Tooltip of the repeat button when the current song plays again and again.</comment></data>
+    <data name="Player_Lyrics" xml:space="preserve"><value>Lyrics</value>
+        <comment>Tooltip and accessible name of the button that opens the panel with the words of the song (song lyrics, not poetry).</comment></data>
+    <data name="Player_Queue" xml:space="preserve"><value>Queue</value>
+        <comment>Tooltip and accessible name of the button that opens the list of songs that will play next (the play queue).</comment></data>
+    <data name="Player_Mute" xml:space="preserve"><value>Mute</value>
+        <comment>Accessible name of the speaker icon button that switches the sound off and on. Not shown as text.</comment></data>
+    <data name="Player_Volume" xml:space="preserve"><value>Volume</value>
+        <comment>Accessible name of the volume slider (loudness). Not shown as text.</comment></data>
+    <data name="Tray_Open" xml:space="preserve"><value>Open Shirabe</value>
+        <comment>Tray icon menu item that shows the main window again. "Shirabe" is the app's name: do not translate it.</comment></data>
+    <data name="Tray_Quit" xml:space="preserve"><value>Quit</value>
+        <comment>Tray icon menu item that closes the app completely (closing the window only hides it to the tray).</comment></data>
 
     <!-- Settings: General -->
-    <data name="General_Title" xml:space="preserve"><value>General</value></data>
-    <data name="General_Description" xml:space="preserve"><value>Startup and language</value></data>
-    <data name="General_SectionStartup" xml:space="preserve"><value>STARTUP</value></data>
-    <data name="General_Resume" xml:space="preserve"><value>Resume last session</value></data>
-    <data name="General_ResumeDescription" xml:space="preserve"><value>Brings back the last song (paused, where you left it), the volume, shuffle and repeat when Shirabe starts. Off forgets them.</value></data>
-    <data name="General_SectionLanguage" xml:space="preserve"><value>LANGUAGE</value></data>
-    <data name="General_Language" xml:space="preserve"><value>Language</value></data>
-    <data name="General_LanguageDescription" xml:space="preserve"><value>The language of the app. Parts that are not translated yet stay in English.</value></data>
-    <data name="Language_System" xml:space="preserve"><value>System default</value></data>
+    <data name="General_Title" xml:space="preserve"><value>General</value>
+        <comment>Name of a settings page, in the list of pages. Holds the everyday options.</comment></data>
+    <data name="General_Description" xml:space="preserve"><value>Startup and language</value>
+        <comment>One short line under the page name "General" in the list of settings pages. Lists what is on the page.</comment></data>
+    <data name="General_SectionStartup" xml:space="preserve"><value>STARTUP</value>
+        <comment>Small heading above the settings about what happens when the app starts. Keep it uppercase if the language has letter case.</comment></data>
+    <data name="General_Resume" xml:space="preserve"><value>Resume last session</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+    <data name="General_ResumeDescription" xml:space="preserve"><value>Brings back the last song (paused, where you left it), the volume, shuffle and repeat when Shirabe starts. Off forgets them.</value>
+        <comment>Explanation under the "Resume last session" switch. "Off" means the switch is turned off.</comment></data>
+    <data name="General_SectionLanguage" xml:space="preserve"><value>LANGUAGE</value>
+        <comment>Small heading above the language setting. Keep it uppercase if the language has letter case.</comment></data>
+    <data name="General_Language" xml:space="preserve"><value>Language</value>
+        <comment>Name of the setting where the user picks the app's language. Also the accessible name of the drop-down list.</comment></data>
+    <data name="General_LanguageDescription" xml:space="preserve"><value>The language of the app. Parts that are not translated yet stay in English.</value>
+        <comment>Explanation under the language drop-down. "Parts" means screens and texts that still have no translation.</comment></data>
+    <data name="Language_System" xml:space="preserve"><value>System default</value>
+        <comment>First entry of the language drop-down: use the language of the operating system.</comment></data>
 
     <!-- Settings: Appearance -->
-    <data name="Appearance_Title" xml:space="preserve"><value>Appearance</value></data>
-    <data name="Appearance_Description" xml:space="preserve"><value>Theme and accent colour</value></data>
-    <data name="Appearance_SectionTheme" xml:space="preserve"><value>THEME</value></data>
-    <data name="Appearance_Theme" xml:space="preserve"><value>Theme</value></data>
-    <data name="Appearance_ThemeDescription" xml:space="preserve"><value>The colours of the whole app.</value></data>
+    <data name="Appearance_Title" xml:space="preserve"><value>Appearance</value>
+        <comment>Name of a settings page, in the list of pages. Holds the look of the app: colours and animations.</comment></data>
+    <data name="Appearance_Description" xml:space="preserve"><value>Theme and accent colour</value>
+        <comment>One short line under the page name "Appearance" in the list of settings pages. The source uses British spelling.</comment></data>
+    <data name="Appearance_SectionTheme" xml:space="preserve"><value>THEME</value>
+        <comment>Small heading above the theme setting. Keep it uppercase if the language has letter case.</comment></data>
+    <data name="Appearance_Theme" xml:space="preserve"><value>Theme</value>
+        <comment>Name of the setting where the user picks a theme: a named colour scheme such as "Dark". Also the accessible name of the drop-down list.</comment></data>
+    <data name="Appearance_ThemeDescription" xml:space="preserve"><value>The colours of the whole app.</value>
+        <comment>Explanation under the theme drop-down.</comment></data>
     <data name="Appearance_CustomThemesHint" xml:space="preserve"><value>Add your own: put a .json file with a "name" and any of these colours as #RRGGBB (accent, background, sidebar, surface, surfaceHover, divider, textPrimary, textSecondary, track) in {0}, then restart. Colours left out come from Dark.</value>
         <comment>{0} is a folder path, or the text of Appearance_ThemesFolder. Keep the colour names (accent, background...) and "name" as they are: they are keys in the file.</comment></data>
-    <data name="Appearance_ThemesFolder" xml:space="preserve"><value>the themes folder</value></data>
-    <data name="Appearance_SectionAccent" xml:space="preserve"><value>ACCENT</value></data>
-    <data name="Appearance_Follow" xml:space="preserve"><value>Follow the cover</value></data>
-    <data name="Appearance_FollowDescription" xml:space="preserve"><value>Tints the accent colour from the cover of the song that is playing. Off keeps the theme's own accent.</value></data>
-    <data name="Appearance_SectionMotion" xml:space="preserve"><value>MOTION</value></data>
-    <data name="Appearance_ReduceMotion" xml:space="preserve"><value>Reduce motion</value></data>
-    <data name="Appearance_ReduceMotionDescription" xml:space="preserve"><value>Turns off the fade and slide animations.</value></data>
+    <data name="Appearance_ThemesFolder" xml:space="preserve"><value>the themes folder</value>
+        <comment>Inserted as {0} into Appearance_CustomThemesHint when the folder path is not known. It must read naturally right after "in" in that sentence.</comment></data>
+    <data name="Appearance_SectionAccent" xml:space="preserve"><value>ACCENT</value>
+        <comment>Small heading above the accent colour setting (the highlight colour of buttons and sliders). Keep it uppercase if the language has letter case.</comment></data>
+    <data name="Appearance_Follow" xml:space="preserve"><value>Follow the cover</value>
+        <comment>Name of an on/off switch. "Cover" is the album artwork of the song that is playing. Also the accessible name.</comment></data>
+    <data name="Appearance_FollowDescription" xml:space="preserve"><value>Tints the accent colour from the cover of the song that is playing. Off keeps the theme's own accent.</value>
+        <comment>Explanation under the "Follow the cover" switch. "Off" means the switch is turned off.</comment></data>
+    <data name="Appearance_SectionMotion" xml:space="preserve"><value>MOTION</value>
+        <comment>Small heading above the animation setting. Keep it uppercase if the language has letter case.</comment></data>
+    <data name="Appearance_ReduceMotion" xml:space="preserve"><value>Reduce motion</value>
+        <comment>Name of an on/off switch that turns animations off (an accessibility option, like the one in the operating system). Also its accessible name.</comment></data>
+    <data name="Appearance_ReduceMotionDescription" xml:space="preserve"><value>Turns off the fade and slide animations.</value>
+        <comment>Explanation under the "Reduce motion" switch.</comment></data>
 
     <!-- Settings: Lyrics -->
-    <data name="Lyrics_Title" xml:space="preserve"><value>Lyrics</value></data>
-    <data name="Lyrics_Description" xml:space="preserve"><value>Text size, vocals and timing</value></data>
-    <data name="Lyrics_SectionText" xml:space="preserve"><value>TEXT</value></data>
-    <data name="Lyrics_TextSize" xml:space="preserve"><value>Text size</value></data>
-    <data name="Lyrics_TextSizeDescription" xml:space="preserve"><value>How large the lyrics are in the lyrics panel.</value></data>
+    <data name="Lyrics_Title" xml:space="preserve"><value>Lyrics</value>
+        <comment>Name of a settings page, in the list of pages. "Lyrics" means the words of a song.</comment></data>
+    <data name="Lyrics_Description" xml:space="preserve"><value>Text size, vocals and timing</value>
+        <comment>One short line under the page name "Lyrics" in the list of settings pages. Lists what is on the page.</comment></data>
+    <data name="Lyrics_SectionText" xml:space="preserve"><value>TEXT</value>
+        <comment>Small heading above the settings about how the lyrics text looks. Keep it uppercase if the language has letter case.</comment></data>
+    <data name="Lyrics_TextSize" xml:space="preserve"><value>Text size</value>
+        <comment>Name of the setting (a slider) for how large the lyrics are.</comment></data>
+    <data name="Lyrics_TextSizeDescription" xml:space="preserve"><value>How large the lyrics are in the lyrics panel.</value>
+        <comment>Explanation under the "Text size" setting.</comment></data>
     <data name="Lyrics_TextSizeName" xml:space="preserve"><value>Lyrics text size</value>
         <comment>Accessible name of the slider.</comment></data>
-    <data name="Lyrics_TextSizeValue" xml:space="preserve"><value>{0} pt</value></data>
-    <data name="Lyrics_SectionShown" xml:space="preserve"><value>WHAT IS SHOWN</value></data>
-    <data name="Lyrics_BackgroundVocals" xml:space="preserve"><value>Background vocals</value></data>
-    <data name="Lyrics_BackgroundVocalsDescription" xml:space="preserve"><value>Shows the background vocals (the parts in brackets) that some lyrics have.</value></data>
-    <data name="Lyrics_BreakMarkers" xml:space="preserve"><value>Break markers</value></data>
-    <data name="Lyrics_BreakMarkersDescription" xml:space="preserve"><value>Shows the three dots that fill in during an instrumental break.</value></data>
-    <data name="Lyrics_SectionTiming" xml:space="preserve"><value>TIMING</value></data>
-    <data name="Lyrics_Delay" xml:space="preserve"><value>Highlight delay</value></data>
-    <data name="Lyrics_DelayDescription" xml:space="preserve"><value>If the highlight runs ahead of the sound, raise this; if it lags, lower it. The sound leaves your speakers a little after the position the player reports.</value></data>
+    <data name="Lyrics_TextSizeValue" xml:space="preserve"><value>{0} pt</value>
+        <comment>Value shown next to the text size slider. {0} is a whole number; "pt" is the abbreviation of typographic points.</comment></data>
+    <data name="Lyrics_SectionShown" xml:space="preserve"><value>WHAT IS SHOWN</value>
+        <comment>Small heading above the switches that choose which parts of the lyrics are displayed. Keep it uppercase if the language has letter case.</comment></data>
+    <data name="Lyrics_BackgroundVocals" xml:space="preserve"><value>Background vocals</value>
+        <comment>Name of an on/off switch. Background vocals are the secondary voices of a song (backing vocals, echoes, ad-libs). Also its accessible name.</comment></data>
+    <data name="Lyrics_BackgroundVocalsDescription" xml:space="preserve"><value>Shows the background vocals (the parts in brackets) that some lyrics have.</value>
+        <comment>Explanation under the "Background vocals" switch. Such parts appear in brackets in the lyrics text.</comment></data>
+    <data name="Lyrics_BreakMarkers" xml:space="preserve"><value>Break markers</value>
+        <comment>Name of an on/off switch. The markers are three dots shown in the lyrics while the song has no singing. Also its accessible name.</comment></data>
+    <data name="Lyrics_BreakMarkersDescription" xml:space="preserve"><value>Shows the three dots that fill in during an instrumental break.</value>
+        <comment>Explanation under the "Break markers" switch. An instrumental break is a part of the song without singing.</comment></data>
+    <data name="Lyrics_SectionTiming" xml:space="preserve"><value>TIMING</value>
+        <comment>Small heading above the setting that fine-tunes when lyrics light up. Keep it uppercase if the language has letter case.</comment></data>
+    <data name="Lyrics_Delay" xml:space="preserve"><value>Highlight delay</value>
+        <comment>Name of the setting (a slider) that shifts the moment a lyric line is highlighted, in milliseconds. "Highlight" means the line being sung is made bright.</comment></data>
+    <data name="Lyrics_DelayDescription" xml:space="preserve"><value>If the highlight runs ahead of the sound, raise this; if it lags, lower it. The sound leaves your speakers a little after the position the player reports.</value>
+        <comment>Explanation under the "Highlight delay" slider. "Raise" and "lower" refer to moving the slider.</comment></data>
     <data name="Lyrics_DelayName" xml:space="preserve"><value>Lyrics highlight delay</value>
         <comment>Accessible name of the slider.</comment></data>
-    <data name="Lyrics_NoDelay" xml:space="preserve"><value>No delay</value></data>
+    <data name="Lyrics_NoDelay" xml:space="preserve"><value>No delay</value>
+        <comment>Value shown next to the highlight delay slider when it is at zero, instead of "0 ms".</comment></data>
     <data name="Lyrics_DelayValue" xml:space="preserve"><value>{0} ms</value>
-        <comment>{0} is a number with a sign, such as +120 or -50.</comment></data>
+        <comment>{0} is a number with a sign, such as +120 or -50. "ms" is the abbreviation of milliseconds.</comment></data>
 
     <!-- Settings: Connections -->
-    <data name="Connections_Title" xml:space="preserve"><value>Connections</value></data>
-    <data name="Connections_Description" xml:space="preserve"><value>Discord and online lookups</value></data>
-    <data name="Connections_SectionDiscord" xml:space="preserve"><value>DISCORD</value></data>
-    <data name="Connections_Presence" xml:space="preserve"><value>Show what I'm listening to</value></data>
-    <data name="Connections_PresenceDescription" xml:space="preserve"><value>Shows the song as a "Listening to" card on your Discord profile while it plays. Needs Discord running.</value></data>
+    <data name="Connections_Title" xml:space="preserve"><value>Connections</value>
+        <comment>Name of a settings page, in the list of pages. Holds the options that talk to outside services.</comment></data>
+    <data name="Connections_Description" xml:space="preserve"><value>Discord and online lookups</value>
+        <comment>One short line under the page name "Connections" in the list of settings pages. "Discord" is a product name: do not translate it.</comment></data>
+    <data name="Connections_SectionDiscord" xml:space="preserve"><value>DISCORD</value>
+        <comment>Small heading above the Discord settings. "Discord" is a product name: do not translate it.</comment></data>
+    <data name="Connections_Presence" xml:space="preserve"><value>Show what I'm listening to</value>
+        <comment>Name of an on/off switch that shows the current song on the user's Discord profile.</comment></data>
+    <data name="Connections_PresenceDescription" xml:space="preserve"><value>Shows the song as a "Listening to" card on your Discord profile while it plays. Needs Discord running.</value>
+        <comment>Explanation under the switch. "Listening to" is the label Discord itself shows on the card; use Discord's wording in your language if you know it.</comment></data>
     <data name="Connections_PresenceName" xml:space="preserve"><value>Discord presence</value>
         <comment>Accessible name of the switch.</comment></data>
-    <data name="Connections_CoverLookup" xml:space="preserve"><value>Look up album covers online</value></data>
-    <data name="Connections_CoverLookupDescription" xml:space="preserve"><value>Sends the artist and album name to Apple's iTunes Search to find a cover for the Discord card. Nothing else leaves your computer.</value></data>
+    <data name="Connections_CoverLookup" xml:space="preserve"><value>Look up album covers online</value>
+        <comment>Name of an on/off switch. A cover is the album artwork.</comment></data>
+    <data name="Connections_CoverLookupDescription" xml:space="preserve"><value>Sends the artist and album name to Apple's iTunes Search to find a cover for the Discord card. Nothing else leaves your computer.</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "iTunes Search" is Apple's service name: do not translate it.</comment></data>
     <data name="Connections_CoverLookupName" xml:space="preserve"><value>Cover lookup</value>
         <comment>Accessible name of the switch.</comment></data>
-    <data name="Connections_SectionArtwork" xml:space="preserve"><value>ARTWORK</value></data>
-    <data name="Connections_DownloadArtwork" xml:space="preserve"><value>Download linked artwork</value></data>
-    <data name="Connections_DownloadArtworkDescription" xml:space="preserve"><value>When a song's metadata links to a cover, it is downloaded as the song is shown and kept on this computer. The website it comes from can see your address and that you played this song.</value></data>
+    <data name="Connections_SectionArtwork" xml:space="preserve"><value>ARTWORK</value>
+        <comment>Small heading above the setting about downloading cover images. Keep it uppercase if the language has letter case.</comment></data>
+    <data name="Connections_DownloadArtwork" xml:space="preserve"><value>Download linked artwork</value>
+        <comment>Name of an on/off switch. "Linked" means a song's metadata contains a web link to its cover image. Also its accessible name.</comment></data>
+    <data name="Connections_DownloadArtworkDescription" xml:space="preserve"><value>When a song's metadata links to a cover, it is downloaded as the song is shown and kept on this computer. The website it comes from can see your address and that you played this song.</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "Your address" means the user's internet (IP) address.</comment></data>
 </root>
