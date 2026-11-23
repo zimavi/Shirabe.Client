@@ -23,12 +23,12 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel(PlayerViewModel? player, SongsViewModel? songs, string? startupError, string? libraryNotice = null,
         SettingsViewModel? settings = null, Func<StudioViewModel>? studioFactory = null, ILyricsSource? lyricsSource = null)
     {
-        Lyrics = player is null ? null : new LyricsViewModel(player, lyricsSource);
+        Settings = settings ?? new SettingsViewModel(new AppSettings(), new ThemeCatalog([], []));
+        Lyrics = player is null ? null : new LyricsViewModel(player, lyricsSource, Settings.Settings);
         _studioFactory = studioFactory;
         Player = player;
         Songs = songs;
         StartupError = startupError;
-        Settings = settings ?? new SettingsViewModel(new AppSettings(), new ThemeCatalog([], []));
         _home = new HomeViewModel(libraryNotice);
         CurrentPage = _home;
 

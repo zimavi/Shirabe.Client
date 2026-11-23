@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:views="using:Shirabe.Client.Views"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
+             x:Class="Shirabe.Client.Views.LyricsSettingsView"
+             x:DataType="vm:LyricsSettingsViewModel">
+    <StackPanel Spacing="24">
+        <StackPanel Spacing="6">
+            <TextBlock Classes="section" Text="TEXT" />
+            <views:SettingRow Title="Text size" Description="How large the lyrics are in the lyrics panel.">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Slider Classes="shirabe" Theme="{StaticResource ShirabeSlider}" Minimum="12" Maximum="32" SmallChange="1" LargeChange="2"
+                            TickFrequency="1" IsSnapToTickEnabled="True" Width="180" VerticalAlignment="Center"
+                            Value="{Binding Settings.LyricsTextSize, Mode=TwoWay}" AutomationProperties.Name="Lyrics text size" />
+                    <TextBlock Text="{Binding TextSizeText}" MinWidth="48" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
+                </StackPanel>
+            </views:SettingRow>
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+            <TextBlock Classes="section" Text="WHAT IS SHOWN" />
+            <views:SettingRow Title="Background vocals" Description="Shows the background vocals (the parts in brackets) that some lyrics have.">
+                <ToggleSwitch IsChecked="{Binding Settings.ShowBackgroundVocals}" AutomationProperties.Name="Background vocals" />
+            </views:SettingRow>
+            <views:SettingRow Title="Break markers" Description="Shows the three dots that fill in during an instrumental break.">
+                <ToggleSwitch IsChecked="{Binding Settings.ShowPauseMarkers}" AutomationProperties.Name="Break markers" />
+            </views:SettingRow>
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+            <TextBlock Classes="section" Text="TIMING" />
+            <views:SettingRow Title="Highlight delay"
+                              Description="If the highlight runs ahead of the sound, raise this; if it lags, lower it. The sound leaves your speakers a little after the position the player reports.">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Slider Classes="shirabe" Theme="{StaticResource ShirabeSlider}" Minimum="-500" Maximum="500" SmallChange="10" LargeChange="50"
+                            TickFrequency="10" IsSnapToTickEnabled="True" Width="180" VerticalAlignment="Center"
+                            Value="{Binding Settings.LyricsDelayMs, Mode=TwoWay}" AutomationProperties.Name="Lyrics highlight delay" />
+                    <TextBlock Text="{Binding DelayText}" MinWidth="64" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
+                </StackPanel>
+            </views:SettingRow>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

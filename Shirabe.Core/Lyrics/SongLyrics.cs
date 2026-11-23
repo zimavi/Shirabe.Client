@@ -1,5 +1,13 @@
 namespace Shirabe.Core.Lyrics;
 
+/// <summary>Who sings a line: the first singer of the song, another singer (a duet), or everyone together (a group such as "Harmony").</summary>
+public enum LyricVoice
+{
+    First,
+    Second,
+    Group,
+}
+
 /// <summary>One word (or syllable) of a line, with the time it is sung.</summary>
 /// <param name="SpaceAfter">The file puts a space after it; false inside a word that is sung in several parts.</param>
 public sealed record LyricWord(TimeSpan Start, TimeSpan End, string Text, bool SpaceAfter = false);
@@ -8,12 +16,12 @@ public sealed record LyricWord(TimeSpan Start, TimeSpan End, string Text, bool S
 /// One line of lyrics. <see cref="Start"/> is null for plain (unsynchronized) lyrics. <see cref="End"/> is only known
 /// for some formats; a line is current from its start until the next line starts. An empty <see cref="Text"/> is a pause.
 /// <see cref="Background"/> is the background vocal (already in <see cref="Text"/>), which is not part of <see cref="Words"/>;
-/// <see cref="BackgroundWords"/> are its words when the file times them. <see cref="IsSecondVoice"/> marks a line sung by
-/// another singer than the first (a duet), which is shown on the right.
+/// <see cref="BackgroundWords"/> are its words when the file times them. <see cref="Voice"/> says who sings the line: a
+/// second singer (a duet) is shown on the right, a group (harmony) in the middle.
 /// </summary>
 public sealed record LyricLine(
     TimeSpan? Start, TimeSpan? End, string Text, IReadOnlyList<LyricWord>? Words = null, string? Background = null,
-    IReadOnlyList<LyricWord>? BackgroundWords = null, bool IsSecondVoice = false);
+    IReadOnlyList<LyricWord>? BackgroundWords = null, LyricVoice Voice = LyricVoice.First);
 
 /// <summary>The lyrics of one song, and where they came from.</summary>
 /// <param name="Source">A sentence for the person: where these lyrics were found.</param>

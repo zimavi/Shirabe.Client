@@ -56,5 +56,8 @@
       <Compile Update="Views\LyricsView.axaml.cs">
         <DependentUpon>LyricsView.axaml</DependentUpon>
       </Compile>
+      <Compile Update="Views\LyricsSettingsView.axaml.cs">
+        <DependentUpon>LyricsSettingsView.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

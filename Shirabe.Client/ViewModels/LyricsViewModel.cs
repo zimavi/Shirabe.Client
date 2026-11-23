@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Shirabe.Client.Services;
 using Shirabe.Core.Lyrics;
 
 namespace Shirabe.Client.ViewModels;
@@ -16,6 +17,33 @@ public sealed partial class LyricWordViewModel(LyricWord word) : ObservableObjec
     /// <summary>The word has started (only kept up to date while its line is the current one).</summary>
     [ObservableProperty]
     public partial bool IsSung { get; set; }
+
+    /// <summary>How much of the word has been sung, 0 to 1: the view fills the word in as this grows (karaoke).</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasStarted), nameof(IsComplete))]
+    public partial double Progress { get; set; }
+
+    /// <summary>The bright copy of the word is shown (whole when <see cref="IsComplete"/>, otherwise as far as <see cref="Progress"/>).</summary>
+    public bool HasStarted => Progress > 0;
+
+    /// <summary>The word has been sung to its end: only the bright copy is drawn.</summary>
+    public bool IsComplete => Progress >= 1;
+
+    /// <summary>Brings the word up to the song's position.</summary>
+    public void Update(TimeSpan position)
+    {
+        IsSung = Word.Start <= position;
+        var length = Word.End - Word.Start;
+        Progress = length <= TimeSpan.Zero
+            ? (IsSung ? 1 : 0)
+            : Math.Clamp((position - Word.Start) / length, 0, 1);
+    }
+
+    public void Reset()
+    {
+        IsSung = false;
+        Progress = 0;
+    }
 }
 
 /// <summary>One row of the lyrics panel.</summary>
@@ -34,7 +62,18 @@ public sealed partial class LyricLineViewModel : ObservableObject
 
     public LyricLine Line { get; }
 
-    public string Text => Line.Text;
+    /// <summary>The line's text, without its background vocal when that is switched off.</summary>
+    public string Text => ShowBackground || Line.Background is null || !Line.Text.EndsWith(Line.Background, StringComparison.Ordinal)
+        ? Line.Text
+        : Line.Text[..^Line.Background.Length].TrimEnd();
+
+    /// <summary>False hides the row (pause markers that are switched off).</summary>
+    [ObservableProperty]
+    public partial bool IsShown { get; set; } = true;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Text), nameof(BackgroundTextVisible), nameof(BackgroundWordsVisible))]
+    public partial bool ShowBackground { get; set; } = true;
 
     /// <summary>A timed line with no text is an instrumental break, shown as three dots that fill in as it passes.</summary>
     public bool IsPause => Line.Text.Length == 0 && Line.Start is not null;
@@ -57,7 +96,10 @@ public sealed partial class LyricLineViewModel : ObservableObject
     private double DotOpacity(int index) => 0.35 + 0.65 * Math.Clamp(PauseProgress * 3 - index, 0, 1);
 
     /// <summary>Sung by the second singer of a duet: shown on the right.</summary>
-    public bool IsSecondVoice => Line.IsSecondVoice;
+    public bool IsSecondVoice => Line.Voice == LyricVoice.Second;
+
+    /// <summary>Sung by everyone together (harmony): shown in the middle.</summary>
+    public bool IsGroupVoice => Line.Voice == LyricVoice.Group;
 
     /// <summary>The words, when the file times them; empty otherwise (the line is then shown as text).</summary>
     public IReadOnlyList<LyricWordViewModel> Words { get; }
@@ -75,6 +117,10 @@ public sealed partial class LyricLineViewModel : ObservableObject
 
     public bool HasBackgroundText => Background is not null && BackgroundWords.Count == 0;
 
+    public bool BackgroundTextVisible => ShowBackground && HasBackgroundText;
+
+    public bool BackgroundWordsVisible => ShowBackground && HasBackgroundWords;
+
     /// <summary>A pause between lines (an empty line) is shown as a gap and cannot be clicked.</summary>
     public bool IsGap => Line.Text.Length == 0;
 
@@ -85,7 +131,7 @@ public sealed partial class LyricLineViewModel : ObservableObject
     /// <summary>Marks the words that have started at <paramref name="position"/>.</summary>
     public void UpdateWords(TimeSpan position)
     {
-        foreach (var word in Words.Concat(BackgroundWords)) word.IsSung = word.Word.Start <= position;
+        foreach (var word in Words.Concat(BackgroundWords)) word.Update(position);
 
         if (IsPause && _until is { } until && Line.Start is { } start && until > start)
             PauseProgress = Math.Clamp((position - start) / (until - start), 0, 1);
@@ -93,7 +139,7 @@ public sealed partial class LyricLineViewModel : ObservableObject
 
     public void ResetWords()
     {
-        foreach (var word in Words.Concat(BackgroundWords)) word.IsSung = false;
+        foreach (var word in Words.Concat(BackgroundWords)) word.Reset();
         PauseProgress = 0;
     }
 }
@@ -109,14 +155,18 @@ public partial class LyricsViewModel : ViewModelBase
     private CancellationTokenSource? _loading;
     private TrackKey? _loadedFor;
     private IReadOnlyList<LyricLine> _timeline = [];
+    private readonly AppSettings _settings;
 
     // The song the lyrics were looked up for, so a late answer for the previous song is recognised and dropped.
     private readonly record struct TrackKey(Guid RecordingId, string MediaUri);
 
-    public LyricsViewModel(PlayerViewModel player, ILyricsSource? source)
+    /// <param name="settings">Null: the defaults (tests).</param>
+    public LyricsViewModel(PlayerViewModel player, ILyricsSource? source, AppSettings? settings = null)
     {
         _player = player;
         _source = source;
+        _settings = settings ?? new AppSettings();
+        _settings.PropertyChanged += (_, e) => OnSettingChanged(e.PropertyName);
         _player.TrackLoaded += (_, _) => _ = RefreshAsync();
         _player.PropertyChanged += (_, e) =>
         {
@@ -133,6 +183,41 @@ public partial class LyricsViewModel : ViewModelBase
     }
 
     partial void OnIsSyncedChanged(bool value) => OnPropertyChanged(nameof(NeedsFrames));
+
+    /// <summary>The size of the lyrics text; the rows inherit it. Kept in a range that stays readable whatever the settings file says.</summary>
+    public double FontSize => Math.Clamp(_settings.LyricsTextSize, 12, 32);
+
+    /// <summary>Background vocals and the like are a little smaller than the lead.</summary>
+    public double AsideFontSize => FontSize * 0.82;
+
+    // Later than the player's clock by this much (the sound leaves the device after the position BASS reports).
+    private TimeSpan Delay => TimeSpan.FromMilliseconds(Math.Clamp(_settings.LyricsDelayMs, -1000, 1000));
+
+    private void OnSettingChanged(string? name)
+    {
+        switch (name)
+        {
+            case nameof(AppSettings.LyricsTextSize):
+                OnPropertyChanged(nameof(FontSize));
+                OnPropertyChanged(nameof(AsideFontSize));
+                break;
+            case nameof(AppSettings.ShowBackgroundVocals) or nameof(AppSettings.ShowPauseMarkers):
+                ApplyDisplaySettings();
+                break;
+            case nameof(AppSettings.LyricsDelayMs):
+                UpdateCurrent(_player.EnginePosition);
+                break;
+        }
+    }
+
+    private void ApplyDisplaySettings()
+    {
+        foreach (var line in Lines)
+        {
+            line.ShowBackground = _settings.ShowBackgroundVocals;
+            line.IsShown = _settings.ShowPauseMarkers || !line.IsPause;
+        }
+    }
 
     /// <summary>
     /// The panel is open, the lyrics are timed and the song is playing: the view then calls <see cref="Tick"/> on every
@@ -210,16 +295,18 @@ public partial class LyricsViewModel : ViewModelBase
         CurrentIndex = -1;
         _timeline = lyrics?.Lines ?? [];
         Lines = lyrics is null ? [] : [.. lyrics.Lines.Select((l, i) => new LyricLineViewModel(l, i + 1 < lyrics.Lines.Count ? lyrics.Lines[i + 1].Start : null))];
+        ApplyDisplaySettings();
         OnPropertyChanged(nameof(NoLyricsText));
         OnPropertyChanged(nameof(NoLyricsHint));
         UpdateCurrent(_player.EnginePosition);
     }
 
     // A pure function of the position (LyricsTimeline), so seeking, looping and a restored session all land on the right line.
-    private void UpdateCurrent(TimeSpan position)
+    private void UpdateCurrent(TimeSpan clock)
     {
         if (!IsSynced || Lines.Count == 0) return;
 
+        var position = clock - Delay;
         var index = LyricsTimeline.CurrentIndex(_timeline, position);
         if (index != CurrentIndex)
         {

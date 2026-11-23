@@ -294,11 +294,11 @@
     <Style Selector="Button.lyric-line:pressed /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="Transparent" />
     </Style>
+    <!-- The size is not set here: the rows inherit the lyrics text size setting from the list (LyricsView). -->
     <Style Selector="TextBlock.lyric">
-        <Setter Property="FontSize" Value="17" />
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
-    <Style Selector="TextBlock.lyric.spaced">
+    <Style Selector="Grid.word.spaced">
         <Setter Property="Margin" Value="0,0,5,0" />
     </Style>
     <Style Selector="StackPanel.pause TextBlock.lyric">
@@ -311,8 +311,13 @@
     <Style Selector="Button.lyric-line.second ItemsControl">
         <Setter Property="HorizontalAlignment" Value="Right" />
     </Style>
+    <Style Selector="Button.lyric-line.group TextBlock.lyric">
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.lyric-line.group ItemsControl">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
     <Style Selector="TextBlock.lyric.aside">
-        <Setter Property="FontSize" Value="14" />
         <Setter Property="FontStyle" Value="Italic" />
         <Setter Property="Opacity" Value="0.7" />
     </Style>
@@ -329,7 +334,8 @@
     <Style Selector="ItemsControl.timed Button.lyric-line.current TextBlock.word">
         <Setter Property="Opacity" Value="0.45" />
     </Style>
-    <Style Selector="ItemsControl.timed Button.lyric-line.current TextBlock.word.sung">
+    <!-- The bright copy of a word (see LyricsView): fully opaque, masked to the part that has been sung. -->
+    <Style Selector="ItemsControl.timed Button.lyric-line.current TextBlock.word.overlay">
         <Setter Property="Opacity" Value="1" />
     </Style>
     <Style Selector=".motion ItemsControl.timed Button.lyric-line">
@@ -339,13 +345,7 @@
             </Transitions>
         </Setter>
     </Style>
-    <Style Selector=".motion ItemsControl.timed Button.lyric-line.current TextBlock.word">
-        <Setter Property="Transitions">
-            <Transitions>
-                <DoubleTransition Property="Opacity" Duration="0:0:0.15" />
-            </Transitions>
-        </Setter>
-    </Style>
+    <!-- No transition on the words: the fill (WordFillConverter) is their animation, and a fade on top would dim its unfilled part. -->
 
     <!-- Motion. Everything animated is under ".motion", a class the main window carries unless the
          "Reduce motion" setting is on (see App), so one switch turns all of it off. Keep durations short. -->

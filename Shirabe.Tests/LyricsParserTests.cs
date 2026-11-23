@@ -226,7 +226,7 @@ public class TtmlParserTests
     }
 
     [Fact]
-    public void In_a_duet_the_second_person_is_on_the_right_and_a_group_sings_with_the_first()
+    public void In_a_duet_the_second_person_is_on_the_right_and_a_group_in_the_middle()
     {
         var lines = Parse("""
             <tt xmlns="http://www.w3.org/ns/ttml" xmlns:ttm="http://www.w3.org/ns/ttml#metadata"><head><metadata>
@@ -239,7 +239,7 @@ public class TtmlParserTests
             </div></body></tt>
             """);
 
-        Assert.Equal([false, true, false, false], lines.Select(l => l.IsSecondVoice));
+        Assert.Equal([LyricVoice.First, LyricVoice.Second, LyricVoice.Group, LyricVoice.First], lines.Select(l => l.Voice));
     }
 
     [Fact]
@@ -251,7 +251,7 @@ public class TtmlParserTests
             </div></body></tt>
             """);
 
-        Assert.Equal([false, true], lines.Select(l => l.IsSecondVoice));
+        Assert.Equal([LyricVoice.First, LyricVoice.Second], lines.Select(l => l.Voice));
     }
 
     [Fact]

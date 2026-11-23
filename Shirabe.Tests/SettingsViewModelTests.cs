@@ -12,7 +12,7 @@ public class SettingsViewModelTests
         var viewModel = new SettingsViewModel(new AppSettings(), new ThemeCatalog([], []));
 
         Assert.Same(viewModel.Pages[0], viewModel.SelectedPage);
-        Assert.Equal(["General", "Appearance", "Connections"], viewModel.Pages.Select(page => page.Title));
+        Assert.Equal(["General", "Appearance", "Lyrics", "Connections"], viewModel.Pages.Select(page => page.Title));
     }
 
     [Fact]

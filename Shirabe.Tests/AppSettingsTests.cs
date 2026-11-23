@@ -23,6 +23,7 @@ public sealed class AppSettingsTests : IDisposable
         Assert.True(settings.DiscordPresenceEnabled);
         Assert.True(settings.CoverLookupEnabled);
         Assert.True(settings.DownloadArtworkEnabled);
+        Assert.Equal((17, true, true, 0), (settings.LyricsTextSize, settings.ShowBackgroundVocals, settings.ShowPauseMarkers, settings.LyricsDelayMs));
         Assert.True(settings.FollowCoverAccent);
         Assert.Equal("Dark", settings.ThemeName);
         Assert.False(File.Exists(SettingsFile));

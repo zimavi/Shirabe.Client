@@ -1,3 +1,4 @@
+using Shirabe.Client.Services;
 using Shirabe.Client.ViewModels;
 using Shirabe.Core.Library;
 using Shirabe.Core.Lyrics;
@@ -11,12 +12,13 @@ public class LyricsViewModelTests
     private readonly PlayerViewModel _player;
     private readonly FakeLyrics _source = new();
     private readonly LyricsViewModel _lyrics;
+    private readonly AppSettings _settings = new();
 
     public LyricsViewModelTests()
     {
         SynchronizationContext.SetSynchronizationContext(null);
         _player = new PlayerViewModel(_audio);
-        _lyrics = new LyricsViewModel(_player, _source);
+        _lyrics = new LyricsViewModel(_player, _source, _settings);
     }
 
     private sealed class FakeLyrics : ILyricsSource
@@ -157,6 +159,51 @@ public class LyricsViewModelTests
     }
 
     [Fact]
+    public async Task A_word_fills_in_over_its_own_length_and_starts_over_when_the_line_is_left()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, Worded());
+        await Settle();
+        var words = _lyrics.Lines[0].Words;
+
+        At(1.9);
+        Assert.Equal([0, 0, 0], words.Select(w => w.Progress)); // the line has not started
+
+        At(2.5); // "one" 2-3 s halfway
+        Assert.Equal([0.5, 0, 0], words.Select(w => w.Progress));
+        // the bright copy is drawn from the start of the word, the dim copy until it is complete
+        Assert.Equal([true, false, false], words.Select(w => w.HasStarted));
+        Assert.Equal([false, false, false], words.Select(w => w.IsComplete));
+
+        At(3.5); // "two" 3-4 s halfway, "one" done
+        Assert.Equal([1, 0.5, 0], words.Select(w => w.Progress));
+        Assert.Equal([true, false, false], words.Select(w => w.IsComplete));
+
+        At(5); // "three" 4-6 s halfway
+        Assert.Equal([1, 1, 0.5], words.Select(w => w.Progress));
+
+        At(2.25); // a seek back: later words empty again
+        Assert.Equal([0.25, 0, 0], words.Select(w => w.Progress));
+
+        At(11); // the next line is current
+        Assert.Equal([0, 0, 0], words.Select(w => w.Progress));
+    }
+
+    [Fact]
+    public void A_word_with_no_length_is_either_empty_or_full()
+    {
+        var word = new LyricWordViewModel(new LyricWord(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3), "blip"));
+
+        word.Update(TimeSpan.FromSeconds(2.9));
+        Assert.Equal(0, word.Progress);
+
+        word.Update(TimeSpan.FromSeconds(3));
+        Assert.Equal(1, word.Progress);
+    }
+
+    [Fact]
     public async Task A_background_vocal_lights_up_by_its_own_word_times_inside_the_current_line()
     {
         var a = Song("A");
@@ -203,7 +250,8 @@ public class LyricsViewModelTests
         await _player.PlayAsync(a);
         _player.IsLyricsOpen = true;
         _source.Answer(a, SongLyrics.Of(
-            [new LyricLine(TimeSpan.Zero, TimeSpan.FromSeconds(9), ""), new LyricLine(TimeSpan.FromSeconds(9), null, "first line", null, null, null, true)], "x"));
+            [new LyricLine(TimeSpan.Zero, TimeSpan.FromSeconds(9), ""), new LyricLine(TimeSpan.FromSeconds(9), null, "first line", null, null, null, LyricVoice.Second),
+             new LyricLine(TimeSpan.FromSeconds(12), null, "together", null, null, null, LyricVoice.Group)], "x"));
         await Settle();
 
         Assert.True(_lyrics.Lines[0].IsPause);
@@ -211,6 +259,9 @@ public class LyricsViewModelTests
         Assert.True(_lyrics.Lines[1].ShowsText);
         Assert.False(_lyrics.Lines[0].IsSecondVoice);
         Assert.True(_lyrics.Lines[1].IsSecondVoice);
+        Assert.False(_lyrics.Lines[1].IsGroupVoice);
+        Assert.True(_lyrics.Lines[2].IsGroupVoice);
+        Assert.False(_lyrics.Lines[2].IsSecondVoice);
         At(1);
         Assert.Equal(0, _lyrics.CurrentIndex); // the pause is the current line during the break
 
@@ -341,6 +392,90 @@ public class LyricsViewModelTests
         _player.RefreshPosition();
 
         Assert.Equal(1, _lyrics.CurrentIndex);
+    }
+
+    [Fact]
+    public async Task The_highlight_delay_moves_the_lines_later_or_earlier_and_a_change_applies_at_once()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, Timed((10, "one"), (20, "two")));
+        await Settle();
+
+        _settings.LyricsDelayMs = 300; // later: at 10.2 s the sound of the 10 s line has not left the speakers yet
+        At(10.2);
+        Assert.Equal(-1, _lyrics.CurrentIndex);
+        At(10.4);
+        Assert.Equal(0, _lyrics.CurrentIndex);
+
+        _settings.LyricsDelayMs = -500; // earlier: the line at 20 s is current from 19.5 s, and the change shows without waiting for a frame
+        At(19.0);
+        Assert.Equal(0, _lyrics.CurrentIndex);
+        _audio.Position = TimeSpan.FromSeconds(19.6);
+        _settings.LyricsDelayMs = -400;
+        Assert.Equal(1, _lyrics.CurrentIndex);
+    }
+
+    [Theory]
+    [InlineData(17, 17)]
+    [InlineData(5, 12)]
+    [InlineData(500, 32)]
+    public void The_text_size_follows_the_setting_within_a_readable_range(double setting, double expected)
+    {
+        var changed = new List<string?>();
+        _lyrics.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
+
+        _settings.LyricsTextSize = setting;
+
+        Assert.Equal(expected, _lyrics.FontSize);
+        Assert.Equal(expected * 0.82, _lyrics.AsideFontSize, precision: 6);
+        if (setting != 17) Assert.Contains(nameof(LyricsViewModel.FontSize), changed);
+    }
+
+    [Fact]
+    public async Task Break_markers_can_be_switched_off_and_on_without_losing_the_place()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, SongLyrics.Of(
+            [new LyricLine(TimeSpan.Zero, TimeSpan.FromSeconds(9), ""), new LyricLine(TimeSpan.FromSeconds(9), null, "words")], "x"));
+        await Settle();
+        Assert.All(_lyrics.Lines, l => Assert.True(l.IsShown));
+
+        _settings.ShowPauseMarkers = false;
+        Assert.Equal([false, true], _lyrics.Lines.Select(l => l.IsShown));
+
+        At(1);
+        Assert.Equal(0, _lyrics.CurrentIndex); // the indexes of the lines did not change
+
+        _settings.ShowPauseMarkers = true;
+        Assert.All(_lyrics.Lines, l => Assert.True(l.IsShown));
+    }
+
+    [Fact]
+    public async Task Background_vocals_can_be_switched_off_and_the_line_loses_them_from_its_text_too()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, SongLyrics.Of(
+        [
+            new LyricLine(TimeSpan.FromSeconds(1), null, "lead (ooh)", null, "(ooh)"),
+            new LyricLine(TimeSpan.FromSeconds(5), null, "sung (aah)", [new LyricWord(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(6), "sung")], "(aah)",
+                [new LyricWord(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(7), "(aah)")]),
+        ], "x"));
+        await Settle();
+        var (plain, worded) = (_lyrics.Lines[0], _lyrics.Lines[1]);
+        Assert.Equal(("lead (ooh)", true, true), (plain.Text, plain.BackgroundTextVisible, worded.BackgroundWordsVisible));
+
+        _settings.ShowBackgroundVocals = false;
+
+        Assert.Equal(("lead", false, false), (plain.Text, plain.BackgroundTextVisible, worded.BackgroundWordsVisible));
+
+        _settings.ShowBackgroundVocals = true;
+        Assert.Equal(("lead (ooh)", true, true), (plain.Text, plain.BackgroundTextVisible, worded.BackgroundWordsVisible));
     }
 
     [Fact]

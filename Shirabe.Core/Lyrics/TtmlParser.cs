@@ -66,7 +66,7 @@ public static partial class TtmlParser
         return result;
     }
 
-    /// <summary>Which singer a line belongs to: the first person is on the left, other people on the right, a group (harmony) with the first.</summary>
+    /// <summary>Which singer a line belongs to: the first person, any other person, or a group (harmony), by <c>ttm:agent</c>.</summary>
     private sealed class Voices
     {
         private readonly Dictionary<string, bool> _isGroup = [];
@@ -83,12 +83,13 @@ public static partial class TtmlParser
                 }
         }
 
-        public bool IsSecond(XElement line)
+        public LyricVoice Of(XElement line)
         {
-            if (Attribute(line, "agent") is not { } id || _isGroup.GetValueOrDefault(id)) return false;
+            if (Attribute(line, "agent") is not { } id) return LyricVoice.First;
+            if (_isGroup.GetValueOrDefault(id)) return LyricVoice.Group;
 
             _first ??= id; // a file without a head: the first singer met is the first one
-            return id != _first;
+            return id == _first ? LyricVoice.First : LyricVoice.Second;
         }
     }
 
@@ -146,7 +147,7 @@ public static partial class TtmlParser
         if (sungBackground is not null) line = Clean($"{line} {sungBackground}");
 
         return new LyricLine(start, end, line, words.Count > 0 ? words : null, sungBackground,
-            backgroundWords.Count > 0 ? backgroundWords : null, voices.IsSecond(p));
+            backgroundWords.Count > 0 ? backgroundWords : null, voices.Of(p));
     }
 
     // The timed spans inside a background vocal; the parentheses are put on the first and last word when the file left them off.

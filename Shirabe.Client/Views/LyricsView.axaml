@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:conv="using:Shirabe.Client.Converters"
              mc:Ignorable="d" d:DesignWidth="340" d:DesignHeight="600"
              x:Class="Shirabe.Client.Views.LyricsView"
              x:DataType="vm:LyricsViewModel">
@@ -18,10 +19,12 @@
             <ScrollViewer x:Name="Scroller" Grid.Row="1" IsVisible="{Binding HasLyrics}" HorizontalScrollBarVisibility="Disabled">
                 <!-- Timed lyrics: the line being sung is bright, the others dimmed, and a click moves playback to that line.
                      A line the file times word by word is a row of words that light up as they start. Plain lyrics are all readable. -->
-                <ItemsControl x:Name="LinesList" ItemsSource="{Binding Lines}" Classes.timed="{Binding IsSynced}" Margin="20,8,20,120">
+                <ItemsControl x:Name="LinesList" ItemsSource="{Binding Lines}" Classes.timed="{Binding IsSynced}" Margin="20,8,20,120"
+                              FontSize="{Binding FontSize}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:LyricLineViewModel">
-                            <Button Classes="lyric-line" Classes.current="{Binding IsCurrent}" Classes.second="{Binding IsSecondVoice}" IsHitTestVisible="{Binding !IsGap}"
+                            <Button Classes="lyric-line" Classes.current="{Binding IsCurrent}" Classes.second="{Binding IsSecondVoice}" Classes.group="{Binding IsGroupVoice}" IsHitTestVisible="{Binding !IsGap}"
+                                    IsVisible="{Binding IsShown}"
                                     Command="{Binding $parent[UserControl].((vm:LyricsViewModel)DataContext).SeekToLineCommand}"
                                     CommandParameter="{Binding}" AutomationProperties.Name="{Binding Text}">
                                 <StackPanel>
@@ -40,13 +43,18 @@
                                         </ItemsControl.ItemsPanel>
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="vm:LyricWordViewModel">
-                                                <TextBlock Classes="lyric word" Classes.sung="{Binding IsSung}" Classes.spaced="{Binding SpaceAfter}"
-                                                           Text="{Binding Text}" />
+                                                <!-- Two copies of the word: dim below, bright above, and the bright one is masked to the part that has been sung. -->
+                                                <Grid Classes="word" Classes.spaced="{Binding SpaceAfter}">
+                                                    <TextBlock Classes="lyric word" Text="{Binding Text}" IsVisible="{Binding !IsComplete}" />
+                                                    <TextBlock Classes="lyric word overlay" Text="{Binding Text}" IsVisible="{Binding HasStarted}"
+                                                               OpacityMask="{Binding Progress, Converter={x:Static conv:WordFillConverter.Instance}}" />
+                                                </Grid>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
-                                    <TextBlock Classes="lyric aside" Text="{Binding Background}" TextWrapping="Wrap" IsVisible="{Binding HasBackgroundText}" />
-                                    <ItemsControl ItemsSource="{Binding BackgroundWords}" IsVisible="{Binding HasBackgroundWords}">
+                                    <TextBlock Classes="lyric aside" Text="{Binding Background}" TextWrapping="Wrap" IsVisible="{Binding BackgroundTextVisible}"
+                                               FontSize="{Binding $parent[UserControl].((vm:LyricsViewModel)DataContext).AsideFontSize}" />
+                                    <ItemsControl ItemsSource="{Binding BackgroundWords}" IsVisible="{Binding BackgroundWordsVisible}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <WrapPanel />
@@ -54,8 +62,13 @@
                                         </ItemsControl.ItemsPanel>
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="vm:LyricWordViewModel">
-                                                <TextBlock Classes="lyric word aside" Classes.sung="{Binding IsSung}" Classes.spaced="{Binding SpaceAfter}"
-                                                           Text="{Binding Text}" />
+                                                <Grid Classes="word" Classes.spaced="{Binding SpaceAfter}">
+                                                    <TextBlock Classes="lyric word aside" Text="{Binding Text}" IsVisible="{Binding !IsComplete}"
+                                                               FontSize="{Binding $parent[UserControl].((vm:LyricsViewModel)DataContext).AsideFontSize}" />
+                                                    <TextBlock Classes="lyric word aside overlay" Text="{Binding Text}" IsVisible="{Binding HasStarted}"
+                                                               OpacityMask="{Binding Progress, Converter={x:Static conv:WordFillConverter.Instance}}"
+                                                               FontSize="{Binding $parent[UserControl].((vm:LyricsViewModel)DataContext).AsideFontSize}" />
+                                                </Grid>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>

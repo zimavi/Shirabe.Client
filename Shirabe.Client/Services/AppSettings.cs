@@ -30,6 +30,25 @@ public partial class AppSettings : ObservableObject
     [ObservableProperty]
     public partial bool DownloadArtworkEnabled { get; set; } = true;
 
+    /// <summary>Size of the lyrics text in points; the lyrics panel keeps it between 12 and 32.</summary>
+    [ObservableProperty]
+    public partial double LyricsTextSize { get; set; } = 17;
+
+    /// <summary>Show the background vocals of lyrics that have them.</summary>
+    [ObservableProperty]
+    public partial bool ShowBackgroundVocals { get; set; } = true;
+
+    /// <summary>Show the dots that mark an instrumental break in timed lyrics.</summary>
+    [ObservableProperty]
+    public partial bool ShowPauseMarkers { get; set; } = true;
+
+    /// <summary>
+    /// How much later than the player's clock the lyrics move, in milliseconds (the sound leaves the device a little after
+    /// the position it reports). Negative moves them earlier. The lyrics panel keeps it between -1000 and 1000.
+    /// </summary>
+    [ObservableProperty]
+    public partial double LyricsDelayMs { get; set; }
+
     /// <summary>Take the accent colour from the cover of the song that is playing.</summary>
     [ObservableProperty]
     public partial bool FollowCoverAccent { get; set; } = true;
