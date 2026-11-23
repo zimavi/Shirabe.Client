@@ -277,22 +277,62 @@
         <Setter Property="RenderTransform" Value="none" />
     </Style>
 
-    <!-- Lyrics: plain lyrics are all readable; in timed lyrics (ItemsControl.timed) only the current line is bright. -->
+    <!-- Lyrics: every line is a flat button (a click seeks). Plain lyrics are all readable; in timed lyrics (ItemsControl.timed)
+         only the current line is bright, and in it the words that have started (when the file times words). -->
+    <Style Selector="Button.lyric-line">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0,7" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+    </Style>
+    <Style Selector="Button.lyric-line:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="Button.lyric-line:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
     <Style Selector="TextBlock.lyric">
         <Setter Property="FontSize" Value="17" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Margin" Value="0,7" />
     </Style>
-    <Style Selector="ItemsControl.timed TextBlock.lyric">
+    <Style Selector="TextBlock.lyric.spaced">
+        <Setter Property="Margin" Value="0,0,5,0" />
+    </Style>
+    <Style Selector="TextBlock.lyric.aside">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontStyle" Value="Italic" />
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+    <Style Selector="ItemsControl.timed Button.lyric-line">
         <Setter Property="Opacity" Value="0.4" />
+        <Setter Property="Cursor" Value="Hand" />
     </Style>
-    <Style Selector="ItemsControl.timed TextBlock.lyric.current">
+    <Style Selector="ItemsControl.timed Button.lyric-line:pointerover">
+        <Setter Property="Opacity" Value="0.75" />
+    </Style>
+    <Style Selector="ItemsControl.timed Button.lyric-line.current">
         <Setter Property="Opacity" Value="1" />
     </Style>
-    <Style Selector=".motion ItemsControl.timed TextBlock.lyric">
+    <Style Selector="ItemsControl.timed Button.lyric-line.current TextBlock.word">
+        <Setter Property="Opacity" Value="0.45" />
+    </Style>
+    <Style Selector="ItemsControl.timed Button.lyric-line.current TextBlock.word.sung">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+    <Style Selector=".motion ItemsControl.timed Button.lyric-line">
         <Setter Property="Transitions">
             <Transitions>
                 <DoubleTransition Property="Opacity" Duration="0:0:0.25" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector=".motion ItemsControl.timed Button.lyric-line.current TextBlock.word">
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.15" />
             </Transitions>
         </Setter>
     </Style>

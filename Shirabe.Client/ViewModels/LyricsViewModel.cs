@@ -1,21 +1,63 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Shirabe.Core.Lyrics;
 
 namespace Shirabe.Client.ViewModels;
 
-/// <summary>One row of the lyrics panel.</summary>
-public sealed partial class LyricLineViewModel(LyricLine line) : ObservableObject
+/// <summary>One word of a line that is sung word by word.</summary>
+public sealed partial class LyricWordViewModel(LyricWord word) : ObservableObject
 {
-    public LyricLine Line { get; } = line;
+    public LyricWord Word { get; } = word;
 
-    /// <summary>A pause between lines (an empty line) is shown as a gap, not as text.</summary>
+    public string Text => Word.Text;
+
+    public bool SpaceAfter => Word.SpaceAfter;
+
+    /// <summary>The word has started (only kept up to date while its line is the current one).</summary>
+    [ObservableProperty]
+    public partial bool IsSung { get; set; }
+}
+
+/// <summary>One row of the lyrics panel.</summary>
+public sealed partial class LyricLineViewModel : ObservableObject
+{
+    public LyricLineViewModel(LyricLine line)
+    {
+        Line = line;
+        Words = line.Words is { Count: > 0 } words ? [.. words.Select(w => new LyricWordViewModel(w))] : [];
+    }
+
+    public LyricLine Line { get; }
+
     public string Text => Line.Text;
 
+    /// <summary>The words, when the file times them; empty otherwise (the line is then shown as text).</summary>
+    public IReadOnlyList<LyricWordViewModel> Words { get; }
+
+    public bool HasWords => Words.Count > 0;
+
+    public bool HasNoWords => Words.Count == 0;
+
+    /// <summary>The background vocal, shown after the words.</summary>
+    public string? Background => Line.Background;
+
+    /// <summary>A pause between lines (an empty line) is shown as a gap and cannot be clicked.</summary>
     public bool IsGap => Line.Text.Length == 0;
 
     /// <summary>The line being sung now; only ever true in timed lyrics.</summary>
     [ObservableProperty]
     public partial bool IsCurrent { get; set; }
+
+    /// <summary>Marks the words that have started at <paramref name="position"/>.</summary>
+    public void UpdateWords(TimeSpan position)
+    {
+        foreach (var word in Words) word.IsSung = word.Word.Start <= position;
+    }
+
+    public void ResetWords()
+    {
+        foreach (var word in Words) word.IsSung = false;
+    }
 }
 
 /// <summary>
@@ -41,9 +83,28 @@ public partial class LyricsViewModel : ViewModelBase
         _player.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(PlayerViewModel.IsLyricsOpen)) _ = RefreshAsync();
-            else if (e.PropertyName == nameof(PlayerViewModel.PositionSeconds)) UpdateCurrent();
+            else if (e.PropertyName == nameof(PlayerViewModel.PositionSeconds))
+            {
+                // While frames drive the lines (playing), the 100 ms copy of the position would only fight them.
+                if (!NeedsFrames) UpdateCurrent(TimeSpan.FromSeconds(_player.PositionSeconds));
+            }
+
+            if (e.PropertyName is nameof(PlayerViewModel.IsLyricsOpen) or nameof(PlayerViewModel.IsPlaying))
+                OnPropertyChanged(nameof(NeedsFrames));
         };
     }
+
+    partial void OnIsSyncedChanged(bool value) => OnPropertyChanged(nameof(NeedsFrames));
+
+    /// <summary>
+    /// The panel is open, the lyrics are timed and the song is playing: the view then calls <see cref="Tick"/> on every
+    /// frame, so lines and words change at the right moment instead of at the next 100 ms step (a word can last less).
+    /// Paused, nothing moves except by a seek, which <see cref="PlayerViewModel.PositionSeconds"/> reports.
+    /// </summary>
+    public bool NeedsFrames => IsSynced && _player.IsLyricsOpen && _player.IsPlaying;
+
+    /// <summary>Brings the current line and words up to the engine's clock. Called by the view on every frame.</summary>
+    public void Tick() => UpdateCurrent(_player.EnginePosition);
 
     /// <summary>The rows; empty when there are no lyrics.</summary>
     [ObservableProperty]
@@ -113,19 +174,34 @@ public partial class LyricsViewModel : ViewModelBase
         Lines = lyrics is null ? [] : [.. lyrics.Lines.Select(l => new LyricLineViewModel(l))];
         OnPropertyChanged(nameof(NoLyricsText));
         OnPropertyChanged(nameof(NoLyricsHint));
-        UpdateCurrent();
+        UpdateCurrent(_player.EnginePosition);
     }
 
     // A pure function of the position (LyricsTimeline), so seeking, looping and a restored session all land on the right line.
-    private void UpdateCurrent()
+    private void UpdateCurrent(TimeSpan position)
     {
         if (!IsSynced || Lines.Count == 0) return;
 
-        var index = LyricsTimeline.CurrentIndex(_timeline, TimeSpan.FromSeconds(_player.PositionSeconds));
-        if (index == CurrentIndex) return;
+        var index = LyricsTimeline.CurrentIndex(_timeline, position);
+        if (index != CurrentIndex)
+        {
+            if (CurrentIndex >= 0)
+            {
+                Lines[CurrentIndex].IsCurrent = false;
+                Lines[CurrentIndex].ResetWords();
+            }
 
-        if (CurrentIndex >= 0) Lines[CurrentIndex].IsCurrent = false;
-        if (index >= 0) Lines[index].IsCurrent = true;
-        CurrentIndex = index;
+            if (index >= 0) Lines[index].IsCurrent = true;
+            CurrentIndex = index;
+        }
+
+        if (index >= 0) Lines[index].UpdateWords(position);
+    }
+
+    /// <summary>Moves playback to the start of a line. Plain lyrics have no times and gaps are not lines, so nothing happens.</summary>
+    [RelayCommand]
+    private void SeekToLine(LyricLineViewModel? line)
+    {
+        if (line is { IsGap: false, Line.Start: { } start } && IsSynced) _player.PositionSeconds = start.TotalSeconds;
     }
 }

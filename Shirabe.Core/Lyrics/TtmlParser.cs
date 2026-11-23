@@ -59,6 +59,7 @@ public static partial class TtmlParser
             {
                 case XText t:
                     text.Append(t.Value);
+                    if (words.Count > 0 && t.Value.Length > 0 && char.IsWhiteSpace(t.Value[0])) MarkSpaceAfterLastWord(words);
                     break;
                 case XElement { Name.LocalName: "br" }:
                     text.Append(' ');
@@ -76,7 +77,7 @@ public static partial class TtmlParser
                             // no whitespace at all between word spans reads as one long word, check against a real file
                             text.Append(span.Value);
                             if (Time(span, "begin") is { } from && Time(span, "end") is { } to)
-                                words.Add(new LyricWord(from, to, span.Value.Trim()));
+                                words.Add(new LyricWord(from, to, span.Value.Trim(), span.Value.Length > 0 && char.IsWhiteSpace(span.Value[^1])));
                             break;
                     }
 
@@ -90,11 +91,17 @@ public static partial class TtmlParser
 
         var end = Time(p, "end") ?? words.Cast<LyricWord?>().LastOrDefault()?.End;
         var line = Clean(text.ToString());
-        // Apple writes the parentheses into the background text itself; add them only where the file did not.
-        foreach (var sung in background) line = Clean($"{line} {(sung.StartsWith('(') ? sung : $"({sung})")}");
 
-        return new LyricLine(start, end, line, words.Count > 0 ? words : null);
+        // Apple writes the parentheses into the background text itself; add them only where the file did not.
+        var sungBackground = background.Count == 0
+            ? null
+            : string.Join(" ", background.Select(sung => sung.StartsWith('(') ? sung : $"({sung})"));
+        if (sungBackground is not null) line = Clean($"{line} {sungBackground}");
+
+        return new LyricLine(start, end, line, words.Count > 0 ? words : null, sungBackground);
     }
+
+    private static void MarkSpaceAfterLastWord(List<LyricWord> words) => words[^1] = words[^1] with { SpaceAfter = true };
 
     private static string Clean(string text) => Spaces().Replace(text, " ").Trim();
 

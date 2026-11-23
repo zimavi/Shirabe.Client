@@ -110,6 +110,81 @@ public class LyricsViewModelTests
         Assert.All(_lyrics.Lines, l => Assert.False(l.IsCurrent));
     }
 
+    private static SongLyrics Worded() => SongLyrics.Of(
+    [
+        new LyricLine(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(6), "one two three",
+        [
+            new LyricWord(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3), "one", true),
+            new LyricWord(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(4), "two", true),
+            new LyricWord(TimeSpan.FromSeconds(4), TimeSpan.FromSeconds(6), "three"),
+        ]),
+        new LyricLine(TimeSpan.FromSeconds(10), null, "next"),
+    ], "beside the song: a.ttml")!;
+
+    [Fact]
+    public async Task Words_light_up_as_they_start_in_the_current_line_and_reset_when_it_is_left()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, Worded());
+        await Settle();
+        var words = _lyrics.Lines[0].Words;
+        Assert.True(_lyrics.Lines[0].HasWords);
+        Assert.True(_lyrics.Lines[1].HasNoWords);
+
+        _player.PositionSeconds = 1;
+        Assert.All(words, w => Assert.False(w.IsSung));
+
+        _player.PositionSeconds = 3.5;
+        Assert.Equal([true, true, false], words.Select(w => w.IsSung));
+
+        _player.PositionSeconds = 5;
+        Assert.Equal([true, true, true], words.Select(w => w.IsSung));
+
+        _player.PositionSeconds = 3.2; // seek back inside the line
+        Assert.Equal([true, true, false], words.Select(w => w.IsSung));
+
+        _player.PositionSeconds = 11; // the next line is current: this one starts over
+        Assert.All(words, w => Assert.False(w.IsSung));
+    }
+
+    [Fact]
+    public async Task Clicking_a_timed_line_moves_playback_to_its_start_but_plain_lines_and_gaps_do_nothing()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, SongLyrics.Of(
+            [new LyricLine(TimeSpan.FromSeconds(5), null, "one"), new LyricLine(TimeSpan.FromSeconds(10), null, ""), new LyricLine(TimeSpan.FromSeconds(20), null, "three")], "x"));
+        await Settle();
+
+        _lyrics.SeekToLineCommand.Execute(_lyrics.Lines[2]);
+        Assert.Equal(20, _player.PositionSeconds);
+        Assert.Equal(TimeSpan.FromSeconds(20), _audio.Seeks[^1]); // the engine really moved
+
+        _lyrics.SeekToLineCommand.Execute(_lyrics.Lines[1]); // a pause between lines
+        Assert.Equal(20, _player.PositionSeconds);
+
+        _lyrics.SeekToLineCommand.Execute(null);
+        Assert.Equal(20, _player.PositionSeconds);
+    }
+
+    [Fact]
+    public async Task Clicking_a_plain_line_does_nothing()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, Plain("words", "more"));
+        await Settle();
+        _player.PositionSeconds = 7;
+
+        _lyrics.SeekToLineCommand.Execute(_lyrics.Lines[1]);
+
+        Assert.Equal(7, _player.PositionSeconds);
+    }
+
     [Fact]
     public async Task Plain_lyrics_have_no_current_line()
     {

@@ -1,13 +1,15 @@
 namespace Shirabe.Core.Lyrics;
 
-/// <summary>One word (or syllable) of a line, with the time it is sung. Kept for karaoke-style display later.</summary>
-public sealed record LyricWord(TimeSpan Start, TimeSpan End, string Text);
+/// <summary>One word (or syllable) of a line, with the time it is sung.</summary>
+/// <param name="SpaceAfter">The file puts a space after it; false inside a word that is sung in several parts.</param>
+public sealed record LyricWord(TimeSpan Start, TimeSpan End, string Text, bool SpaceAfter = false);
 
 /// <summary>
 /// One line of lyrics. <see cref="Start"/> is null for plain (unsynchronized) lyrics. <see cref="End"/> is only known
 /// for some formats; a line is current from its start until the next line starts. An empty <see cref="Text"/> is a pause.
+/// <see cref="Background"/> is the background vocal (already in <see cref="Text"/>), which is not part of <see cref="Words"/>.
 /// </summary>
-public sealed record LyricLine(TimeSpan? Start, TimeSpan? End, string Text, IReadOnlyList<LyricWord>? Words = null);
+public sealed record LyricLine(TimeSpan? Start, TimeSpan? End, string Text, IReadOnlyList<LyricWord>? Words = null, string? Background = null);
 
 /// <summary>The lyrics of one song, and where they came from.</summary>
 /// <param name="Source">A sentence for the person: where these lyrics were found.</param>

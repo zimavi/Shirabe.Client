@@ -16,11 +16,33 @@
             </StackPanel>
 
             <ScrollViewer x:Name="Scroller" Grid.Row="1" IsVisible="{Binding HasLyrics}" HorizontalScrollBarVisibility="Disabled">
-                <!-- Timed lyrics: the line being sung is bright, the others dimmed; plain lyrics are all readable (see TextBlock.lyric). -->
+                <!-- Timed lyrics: the line being sung is bright, the others dimmed, and a click moves playback to that line.
+                     A line the file times word by word is a row of words that light up as they start. Plain lyrics are all readable. -->
                 <ItemsControl x:Name="LinesList" ItemsSource="{Binding Lines}" Classes.timed="{Binding IsSynced}" Margin="20,8,20,120">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:LyricLineViewModel">
-                            <TextBlock Classes="lyric" Classes.current="{Binding IsCurrent}" Text="{Binding Text}" TextWrapping="Wrap" />
+                            <Button Classes="lyric-line" Classes.current="{Binding IsCurrent}" IsHitTestVisible="{Binding !IsGap}"
+                                    Command="{Binding $parent[UserControl].((vm:LyricsViewModel)DataContext).SeekToLineCommand}"
+                                    CommandParameter="{Binding}" AutomationProperties.Name="{Binding Text}">
+                                <StackPanel>
+                                    <TextBlock Classes="lyric" Text="{Binding Text}" TextWrapping="Wrap" IsVisible="{Binding HasNoWords}" />
+                                    <ItemsControl ItemsSource="{Binding Words}" IsVisible="{Binding HasWords}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:LyricWordViewModel">
+                                                <TextBlock Classes="lyric word" Classes.sung="{Binding IsSung}" Classes.spaced="{Binding SpaceAfter}"
+                                                           Text="{Binding Text}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <TextBlock Classes="lyric aside" Text="{Binding Background}" TextWrapping="Wrap"
+                                               IsVisible="{Binding Background, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                </StackPanel>
+                            </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

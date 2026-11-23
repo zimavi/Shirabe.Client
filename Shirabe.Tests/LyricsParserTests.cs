@@ -141,6 +141,7 @@ public class TtmlParserTests
 
         Assert.Equal("Hello world", line.Text);
         Assert.Equal(["Hello", "wor", "ld"], line.Words!.Select(w => w.Text));
+        Assert.Equal([true, false], line.Words!.Take(2).Select(w => w.SpaceAfter)); // "wor" and "ld" are one word
         Assert.Equal(5.9, line.Words![1].Start.TotalSeconds, precision: 3);
         Assert.Equal(7.3, line.Words![2].End.TotalSeconds, precision: 3);
     }
@@ -177,6 +178,8 @@ public class TtmlParserTests
             """));
 
         Assert.Equal("Lead words (ooh)", line.Text); // the file's own parentheses are not doubled
+        Assert.Equal("(ooh)", line.Background);
+        Assert.Null(line.Words); // the background vocal is not one of the line's words
     }
 
     [Fact]

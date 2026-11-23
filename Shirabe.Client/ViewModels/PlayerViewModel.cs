@@ -237,6 +237,9 @@ public partial class PlayerViewModel : ViewModelBase
         }
     }
 
+    /// <summary>The engine's own clock, read right now. <see cref="PositionSeconds"/> is only refreshed every 100 ms, which is too coarse for lyrics.</summary>
+    public TimeSpan EnginePosition => _player.Position;
+
     /// <summary>Copies the player's position to <see cref="PositionSeconds"/> without seeking.</summary>
     public void RefreshPosition() => SetPosition(_player.Position.TotalSeconds);
 
