@@ -31,6 +31,10 @@ public partial class AppSettings : ObservableObject
     [ObservableProperty]
     public partial bool DownloadArtworkEnabled { get; set; } = true;
 
+    /// <summary>Ask GitHub, once at startup, whether a newer version has been released (see <see cref="UpdateNotifier"/>).</summary>
+    [ObservableProperty]
+    public partial bool CheckForUpdatesEnabled { get; set; } = true;
+
     /// <summary>Size of the lyrics text in points; the lyrics panel keeps it between 12 and 32.</summary>
     [ObservableProperty]
     public partial double LyricsTextSize { get; set; } = 17;

@@ -1,5 +1,8 @@
 using System.Text.Json;
+
 using Avalonia.Media;
+
+using Shirabe.Client.Localization;
 
 namespace Shirabe.Client.Services;
 
@@ -8,13 +11,22 @@ namespace Shirabe.Client.Services;
 /// The accent is the default one; it can be replaced by the cover's colour (<see cref="AppSettings.FollowCoverAccent"/>).
 /// </summary>
 public sealed record Theme(
-    string Name, Color Accent, Color Background, Color Sidebar, Color Surface, Color SurfaceHover,
-    Color Divider, Color TextPrimary, Color TextSecondary, Color Track)
+    string Name,
+    Color Accent,
+    Color Background,
+    Color Sidebar,
+    Color Surface,
+    Color SurfaceHover,
+    Color Divider,
+    Color TextPrimary,
+    Color TextSecondary,
+    Color Track)
 {
     // Keep in sync with the design-time defaults in Styles/Theme.axaml.
     public static readonly Theme Dark = new(
         "Dark", Color.Parse("#E8456B"), Color.Parse("#121214"), Color.Parse("#1A1A1D"), Color.Parse("#232327"),
-        Color.Parse("#2E2E33"), Color.Parse("#2A2A2F"), Color.Parse("#F2F2F4"), Color.Parse("#9A9AA3"), Color.Parse("#3A3A40"));
+        Color.Parse("#2E2E33"), Color.Parse("#2A2A2F"), Color.Parse("#F2F2F4"), Color.Parse("#9A9AA3"),
+        Color.Parse("#3A3A40"));
 
     /// <summary>True black backgrounds for OLED screens; surfaces stay just visible.</summary>
     public static readonly Theme Oled = Dark with
@@ -45,15 +57,16 @@ public sealed record Theme(
                 || !root.TryGetProperty("name", out var name) || name.ValueKind != JsonValueKind.String
                 || string.IsNullOrWhiteSpace(name.GetString()))
             {
-                error = "needs a \"name\"";
+                error = Loc.Get("Theme_NeedsName");
                 return null;
             }
 
             Color Read(string key, Color fallback)
             {
                 if (!root.TryGetProperty(key, out var value)) return fallback;
-                if (value.ValueKind == JsonValueKind.String && Color.TryParse(value.GetString(), out var color)) return color;
-                throw new FormatException($"\"{key}\" is not a colour like \"#RRGGBB\"");
+                if (value.ValueKind == JsonValueKind.String && Color.TryParse(value.GetString(), out var color))
+                    return color;
+                throw new FormatException(Loc.Get("Theme_BadColour", key));
             }
 
             return new Theme(
@@ -90,7 +103,8 @@ public sealed class ThemeCatalog
 
     /// <summary>The theme called <paramref name="name"/> (any case), or Dark when there is none, e.g. its file was deleted.</summary>
     public Theme Find(string? name) =>
-        Themes.FirstOrDefault(theme => string.Equals(theme.Name, name, StringComparison.OrdinalIgnoreCase)) ?? Theme.Dark;
+        Themes.FirstOrDefault(theme => string.Equals(theme.Name, name, StringComparison.OrdinalIgnoreCase)) ??
+        Theme.Dark;
 
     /// <summary>Reads every *.json in <paramref name="folder"/>; a missing folder just means no custom themes.</summary>
     public static ThemeCatalog Load(string folder)
@@ -106,8 +120,9 @@ public sealed class ThemeCatalog
                 var label = Path.GetFileName(file);
                 try
                 {
-                    if (Theme.Parse(File.ReadAllText(file), out var error) is not { } theme) problems.Add($"{label}: {error}");
-                    else if (!taken.Add(theme.Name)) problems.Add($"{label}: a theme called \"{theme.Name}\" already exists");
+                    if (Theme.Parse(File.ReadAllText(file), out var error) is not { } theme)
+                        problems.Add($"{label}: {error}");
+                    else if (!taken.Add(theme.Name)) problems.Add($"{label}: {Loc.Get("Theme_NameTaken", theme.Name)}");
                     else custom.Add(theme);
                 }
                 catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)

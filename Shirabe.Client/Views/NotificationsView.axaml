@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:loc="using:Shirabe.Client.Localization"
+             mc:Ignorable="d" d:DesignWidth="340" d:DesignHeight="200"
+             x:Class="Shirabe.Client.Views.NotificationsView"
+             x:DataType="vm:NotificationCenter">
+    <!-- Only the cards take clicks: the empty part of this control does not -->
+    <ItemsControl ItemsSource="{Binding Items}" Width="340">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Spacing="8" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:NotificationViewModel">
+                <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource DividerBrush}"
+                        BorderThickness="1" CornerRadius="{DynamicResource RadiusMedium}" Padding="16,12,8,12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding Message}" FontSize="13" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <Button Content="{Binding LinkLabel}" Tag="{Binding Link}" IsVisible="{Binding HasLink}"
+                                    HorizontalAlignment="Left" Margin="0,8,0,0" />
+                        </StackPanel>
+                        <Button Grid.Column="1" Classes="icon" VerticalAlignment="Top"
+                                Command="{Binding DismissCommand}"
+                                ToolTip.Tip="{loc:T Notification_Dismiss}"
+                                AutomationProperties.Name="{loc:T Notification_Dismiss}">
+                            <PathIcon Data="{DynamicResource Icon.Close}" />
+                        </Button>
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>

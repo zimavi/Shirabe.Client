@@ -20,6 +20,9 @@ namespace Shirabe.Client;
 
 public partial class App : Application
 {
+    /// <summary>Where the newest released version is asked from; the head provides one. Null: no update check.</summary>
+    public IReleaseSource? UpdateSource { get; init; }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -33,14 +36,17 @@ public partial class App : Application
         // Settings and custom themes live next to the library database.
         var dataFolder = Path.GetDirectoryName(Path.GetFullPath(GetLibraryPath()))!;
         var settings = AppSettings.Load(Path.Combine(dataFolder, "settings.json"));
-        var themes = ThemeCatalog.Load(Path.Combine(dataFolder, "themes"));
 
-        // The language is set before any view exists and follows the setting while the app runs.
+        // The language is set before anything is read that can produce a text (the theme problems below) or any view
+        // exists, and follows the setting while the app runs.
         Loc.Instance.SetLanguage(settings.Language);
         settings.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(AppSettings.Language)) Loc.Instance.SetLanguage(settings.Language);
         };
+
+        // shortcut: the theme problems are texts made once here, so they keep the startup language until a restart
+        var themes = ThemeCatalog.Load(Path.Combine(dataFolder, "themes"));
 
         var mainViewModel = CreateMainViewModel(
             new SettingsViewModel(settings, themes),
@@ -62,6 +68,10 @@ public partial class App : Application
                 if (e.PropertyName == nameof(AppSettings.ReduceMotion)) SyncMotion();
             };
             SyncMotion();
+
+            // Once at startup, in the background; a newer release shows as a notification (Settings > Connections turns it off).
+            if (settings.CheckForUpdatesEnabled && UpdateSource is not null)
+                _ = new UpdateNotifier(UpdateSource, mainViewModel.Notifications, AppVersion.Current).CheckAsync();
 
             // Follows the "Discord presence" setting while the app runs.
             DiscordPresence? presence = null;

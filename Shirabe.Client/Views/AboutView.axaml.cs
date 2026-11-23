@@ -20,9 +20,7 @@ public partial class AboutView : UserControl
         if (e.Source is not Button { Tag: string tag } button) return;
 
         if (button.Classes.Contains("copy")) _ = CopyAsync(button, tag);
-        // Link buttons carry an address; https only, whatever the view model says.
-        else if (Uri.TryCreate(tag, UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeHttps)
-            _ = TopLevel.GetTopLevel(this)?.Launcher.LaunchUriAsync(uri);
+        else LinkLauncher.Open(this, tag); // the other buttons carry an address
     }
 
     // The button's Tag holds its text, so a second click during the "Copied" moment still copies the right thing.

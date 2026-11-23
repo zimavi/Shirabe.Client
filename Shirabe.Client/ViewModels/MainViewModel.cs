@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
 using Shirabe.Client.Services;
 using Shirabe.Client.Studio;
 using Shirabe.Core.Lyrics;
@@ -20,8 +21,10 @@ public partial class MainViewModel : ViewModelBase
     /// <param name="settings">Null in tests: the settings page then works on defaults that are not saved.</param>
     /// <param name="studioFactory">Builds Studio when it is first opened, so listeners who never open it pay nothing. Null: no Studio.</param>
     /// <param name="lyricsSource">Where lyrics come from. Null: the lyrics panel always says there are none.</param>
-    public MainViewModel(PlayerViewModel? player, SongsViewModel? songs, string? startupError, string? libraryNotice = null,
-        SettingsViewModel? settings = null, Func<StudioViewModel>? studioFactory = null, ILyricsSource? lyricsSource = null)
+    public MainViewModel(PlayerViewModel? player, SongsViewModel? songs, string? startupError,
+        string? libraryNotice = null,
+        SettingsViewModel? settings = null, Func<StudioViewModel>? studioFactory = null,
+        ILyricsSource? lyricsSource = null)
     {
         Settings = settings ?? new SettingsViewModel(new AppSettings(), new ThemeCatalog([], []));
         Lyrics = player is null ? null : new LyricsViewModel(player, lyricsSource, Settings.Settings);
@@ -33,14 +36,16 @@ public partial class MainViewModel : ViewModelBase
         CurrentPage = _home;
 
         // A document of a song that the person wants to edit goes to Studio.
-        if (songs is not null && studioFactory is not null) songs.EditInStudioRequested += (_, request) => OpenEditorInStudio(request);
+        if (songs is not null && studioFactory is not null)
+            songs.EditInStudioRequested += (_, request) => OpenEditorInStudio(request);
     }
 
     private void OpenEditorInStudio(StudioEditRequest request)
     {
         var studio = GetStudio();
         CurrentPage = studio;
-        studio.OpenEditor(request.Document.Json, request.Song, $"Editing the {request.Document.Layer} document of \"{request.Song.Title}\"");
+        studio.OpenEditor(request.Document.Json, request.Song,
+            $"Editing the {request.Document.Layer} document of \"{request.Song.Title}\"");
     }
 
     public PlayerViewModel? Player { get; }
@@ -52,10 +57,14 @@ public partial class MainViewModel : ViewModelBase
 
     public SettingsViewModel Settings { get; }
 
+    /// <summary>Messages over the bottom right of the shell (a new version is available...).</summary>
+    public NotificationCenter Notifications { get; } = new();
+
     public string? StartupError { get; }
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsHomeSelected), nameof(IsSongsSelected), nameof(IsSettingsSelected), nameof(IsStudioSelected))]
+    [NotifyPropertyChangedFor(nameof(IsHomeSelected), nameof(IsSongsSelected), nameof(IsSettingsSelected),
+        nameof(IsStudioSelected))]
     public partial ViewModelBase CurrentPage { get; set; }
 
     public bool IsHomeSelected => CurrentPage is HomeViewModel;

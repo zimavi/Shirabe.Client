@@ -1,5 +1,8 @@
 ﻿using System;
+
 using Avalonia;
+
+using Shirabe.Client.Services;
 
 using Velopack;
 
@@ -14,13 +17,13 @@ sealed class Program
     public static void Main(string[] args)
     {
         VelopackApp.Build().Run();
-        Shirabe.Client.Services.DebugLog.Attach(); // Debug builds: every thrown exception goes to the console
+        DebugLog.Attach(); // Debug builds: every thrown exception goes to the console
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
+        => AppBuilder.Configure(() => new App { UpdateSource = new VelopackUpdateSource(new GitHubReleases()) })
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();

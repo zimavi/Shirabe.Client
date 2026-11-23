@@ -25,9 +25,9 @@ public sealed class AboutViewModel : SettingsPageViewModel
     public bool HasCommit => Commit is not null;
 
     // The view opens these through one Click handler that only accepts https addresses.
-    public string RepositoryUrl => "https://github.com/zimavi/Shirabe.Client";
-    public string IssuesUrl => "https://github.com/zimavi/Shirabe.Client/issues";
-    public string LicenseUrl => "https://github.com/zimavi/Shirabe.Client/blob/master/LICENSE.txt";
+    public string RepositoryUrl => GitHubReleases.RepositoryUrl;
+    public string IssuesUrl => GitHubReleases.RepositoryUrl + "/issues";
+    public string LicenseUrl => GitHubReleases.RepositoryUrl + "/blob/master/LICENSE.txt";
     public string AuthorUrl => "https://github.com/zimavi";
     public string BassUrl => "https://www.un4seen.com/";
 

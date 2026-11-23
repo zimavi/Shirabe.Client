@@ -25,7 +25,8 @@
 
                 <!-- The current page; the view is found from the view model type (see ViewLocator).
                      The top margin keeps pages clear of the title bar strip. -->
-                <TransitioningContentControl Grid.Column="1" Classes="pages" Content="{Binding CurrentPage}" Margin="0,40,0,0" />
+                <TransitioningContentControl Grid.Column="1" Classes="pages" Content="{Binding CurrentPage}"
+                                             Margin="0,40,0,0" />
 
                 <!-- The queue overlays the right side of the page. Closed, it waits just outside the window (see
                      Panel.queue-panel in Controls.axaml) and is disabled, so it cannot take focus or clicks. -->
@@ -41,6 +42,10 @@
                        IsEnabled="{Binding Player.IsLyricsOpen}">
                     <views:LyricsView DataContext="{Binding Lyrics}" />
                 </Panel>
+
+                <!-- Notifications float over everything in the page area -->
+                <views:NotificationsView Grid.Column="1" DataContext="{Binding Notifications}"
+                                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,16,16" />
             </Grid>
 
             <views:PlayerBarView Grid.Row="1" DataContext="{Binding Player}" />

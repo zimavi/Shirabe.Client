@@ -118,6 +118,12 @@
         <comment>{0} is a folder path, or the text of Appearance_ThemesFolder. Keep the colour names (accent, background...) and "name" as they are: they are keys in the file.</comment></data>
     <data name="Appearance_ThemesFolder" xml:space="preserve"><value>the themes folder</value>
         <comment>Inserted as {0} into Appearance_CustomThemesHint when the folder path is not known. It must read naturally right after "in" in that sentence.</comment></data>
+    <data name="Theme_NeedsName" xml:space="preserve"><value>needs a "name"</value>
+        <comment>Problem listed under the theme setting for a theme file without a name. It follows the file name and a colon, e.g. "mytheme.json: needs a "name"". Keep "name" as it is: it is a key in the file.</comment></data>
+    <data name="Theme_BadColour" xml:space="preserve"><value>"{0}" is not a colour like "#RRGGBB"</value>
+        <comment>Problem listed under the theme setting. {0} is a key of the theme file (accent, background...): do not translate it. "#RRGGBB" is the colour format: keep it.</comment></data>
+    <data name="Theme_NameTaken" xml:space="preserve"><value>a theme called "{0}" already exists</value>
+        <comment>Problem listed under the theme setting. It follows the file name and a colon. {0} is the theme's name.</comment></data>
     <data name="Appearance_SectionAccent" xml:space="preserve"><value>ACCENT</value>
         <comment>Small heading above the accent colour setting (the highlight colour of buttons and sliders). Keep it uppercase if the language has letter case.</comment></data>
     <data name="Appearance_Follow" xml:space="preserve"><value>Follow the cover</value>
@@ -246,4 +252,19 @@
         <comment>Tooltip of the version and build buttons: clicking one copies its text to the clipboard.</comment></data>
     <data name="About_Copied" xml:space="preserve"><value>Copied</value>
         <comment>Shown for a moment on the version or build button after its text was copied to the clipboard. Short: it replaces the button's text.</comment></data>
+    <!-- Notifications and updates -->
+    <data name="Connections_SectionUpdates" xml:space="preserve"><value>UPDATES</value>
+        <comment>Small heading above the setting about checking for new versions. Keep it uppercase if the language has letter case.</comment></data>
+    <data name="Connections_CheckForUpdates" xml:space="preserve"><value>Check for updates</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+    <data name="Connections_CheckForUpdatesDescription" xml:space="preserve"><value>When Shirabe starts, asks GitHub whether a newer version has been released and tells you if so. GitHub can see your address; nothing else is sent. Takes effect the next time Shirabe starts.</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "GitHub" is a product name. "Your address" means the user's internet (IP) address.</comment></data>
+    <data name="Update_Title" xml:space="preserve"><value>Shirabe {0} is available</value>
+        <comment>Title of a notification. {0} is the new version number, for example 0.2.0: keep it as it is.</comment></data>
+    <data name="Update_Message" xml:space="preserve"><value>Download the new release from GitHub, or update through the package manager you installed Shirabe with.</value>
+        <comment>Body of the notification about a new version. A package manager is a tool such as winget, Scoop, Homebrew or apt that installs and updates programs. "GitHub" is a product name.</comment></data>
+    <data name="Update_ViewRelease" xml:space="preserve"><value>View release</value>
+        <comment>Button of the new-version notification: opens the page where the new version can be downloaded. Short.</comment></data>
+    <data name="Notification_Dismiss" xml:space="preserve"><value>Dismiss</value>
+        <comment>Tooltip and accessible name of the close (X) button of a notification: it removes the notification.</comment></data>
 </root>
