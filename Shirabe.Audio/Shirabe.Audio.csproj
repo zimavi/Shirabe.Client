@@ -13,4 +13,28 @@
     <ItemGroup>
         <ProjectReference Include="..\Shirabe.Core\Shirabe.Core.csproj"/>
     </ItemGroup>
+
+    <Import Project="..\build\BassNative.props"/>
+
+    <!-- Downloads the native BASS library for this platform into native/ when it is not there yet (see native/README.md).
+         Only this platform's, only when missing. Offline or blocked: a warning, and the build goes on; the app then says the
+         audio engine could not start, and the tests that need it are skipped. -->
+    <Target Name="DownloadBassNative" BeforeTargets="BeforeBuild" Condition="'$(BassZip)' != '' And !Exists('$(BassNativeFile)')">
+        <DownloadFile SourceUrl="https://www.un4seen.com/files/$(BassZip)"
+                      DestinationFolder="$(IntermediateOutputPath)bass"
+                      Retries="2"
+                      ContinueOnError="true">
+            <Output TaskParameter="DownloadedFile" PropertyName="BassZipPath"/>
+        </DownloadFile>
+        <Unzip SourceFiles="$(BassZipPath)"
+               DestinationFolder="$(IntermediateOutputPath)bass/extracted"
+               Condition="'$(BassZipPath)' != ''"
+               ContinueOnError="true"/>
+        <Copy SourceFiles="$(IntermediateOutputPath)bass/extracted/$(BassEntry)"
+              DestinationFiles="$(BassNativeFile)"
+              Condition="'$(BassZipPath)' != ''"
+              ContinueOnError="true"/>
+        <Warning Condition="!Exists('$(BassNativeFile)')"
+                 Text="The native BASS library ($(BassFile)) could not be downloaded. Put it in native/$(BassNativeRid)/ yourself, see native/README.md."/>
+    </Target>
 </Project>

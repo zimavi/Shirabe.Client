@@ -1,10 +1,47 @@
 <Project>
-    <!-- Copies the BASS native library next to the output of projects that import this file.
-         The binaries are not in git; see native/README.md. Windows only for now. -->
-    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-        <None Include="$(MSBuildThisFileDirectory)..\native\win-x64\*.dll"
-              Link="%(Filename)%(Extension)"
-              Visible="false"
-              CopyToOutputDirectory="PreserveNewest"/>
-    </ItemGroup>
+    <!-- The native BASS library for this platform: which one it is (shared with the download in Shirabe.Audio) and
+         copying it next to the output of the projects that import this file. The binaries are not in git, see native/README.md.
+         Set BassNativeRid yourself (win-x64, linux-x64, linux-arm64, osx) to choose another platform's library. -->
+    <PropertyGroup>
+        <BassNativeRid Condition="'$(BassNativeRid)' == '' And $([MSBuild]::IsOSPlatform('Windows'))">win-x64</BassNativeRid>
+        <BassNativeRid Condition="'$(BassNativeRid)' == '' And $([MSBuild]::IsOSPlatform('OSX'))">osx</BassNativeRid>
+        <BassNativeRid Condition="'$(BassNativeRid)' == '' And $([MSBuild]::IsOSPlatform('Linux')) And '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'Arm64'">linux-arm64</BassNativeRid>
+        <BassNativeRid Condition="'$(BassNativeRid)' == '' And $([MSBuild]::IsOSPlatform('Linux'))">linux-x64</BassNativeRid>
+    </PropertyGroup>
+
+    <!-- Per platform: the zip on the BASS site, the file inside it, and the name it must have next to the app. -->
+    <PropertyGroup Condition="'$(BassNativeRid)' == 'win-x64'">
+        <BassZip>bass24.zip</BassZip>
+        <BassEntry>x64/bass.dll</BassEntry> <!-- the bass.dll at the root of the zip is the 32-bit one -->
+        <BassFile>bass.dll</BassFile>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(BassNativeRid)' == 'linux-x64'">
+        <BassZip>bass24-linux.zip</BassZip>
+        <BassEntry>libs/x86_64/libbass.so</BassEntry>
+        <BassFile>libbass.so</BassFile>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(BassNativeRid)' == 'linux-arm64'">
+        <BassZip>bass24-linux.zip</BassZip>
+        <BassEntry>libs/aarch64/libbass.so</BassEntry>
+        <BassFile>libbass.so</BassFile>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(BassNativeRid)' == 'osx'">
+        <BassZip>bass24-osx.zip</BassZip>
+        <BassEntry>libbass.dylib</BassEntry>
+        <BassFile>libbass.dylib</BassFile>
+    </PropertyGroup>
+    <PropertyGroup>
+        <BassNativeFile>$(MSBuildThisFileDirectory)../native/$(BassNativeRid)/$(BassFile)</BassNativeFile>
+    </PropertyGroup>
+
+    <!-- Listed while building, not while the project is loaded: the library may only have been downloaded a moment ago. -->
+    <Target Name="IncludeBassNative" BeforeTargets="AssignTargetPaths" Condition="'$(BassFile)' != ''">
+        <ItemGroup>
+            <None Include="$(BassNativeFile)"
+                  Link="$(BassFile)"
+                  Visible="false"
+                  CopyToOutputDirectory="PreserveNewest"
+                  Condition="Exists('$(BassNativeFile)')"/>
+        </ItemGroup>
+    </Target>
 </Project>
