@@ -22,6 +22,7 @@ public sealed class AppSettingsTests : IDisposable
         Assert.False(settings.ReduceMotion);
         Assert.True(settings.DiscordPresenceEnabled);
         Assert.True(settings.CoverLookupEnabled);
+        Assert.True(settings.DownloadArtworkEnabled);
         Assert.True(settings.FollowCoverAccent);
         Assert.Equal("Dark", settings.ThemeName);
         Assert.False(File.Exists(SettingsFile));

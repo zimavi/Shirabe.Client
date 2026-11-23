@@ -21,4 +21,15 @@ public sealed record TrackSummary(
     string? ArtworkPath = null,
     string? CoverUrl = null,
     string? LinkUrl = null,
-    string? LinkLabel = null);
+    string? LinkLabel = null,
+    string? CoverSha256 = null);
+
+/// <summary>Pictures that metadata documents link to (standard, section 7). Fetching is always the caller's decision.</summary>
+public interface IArtworkLinks
+{
+    /// <summary>
+    /// The path of the picture at <paramref name="url"/>, downloading it first unless it was downloaded before; null when it
+    /// cannot be had (no https, a failed or oversized download, a hash that does not match, not an image).
+    /// </summary>
+    Task<string?> FetchAsync(string url, string? sha256, CancellationToken cancellationToken = default);
+}

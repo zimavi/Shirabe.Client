@@ -41,6 +41,16 @@ internal sealed class FakeAudioPlayer : IAudioPlayer
         return Task.CompletedTask;
     }
 
+    public int Releases { get; private set; }
+
+    public void Release()
+    {
+        Releases++;
+        Loaded = null;
+        Position = TimeSpan.Zero;
+        SetState(PlaybackState.Stopped);
+    }
+
     public void Play() => SetState(PlaybackState.Playing);
 
     public void Pause() => SetState(PlaybackState.Paused);

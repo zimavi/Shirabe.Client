@@ -47,6 +47,12 @@ public partial class PlayerViewModel : ViewModelBase
     /// <summary>Raised when the user (not the playback clock) moves the position.</summary>
     public event EventHandler? Seeked;
 
+    /// <summary>
+    /// Raised after a song was loaded (and started, if it was meant to), with the title, position and length already
+    /// those of the new song. Needed because switching songs while one plays does not change <see cref="IsPlaying"/>.
+    /// </summary>
+    public event EventHandler? TrackLoaded;
+
     /// <summary>Full path of the cover of the song that is playing, if its file has one.</summary>
     [ObservableProperty]
     public partial string? ArtworkPath { get; set; }
@@ -185,6 +191,38 @@ public partial class PlayerViewModel : ViewModelBase
         SetPosition(position);
     }
 
+    /// <summary>
+    /// Runs <paramref name="action"/> with the song's file closed, if that song is the one loaded: while it is open for
+    /// playing, nothing else can write to it (Windows refuses). Afterwards the song is loaded again at the same position,
+    /// and plays on if it was playing.
+    /// </summary>
+    public async Task<T> WithFileReleasedAsync<T>(Guid recordingId, Func<Task<T>> action)
+    {
+        if (CurrentTrack is not { } track || track.RecordingId != recordingId || !HasMedia) return await action();
+
+        var position = _player.Position;
+        var wasPlaying = _player.State == PlaybackState.Playing;
+        _player.Release();
+        try
+        {
+            return await action();
+        }
+        finally
+        {
+            try
+            {
+                await _player.LoadAsync(MediaSources.FromUri(track.MediaUri));
+                _player.Seek(position);
+                SetPosition(position.TotalSeconds);
+                if (wasPlaying) _player.Play();
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
+            {
+                ErrorMessage = $"Cannot play {track.Title} again: {ex.Message}";
+            }
+        }
+    }
+
     /// <summary>Copies the player's position to <see cref="PositionSeconds"/> without seeking.</summary>
     public void RefreshPosition() => SetPosition(_player.Position.TotalSeconds);
 
@@ -309,6 +347,7 @@ public partial class PlayerViewModel : ViewModelBase
         SetPosition(0); // before the duration changes, so the slider cannot coerce an old position into a seek
         DurationSeconds = _player.Duration?.TotalSeconds ?? 0;
         if (play) _player.Play();
+        TrackLoaded?.Invoke(this, EventArgs.Empty);
         return true;
     }
 

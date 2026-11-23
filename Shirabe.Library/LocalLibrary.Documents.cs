@@ -36,7 +36,7 @@ public sealed partial class LocalLibrary : IDocumentStore
     /// list is read, so a scan, an apply or an edit shows at once and nothing needs undoing when a document goes away.
     /// Documents that break the standard are not relied on, and personal ones are never merged into the list automatically.
     /// </summary>
-    private static async Task<IReadOnlyList<TrackSummary>> WithDocumentsAsync(
+    private async Task<IReadOnlyList<TrackSummary>> WithDocumentsAsync(
         LibraryDbContext db, List<TrackSummary> tracks, CancellationToken ct)
     {
         var rows = await db.MetadataDocuments.AsNoTracking()
@@ -65,8 +65,13 @@ public sealed partial class LocalLibrary : IDocumentStore
                 Artist = said.Artist ?? track.Artist,
                 Album = said.Album ?? track.Album,
                 CoverUrl = said.CoverUrl,
+                CoverSha256 = said.CoverSha256,
                 LinkUrl = said.LinkUrl,
                 LinkLabel = said.LinkLabel,
+                // The linked cover wins over the file's own (tags come last), but only once it has been downloaded: listing never fetches.
+                ArtworkPath = said.CoverUrl is { } url && _artwork.Find(CoverKey(url, said.CoverSha256)) is { } cached
+                    ? _artwork.PathOf(cached)
+                    : track.ArtworkPath,
             };
             retitled |= tracks[i].Title != track.Title;
         }

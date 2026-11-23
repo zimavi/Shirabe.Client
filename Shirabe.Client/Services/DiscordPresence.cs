@@ -34,6 +34,7 @@ public sealed class DiscordPresence : IDisposable
         _client.Initialize();
         _player.PropertyChanged += OnPlayerPropertyChanged;
         _player.Seeked += OnSeeked;
+        _player.TrackLoaded += OnTrackLoaded;
         if (_player.IsPlaying) Update(); // switched on while a song is playing
     }
 
@@ -41,10 +42,18 @@ public sealed class DiscordPresence : IDisposable
     {
         _player.PropertyChanged -= OnPlayerPropertyChanged;
         _player.Seeked -= OnSeeked;
+        _player.TrackLoaded -= OnTrackLoaded;
         _client.Dispose();
     }
 
     private void OnSeeked(object? sender, EventArgs e) => Update();
+
+    // Switching songs while one plays leaves IsPlaying true, so nothing else would tell us. A song loaded paused (the
+    // restored session) shows no card; pressing play does.
+    private void OnTrackLoaded(object? sender, EventArgs e)
+    {
+        if (_player.IsPlaying) Update();
+    }
 
     private void OnPlayerPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {

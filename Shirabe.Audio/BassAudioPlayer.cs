@@ -97,6 +97,12 @@ public sealed class BassAudioPlayer : IAudioPlayer
         Transition(PlaybackState.Paused);
     }
 
+    public void Release()
+    {
+        lock (_gate) FreeCurrent();
+        Transition(PlaybackState.Stopped);
+    }
+
     public void Play()
     {
         var handle = Volatile.Read(ref _handle);

@@ -25,11 +25,13 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
 
     private readonly DbContextOptions<LibraryDbContext> _options;
     private readonly ArtworkCache _artwork;
+    private readonly HttpClient _http;
 
-    private LocalLibrary(DbContextOptions<LibraryDbContext> options, ArtworkCache artwork)
+    private LocalLibrary(DbContextOptions<LibraryDbContext> options, ArtworkCache artwork, HttpMessageHandler? downloads)
     {
         _options = options;
         _artwork = artwork;
+        _http = CreateHttp(downloads);
     }
 
     public static string DefaultPath { get; } =
@@ -39,7 +41,8 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
     /// Opens the database at <paramref name="path"/>, creating or migrating it. Before migrating an existing
     /// database a copy is kept next to it (library.db.bak-yyyyMMddHHmmss), because the library holds user data.
     /// </summary>
-    public static LocalLibrary Open(string path)
+    /// <param name="downloads">How linked pictures are fetched; tests pass a fake, the app the default.</param>
+    public static LocalLibrary Open(string path, HttpMessageHandler? downloads = null)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
         var connectionString = new SqliteConnectionStringBuilder { DataSource = path }.ToString();
@@ -55,7 +58,7 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
         db.Database.Migrate();
 
         // Covers live in a folder next to the database, so moving or testing with another database moves them too.
-        return new LocalLibrary(options, new ArtworkCache(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!, "artwork")));
+        return new LocalLibrary(options, new ArtworkCache(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!, "artwork")), downloads);
     }
 
     public async Task<IReadOnlyList<TrackSummary>> GetTracksAsync(CancellationToken cancellationToken = default)

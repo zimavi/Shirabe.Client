@@ -45,14 +45,22 @@ public sealed class ResolutionTests
         Assert.Null(resolved.Artist); // the first credits list has no main artist, and lists are not mixed
     }
 
-    [Fact]
-    public void Several_main_artists_are_joined_and_other_roles_are_not_shown_as_the_artist()
+    [Theory]
+    [InlineData("""{ "role": "artist", "artist": { "name": "A" } }""", "A")]
+    [InlineData("""{ "role": "artist", "artist": { "name": "A" } }, { "role": "featured", "artist": { "name": "F" } }""", "A & F")]
+    [InlineData("""{ "role": "artist", "artist": { "name": "A" } }, { "role": "guitar", "artist": { "name": "G" } }, { "role": "featured", "artist": { "name": "F" } }, { "role": "artist", "artist": { "name": "B" } }""", "A, F & B")]
+    public void Main_and_featured_artists_are_joined_with_commas_and_an_ampersand_and_other_roles_are_left_out(string credits, string expected)
     {
-        var resolved = Resolution.Resolve([Doc("""
-            "credits": [ { "role": "artist", "artist": { "name": "A" } }, { "role": "featured", "artist": { "name": "F" } }, { "role": "artist", "artist": { "name": "B" } } ]
-            """)]);
+        Assert.Equal(expected, Resolution.Resolve([Doc($"\"credits\": [ {credits} ]")]).Artist);
+    }
 
-        Assert.Equal("A, B", resolved.Artist);
+    [Fact]
+    public void The_cover_carries_its_hash_only_when_the_hash_is_well_formed()
+    {
+        var hash = new string('a', 64);
+
+        Assert.Equal(hash, Resolution.Resolve([Doc($$""" "artwork": [ { "url": "https://example.com/f.jpg", "role": "front", "sha256": "{{hash}}" } ] """)]).CoverSha256);
+        Assert.Null(Resolution.Resolve([Doc(""" "artwork": [ { "url": "https://example.com/f.jpg", "role": "front", "sha256": "ABC" } ] """)]).CoverSha256);
     }
 
     [Fact]

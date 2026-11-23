@@ -26,6 +26,10 @@ public partial class AppSettings : ObservableObject
     [ObservableProperty]
     public partial bool CoverLookupEnabled { get; set; } = true;
 
+    /// <summary>Download the covers that a song's metadata links to (the host of the link sees the user's address).</summary>
+    [ObservableProperty]
+    public partial bool DownloadArtworkEnabled { get; set; } = true;
+
     /// <summary>Take the accent colour from the cover of the song that is playing.</summary>
     [ObservableProperty]
     public partial bool FollowCoverAccent { get; set; } = true;

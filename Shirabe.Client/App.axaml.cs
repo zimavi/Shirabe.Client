@@ -9,6 +9,7 @@ using Shirabe.Client.Services;
 using Shirabe.Client.Studio;
 using Shirabe.Client.ViewModels;
 using Shirabe.Client.Views;
+using Shirabe.Core.Metadata;
 using Shirabe.Core.Playback;
 using Shirabe.Library;
 
@@ -31,7 +32,7 @@ public partial class App : Application
         var settings = AppSettings.Load(Path.Combine(dataFolder, "settings.json"));
         var themes = ThemeCatalog.Load(Path.Combine(dataFolder, "themes"));
         var mainViewModel = CreateMainViewModel(
-            new SettingsViewModel(settings, themes), library => new StudioViewModel(new FilePicker(GetMainWindow), library, library), out var player);
+            new SettingsViewModel(settings, themes), library => new StudioViewModel(new FilePicker(GetMainWindow), library, library), settings, out var player);
         _ = new Appearance(this, settings, themes, mainViewModel.Player); // subscribes itself; applies the theme before any window exists
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -157,7 +158,7 @@ public partial class App : Application
 
     // The app still opens without a working audio engine so the reason can be shown, e.g. a missing bass.dll.
     private static MainViewModel CreateMainViewModel(
-        SettingsViewModel settings, Func<LocalLibrary?, StudioViewModel> studio, out IAudioPlayer? player)
+        SettingsViewModel settings, Func<LocalLibrary?, StudioViewModel> studio, AppSettings appSettings, out IAudioPlayer? player)
     {
         try
         {
@@ -178,6 +179,7 @@ public partial class App : Application
         try
         {
             var library = LocalLibrary.Open(libraryPath);
+            _ = new LinkedCovers(playerViewModel, appSettings, library); // subscribes itself
             var songs = new SongsViewModel(library, library, new FolderPicker(GetMainWindow), playerViewModel,
                 track => new PropertiesViewModel(library, library, track, new FilePicker(GetMainWindow), library));
             return new MainViewModel(playerViewModel, songs, null, settings: settings, studioFactory: () => studio(library));

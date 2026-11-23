@@ -18,7 +18,32 @@ internal static class TagReader
 {
     private const int MaxListedValue = 300;
 
-    static TagReader() => ATL.Settings.OutputStacktracesToConsole = false;
+    static TagReader()
+    {
+        ATL.Settings.OutputStacktracesToConsole = false;
+#if DEBUG
+        // ATL does not throw for most of what goes wrong (a corrupt tag, an unsupported frame); it only logs. Debug builds show that log.
+        var log = new ATL.Logging.Log();
+        log.Register(new AtlConsoleLog());
+        log.SwitchSync(); // written when it happens, not from a background thread later
+        ATL.Logging.LogDelegator.SetLog(ref log);
+#endif
+    }
+
+#if DEBUG
+    /// <summary>ATL's warnings and errors, on the console like the rest of the Debug log (Services/DebugLog.cs).</summary>
+    private sealed class AtlConsoleLog : ATL.Logging.ILogDevice
+    {
+        public void DoLog(ATL.Logging.Log.LogItem item)
+        {
+            // ATL's levels count down: error 1, warning 2, info 4, debug 8.
+            if (item.Level > ATL.Logging.Log.LV_WARNING) return;
+
+            var level = item.Level <= ATL.Logging.Log.LV_ERROR ? "error" : "warning";
+            Console.Error.WriteLine($"[Shirabe] ATL {level}: {item.Message}{(string.IsNullOrEmpty(item.Location) ? "" : $" ({item.Location})")}");
+        }
+    }
+#endif
 
     /// <summary>Reads the embedded tags. A file without a title tag is titled after its file name.</summary>
     /// <exception cref="InvalidDataException">The file is not audio, or it is corrupt.</exception>
@@ -48,6 +73,20 @@ internal static class TagReader
     /// <exception cref="IOException">The format cannot be written, or the write failed.</exception>
     public static void WriteEmbeddedDocument(string path, string json)
     {
+        // ATL hides a sharing violation behind "could not save"; say what is wrong instead of blaming the format.
+        try
+        {
+            using (new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None)) { }
+        }
+        catch (IOException ex) when (ex is not (FileNotFoundException or DirectoryNotFoundException))
+        {
+            throw new IOException("The audio file is open in another program (a player, for example), so it cannot be written to.", ex);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            // read-only: Save below reports it the same way as before
+        }
+
         var track = new ATL.Track(path);
         track.AdditionalFields["SHIRABE_METADATA"] = json;
         if (!track.Save()) throw new IOException("The tag could not be written (this format may not support writing tags).");

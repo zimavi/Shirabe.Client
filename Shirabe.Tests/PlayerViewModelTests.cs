@@ -18,6 +18,74 @@ public class PlayerViewModelTests
         _viewModel = new PlayerViewModel(_player);
     }
 
+    private static TrackSummary Song(string title) =>
+        new(Guid.NewGuid(), title, "Artist", "Album", TimeSpan.FromSeconds(100), new Uri(Path.Combine(Path.GetTempPath(), title + ".mp3")).AbsoluteUri);
+
+    [Fact]
+    public async Task TrackLoaded_is_raised_for_every_song_loaded_with_the_new_songs_details_already_set()
+    {
+        var seen = new List<(string Title, double Position, double Duration)>();
+        _viewModel.TrackLoaded += (_, _) => seen.Add((_viewModel.Title, _viewModel.PositionSeconds, _viewModel.DurationSeconds));
+        var a = Song("A");
+        _player.Duration = TimeSpan.FromSeconds(100);
+
+        await _viewModel.PlayAsync(a);
+        _player.Duration = TimeSpan.FromSeconds(200);
+        _viewModel.PositionSeconds = 30; // far into the song
+        await _viewModel.PlayAsync(Song("B"));
+        await _viewModel.PlayAsync(a); // the same song again counts too
+
+        Assert.Equal([("A", 0, 100), ("B", 0, 200), ("A", 0, 200)], seen);
+    }
+
+    [Fact]
+    public async Task TrackLoaded_is_not_raised_when_the_song_cannot_be_loaded()
+    {
+        var raised = 0;
+        _viewModel.TrackLoaded += (_, _) => raised++;
+        _player.LoadException = new FileNotFoundException();
+
+        await _viewModel.PlayAsync(Song("A"));
+
+        Assert.Equal(0, raised);
+    }
+
+    // Switching songs while one plays: the engine goes Playing, Paused, Playing, and the view model reads its state when the
+    // posted update runs, so IsPlaying never changes. That is why Discord presence listens to TrackLoaded as well.
+    [Fact]
+    public async Task Switching_songs_while_playing_does_not_change_IsPlaying_but_raises_TrackLoaded()
+    {
+        var posts = new QueueContext();
+        SynchronizationContext.SetSynchronizationContext(posts);
+        var viewModel = new PlayerViewModel(_player);
+        SynchronizationContext.SetSynchronizationContext(null);
+        await viewModel.PlayAsync(Song("A"));
+        posts.Run();
+        Assert.True(viewModel.IsPlaying);
+        var isPlayingChanges = 0;
+        var loaded = 0;
+        viewModel.PropertyChanged += (_, e) => isPlayingChanges += e.PropertyName == nameof(PlayerViewModel.IsPlaying) ? 1 : 0;
+        viewModel.TrackLoaded += (_, _) => loaded++;
+
+        await viewModel.PlayAsync(Song("B"));
+        posts.Run();
+
+        Assert.Equal(0, isPlayingChanges);
+        Assert.Equal(1, loaded);
+    }
+
+    private sealed class QueueContext : SynchronizationContext
+    {
+        private readonly Queue<(SendOrPostCallback Callback, object? State)> _posted = new();
+
+        public override void Post(SendOrPostCallback d, object? state) => _posted.Enqueue((d, state));
+
+        public void Run()
+        {
+            while (_posted.TryDequeue(out var item)) item.Callback(item.State);
+        }
+    }
+
     [Fact]
     public void Volume_starts_at_the_players_volume_and_changes_it()
     {

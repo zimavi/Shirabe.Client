@@ -37,6 +37,12 @@ public interface IAudioPlayer : IDisposable
     /// <summary>Replaces the current source and leaves the player paused at the start.</summary>
     Task LoadAsync(IMediaSource source, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Lets go of the loaded source and closes its file, so that something else can write to it. The player is then
+    /// <see cref="PlaybackState.Stopped"/> with nothing loaded; <see cref="LoadAsync"/> brings a source back.
+    /// </summary>
+    void Release();
+
     void Play();
 
     void Pause();

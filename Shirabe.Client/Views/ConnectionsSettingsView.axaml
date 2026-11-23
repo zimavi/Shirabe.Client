@@ -18,5 +18,11 @@
                           IsEnabled="{Binding Settings.DiscordPresenceEnabled}">
             <ToggleSwitch IsChecked="{Binding Settings.CoverLookupEnabled}" AutomationProperties.Name="Cover lookup" />
         </views:SettingRow>
+
+        <TextBlock Classes="section" Text="ARTWORK" Margin="0,12,0,0" />
+        <views:SettingRow Title="Download linked artwork"
+                          Description="When a song's metadata links to a cover, it is downloaded as the song is shown and kept on this computer. The website it comes from can see your address and that you played this song.">
+            <ToggleSwitch IsChecked="{Binding Settings.DownloadArtworkEnabled}" AutomationProperties.Name="Download linked artwork" />
+        </views:SettingRow>
     </StackPanel>
 </UserControl>
