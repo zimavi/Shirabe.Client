@@ -9,8 +9,12 @@ public sealed class FileDocumentViewModel
 {
     private const int MaxLineLength = 110;
 
-    public FileDocumentViewModel(StoredDocument stored)
+    private readonly bool _canEdit;
+
+    /// <param name="canEdit">Studio is there to hand the document to.</param>
+    public FileDocumentViewModel(StoredDocument stored, bool canEdit = false)
     {
+        _canEdit = canEdit;
         Stored = stored;
         Document = MetadataDocument.TryParseFile(stored.Json, out var documents, out _) && documents.Count == 1 ? documents[0] : null;
     }
@@ -47,6 +51,9 @@ public sealed class FileDocumentViewModel
     /// <summary>One line per field: <c>name: value</c>, long values shortened.</summary>
     public IReadOnlyList<string> FieldLines =>
         [.. (Document?.Fields ?? new Dictionary<string, JsonElement>()).Select(f => Line(f.Key, f.Value))];
+
+    /// <summary>Any document that can be read as one, even one that breaks the standard (that is what the editor is for), can be edited.</summary>
+    public bool CanEdit => _canEdit && Document is not null;
 
     /// <summary>Only a valid personal document can be copied into the person's own fields.</summary>
     public bool CanCopy => Document is not null && Stored.IsValid && Stored.Layer == "personal";

@@ -37,14 +37,7 @@ public sealed class StudioDocumentViewModel : ViewModelBase
     public string Heading => Document.Title ?? Document.SubjectId ?? "Document";
 
     /// <summary>"Follows the standard", or what is wrong, in a few words.</summary>
-    public string Status =>
-        (ErrorCount, WarningCount) switch
-        {
-            (0, 0) => "Follows the standard",
-            (0, var w) => $"Follows the standard, {Count(w, "warning")}",
-            (var e, 0) => $"Does not follow the standard: {Count(e, "error")}",
-            (var e, var w) => $"Does not follow the standard: {Count(e, "error")}, {Count(w, "warning")}",
-        };
+    public string Status => StandardStatus.Describe(ErrorCount, WarningCount);
 
     /// <summary>The main facts, one per line, skipping what the document does not say.</summary>
     public IReadOnlyList<string> Facts
@@ -64,5 +57,4 @@ public sealed class StudioDocumentViewModel : ViewModelBase
         }
     }
 
-    private static string Count(int n, string noun) => n == 1 ? $"1 {noun}" : $"{n} {noun}s";
 }

@@ -61,7 +61,7 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
     public async Task<IReadOnlyList<TrackSummary>> GetTracksAsync(CancellationToken cancellationToken = default)
     {
         await using var db = new LibraryDbContext(_options);
-        return await db.Recordings
+        var tracks = await db.Recordings
             .AsNoTracking()
             .Where(r => r.Sources.Any(s => !s.IsMissing))
             .OrderBy(r => EF.Functions.Collate(r.Title, "NOCASE"))
@@ -75,6 +75,8 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
                 r.Sources.Where(s => !s.IsMissing).OrderBy(s => s.Uri).Select(s => s.Uri).First(),
                 r.ArtworkFile == null ? null : Path.Combine(_artwork.Directory, r.ArtworkFile)))
             .ToListAsync(cancellationToken);
+
+        return await WithDocumentsAsync(db, tracks, cancellationToken);
     }
 
     public Task<ScanResult> ScanFolderAsync(

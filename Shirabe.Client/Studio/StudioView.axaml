@@ -21,8 +21,10 @@
                 <TextBlock Text="Check and read Shirabe metadata. Everything stays on this computer."
                            Foreground="{DynamicResource TextSecondaryBrush}" />
             </StackPanel>
-            <Button Grid.Column="1" Classes="accent" Content="Open a document..." Command="{Binding OpenCommand}"
-                    VerticalAlignment="Center" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <Button Classes="quiet" Content="New document..." Padding="14,8" Command="{Binding NewDocumentCommand}" />
+                <Button Classes="accent" Content="Open a document..." Command="{Binding OpenCommand}" />
+            </StackPanel>
         </Grid>
 
         <StackPanel Grid.Row="1" Spacing="4" Margin="0,12,0,0">
@@ -32,7 +34,7 @@
         </StackPanel>
 
         <Panel Grid.Row="2">
-            <ScrollViewer IsVisible="{Binding HasDocuments}">
+            <ScrollViewer IsVisible="{Binding ShowDocuments}">
                 <ItemsControl ItemsSource="{Binding Documents}" Margin="0,12,12,24">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="studio:StudioDocumentViewModel">
@@ -78,6 +80,10 @@
                                             Command="{Binding $parent[ItemsControl].((studio:StudioViewModel)DataContext).ApplyToSongCommand}"
                                             CommandParameter="{Binding}" />
 
+                                    <Button Classes="quiet" Content="Edit..." HorizontalAlignment="Left" Padding="14,8"
+                                            Command="{Binding $parent[ItemsControl].((studio:StudioViewModel)DataContext).EditDocumentCommand}"
+                                            CommandParameter="{Binding}" />
+
                                     <Expander Header="The document (JSON)">
                                         <ScrollViewer MaxHeight="360" HorizontalScrollBarVisibility="Auto">
                                             <SelectableTextBlock Text="{Binding Json}" FontFamily="Consolas, Menlo, monospace" FontSize="12"
@@ -90,6 +96,8 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
+
+            <ContentControl Content="{Binding Editor}" IsVisible="{Binding IsEditing}" />
 
             <StackPanel Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding ShowEmptyState}">
                 <PathIcon Data="{DynamicResource Icon.Studio}" Width="40" Height="40"
@@ -105,6 +113,11 @@
         <!-- Choosing the song a document is applied to, over the whole page -->
         <Border Background="#B0000000" IsVisible="{Binding Applying, Converter={x:Static ObjectConverters.IsNotNull}}">
             <ContentControl Content="{Binding Applying}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Border>
+
+        <!-- Choosing the song and layer of a new document, over the whole page -->
+        <Border Background="#B0000000" IsVisible="{Binding Picking, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <ContentControl Content="{Binding Picking}" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Border>
     </Panel>
 </UserControl>

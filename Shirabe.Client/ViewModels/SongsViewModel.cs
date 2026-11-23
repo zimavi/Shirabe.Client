@@ -42,6 +42,9 @@ public partial class SongsViewModel(
     [ObservableProperty]
     public partial PropertiesViewModel? Properties { get; set; }
 
+    /// <summary>Raised when the person wants to edit a document of a song in Studio. The shell shows Studio.</summary>
+    public event EventHandler<StudioEditRequest>? EditInStudioRequested;
+
     public bool HasTracks => Tracks.Count > 0;
 
     /// <summary>Not while scanning: the list is still empty then, and "No songs yet" would be wrong.</summary>
@@ -149,6 +152,12 @@ public partial class SongsViewModel(
 
         var dialog = propertiesFactory(track);
         dialog.Closed += (_, _) => Properties = null;
+        dialog.CanEditInStudio = EditInStudioRequested is not null;
+        dialog.EditRequested += (_, document) =>
+        {
+            Properties = null;
+            EditInStudioRequested?.Invoke(this, new StudioEditRequest(track, document));
+        };
         Properties = dialog;
         await dialog.LoadAsync();
     }

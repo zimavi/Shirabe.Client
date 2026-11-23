@@ -28,6 +28,16 @@ public partial class MainViewModel : ViewModelBase
         Settings = settings ?? new SettingsViewModel(new AppSettings(), new ThemeCatalog([], []));
         _home = new HomeViewModel(libraryNotice);
         CurrentPage = _home;
+
+        // A document of a song that the person wants to edit goes to Studio.
+        if (songs is not null && studioFactory is not null) songs.EditInStudioRequested += (_, request) => OpenEditorInStudio(request);
+    }
+
+    private void OpenEditorInStudio(StudioEditRequest request)
+    {
+        var studio = GetStudio();
+        CurrentPage = studio;
+        studio.OpenEditor(request.Document.Json, request.Song, $"Editing the {request.Document.Layer} document of \"{request.Song.Title}\"");
     }
 
     public PlayerViewModel? Player { get; }

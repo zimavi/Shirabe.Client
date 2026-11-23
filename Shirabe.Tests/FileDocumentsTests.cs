@@ -72,9 +72,90 @@ public sealed class FileDocumentsTests : IDisposable
 
     private async Task<ScanResult> Scan() => await _library.ScanFolderAsync(_music, cancellationToken: Ct);
 
-    private async Task<Guid> IdOf(string title) => (await _library.GetTracksAsync(Ct)).Single(t => t.Title == title).RecordingId;
+    // By the title in the file's tags, as the database holds it: a document may give the song another title in the list.
+    private async Task<Guid> IdOf(string title)
+    {
+        await using var db = new LibraryDbContext(new DbContextOptionsBuilder<LibraryDbContext>()
+            .UseSqlite(new SqliteConnectionStringBuilder { DataSource = _dbPath }.ToString()).Options);
+        return await db.Recordings.Where(r => r.Title == title).Select(r => r.Id).SingleAsync(Ct);
+    }
 
     private static JsonElement Json(string json) => JsonDocument.Parse(json).RootElement.Clone();
+
+    // ---- the songs show what the documents say ----
+
+    private const string ArtistA = """ "credits": [ { "role": "artist", "artist": { "name": "Artist From Doc" } }, { "role": "guitar", "artist": { "name": "Guitarist" } } ] """;
+    private const string Release = """ "releases": [ { "title": "Album From Doc" } ] """;
+    private const string Cover = """ "artwork": [ { "url": "https://example.com/back.jpg", "role": "back" }, { "url": "https://example.com/front.jpg", "role": "front" } ] """;
+    private const string Link = """ "links": [ { "url": "https://example.com/story", "label": "The story" } ] """;
+
+    [Fact]
+    public async Task A_canonical_document_found_by_the_scan_decides_what_the_song_shows_and_the_tags_fill_the_rest()
+    {
+        Sidecar(Song("a1.flac", "a1.flac"), Doc("canonical", title: "Doc Title", field: $"{ArtistA}, {Cover}, {Link}"));
+
+        await Scan();
+
+        var track = Assert.Single(await _library.GetTracksAsync(Ct));
+        Assert.Equal(("Doc Title", "Artist From Doc"), (track.Title, track.Artist));
+        Assert.Equal("Album X", track.Album); // no releases in the document: the tag stays
+        Assert.Equal(("https://example.com/front.jpg", "https://example.com/story", "The story"), (track.CoverUrl, track.LinkUrl, track.LinkLabel));
+    }
+
+    [Fact]
+    public async Task The_artist_document_comes_before_the_community_one_field_by_field()
+    {
+        var path = Song("a1.flac", "a1.flac");
+        Sidecar(path, $"[{Doc("community", title: "Community Title", field: Release)}, {Doc("canonical", title: "Canonical Title")}]");
+
+        await Scan();
+
+        var track = Assert.Single(await _library.GetTracksAsync(Ct));
+        Assert.Equal(("Canonical Title", "Album From Doc"), (track.Title, track.Album));
+    }
+
+    [Fact]
+    public async Task Documents_that_break_the_standard_and_personal_ones_do_not_change_the_songs()
+    {
+        var path = Song("a1.flac", "a1.flac");
+        Sidecar(path, $"[{Doc("personal", title: "My Title")}, {Doc("community", title: "Broken", field: "\"nonsense\": 1")}]");
+        Embed(Song("c1.mp3", "c1.mp3"), Doc("canonical", title: "http link", field: """ "links": [ { "url": "http://example.com/x", "label": "Plain http" } ] """));
+
+        await Scan();
+
+        var tracks = await _library.GetTracksAsync(Ct);
+        Assert.Equal(["First Song", "Sunrise"], tracks.Select(t => t.Title));
+        Assert.All(tracks, t => Assert.Null(t.LinkUrl));
+    }
+
+    [Fact]
+    public async Task The_songs_go_back_to_their_tags_when_the_document_goes_away_and_stay_in_title_order()
+    {
+        var one = Song("a1.flac", "a1.flac");
+        Song("b1.flac", "b1.flac"); // "Lonely Single"
+        Sidecar(one, Doc("canonical", title: "Zebra"));
+
+        await Scan();
+        Assert.Equal(["Lonely Single", "Zebra"], (await _library.GetTracksAsync(Ct)).Select(t => t.Title));
+
+        File.Delete(SidecarFile.PathFor(one));
+        await Scan();
+        Assert.Equal(["First Song", "Lonely Single"], (await _library.GetTracksAsync(Ct)).Select(t => t.Title));
+    }
+
+    [Fact]
+    public async Task A_document_applied_by_the_person_shows_at_once_and_the_sidecar_yields_to_it()
+    {
+        var path = Song("a1.flac", "a1.flac");
+        Sidecar(path, Doc("canonical", title: "From sidecar"));
+        await Scan();
+        var id = (await _library.GetTracksAsync(Ct)).Single().RecordingId;
+
+        Assert.True(MetadataDocument.TryParseFile(Doc("canonical", title: "Chosen by me"), out var chosen, out _));
+        await _library.ApplyAsync(id, chosen.Single(), dryRun: false, Ct);
+
+        Assert.Equal("Chosen by me", (await _library.GetTracksAsync(Ct)).Single().Title);
+    }
 
     // ---- loading right away, at scan time ----
 
@@ -482,7 +563,7 @@ public sealed class FileDocumentsTests : IDisposable
         var preview = await _library.ApplyAsync(id, first, dryRun: true, Ct);
         Assert.Equal(ApplyKind.Keep, Assert.Single(preview).Kind);
         Assert.Contains("Keep this canonical document (artist, Someone, revision 1)", preview[0].Text);
-        Assert.Contains("do not change the Songs list yet", preview[0].Text); // honest about what it does today
+        Assert.Contains("replace the tags' in the Songs list", preview[0].Text);
         Assert.Empty(await _library.GetDocumentsAsync(id, Ct));
 
         await _library.ApplyAsync(id, first, dryRun: false, Ct);

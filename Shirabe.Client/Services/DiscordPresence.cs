@@ -55,10 +55,11 @@ public sealed class DiscordPresence : IDisposable
 
     private async void Update()
     {
-        string? cover = null;
+        // A cover the song's own metadata points to is already a public address: no need to look one up.
+        string? cover = _player.CurrentTrack?.CoverUrl;
         var artist = _player.Subtitle;
         var album = _player.Album;
-        var lookup = _settings.CoverLookupEnabled && artist is not (null or "Unknown artist") && !string.IsNullOrWhiteSpace(album);
+        var lookup = cover is null && _settings.CoverLookupEnabled && artist is not (null or "Unknown artist") && !string.IsNullOrWhiteSpace(album);
         var cached = lookup && _covers.TryGetCached(artist!, album!, out cover);
 
         SetPresence(cover);
@@ -76,11 +77,11 @@ public sealed class DiscordPresence : IDisposable
         _client.SetPresence(Build(_player.Title, _player.Subtitle, _player.Album, cover, _player.IsPlaying,
             _player.IsRepeatActive, _player.IsRepeatOne,
             TimeSpan.FromSeconds(_player.PositionSeconds), TimeSpan.FromSeconds(_player.DurationSeconds),
-            DateTime.UtcNow));
+            DateTime.UtcNow, _player.CurrentTrack?.LinkUrl, _player.CurrentTrack?.LinkLabel));
     }
 
     /// <summary>Title on the first line, artist on the second, album on the third. Timestamps make the progress bar.</summary>
-    public static RichPresence Build(string title, string? artist, string? album, string? coverUrl, bool isPlaying, bool isRepeat, bool isRepeatOne, TimeSpan position, TimeSpan duration, DateTime now)
+    public static RichPresence Build(string title, string? artist, string? album, string? coverUrl, bool isPlaying, bool isRepeat, bool isRepeatOne, TimeSpan position, TimeSpan duration, DateTime now, string? linkUrl = null, string? linkLabel = null)
     {
         var start = now - position;
         var presence = new RichPresence
@@ -99,16 +100,21 @@ public sealed class DiscordPresence : IDisposable
             SmallImageText = isPlaying ? (isRepeatOne ? "On repeat" : isRepeat ? "Playlist on repeat" : "Playing") : "Paused"
         };
 
+        // The link the song's metadata gives, as the card's button (Discord shows it to others, not to you). Its limits: a
+        // label of up to 31 bytes, an address of up to 512 characters; a long label is cut, a long address leaves the button out.
+        if (linkUrl is { Length: <= 512 } && Fit(linkLabel, 31) is { } label)
+            presence.Buttons = [new Button { Label = label, Url = linkUrl }];
+
         return presence;
     }
 
     // Discord rejects fields shorter than 2 or longer than 128 bytes; the library throws on the latter.
-    private static string? Fit(string? text)
+    private static string? Fit(string? text, int maxBytes = 120)
     {
         if (string.IsNullOrWhiteSpace(text)) return null;
 
         text = text.Trim();
-        while (System.Text.Encoding.UTF8.GetByteCount(text) > 120) text = text[..^1];
+        while (System.Text.Encoding.UTF8.GetByteCount(text) > maxBytes) text = text[..^1];
         return text.Length < 2 ? text + "​" : text;
     }
 }

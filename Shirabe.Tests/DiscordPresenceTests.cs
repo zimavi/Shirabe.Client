@@ -44,6 +44,39 @@ public class DiscordPresenceTests
         Assert.True(presence.Assets.LargeImageText.Length >= 2);
     }
 
+    [Fact]
+    public void A_link_from_the_metadata_becomes_the_cards_button()
+    {
+        var presence = DiscordPresence.Build("Song", null, null, null, true, false, false, TimeSpan.Zero, TimeSpan.Zero, Now,
+            "https://example.com/story", "The story");
+
+        var button = Assert.Single(presence.Buttons);
+        Assert.Equal(("The story", "https://example.com/story"), (button.Label, button.Url));
+    }
+
+    [Theory]
+    [InlineData(null, null)]
+    [InlineData("https://example.com/story", null)] // a link says nothing without its label
+    [InlineData(null, "The story")]
+    public void Without_a_whole_link_there_is_no_button(string? url, string? label)
+    {
+        var presence = DiscordPresence.Build("Song", null, null, null, true, false, false, TimeSpan.Zero, TimeSpan.Zero, Now, url, label);
+
+        Assert.Null(presence.Buttons);
+    }
+
+    [Fact]
+    public void A_label_is_fitted_and_an_address_discord_would_reject_is_left_out()
+    {
+        var long_label = DiscordPresence.Build("Song", null, null, null, true, false, false, TimeSpan.Zero, TimeSpan.Zero, Now,
+            "https://example.com/story", new string('я', 40));
+        var long_url = DiscordPresence.Build("Song", null, null, null, true, false, false, TimeSpan.Zero, TimeSpan.Zero, Now,
+            "https://example.com/" + new string('a', 600), "The story");
+
+        Assert.True(System.Text.Encoding.UTF8.GetByteCount(Assert.Single(long_label.Buttons).Label) <= 31);
+        Assert.Null(long_url.Buttons);
+    }
+
     private const string Response = """
         {"results":[
           {"collectionName":"Discovery (Deluxe)","artistName":"Someone Else","artworkUrl100":"https://x/wrong/100x100bb.jpg"},

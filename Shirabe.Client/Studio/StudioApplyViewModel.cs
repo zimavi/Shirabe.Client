@@ -10,9 +10,6 @@ namespace Shirabe.Client.Studio;
 /// <summary>Choosing the song an opened document is applied to, then seeing exactly what applying would do (see <see cref="ApplyViewModel"/>).</summary>
 public partial class StudioApplyViewModel : ViewModelBase
 {
-    /// <summary>A long library would make the list slow to build for no benefit: typing narrows it.</summary>
-    private const int MaxListed = 300;
-
     private readonly IDocumentStore _store;
     private readonly IReadOnlyList<TrackSummary> _all;
     private readonly MetadataDocument _document;
@@ -23,7 +20,7 @@ public partial class StudioApplyViewModel : ViewModelBase
         _all = songs;
         _document = document;
         Heading = heading;
-        Songs = Filtered("");
+        Songs = SongFilter.Filter(songs, "");
 
         // A document exported from this library names the recording it is about by its id.
         if (Guid.TryParse(document.SubjectId, out var id) && songs.FirstOrDefault(t => t.RecordingId == id) is { } about)
@@ -56,7 +53,7 @@ public partial class StudioApplyViewModel : ViewModelBase
 
     public event EventHandler? Closed;
 
-    partial void OnFilterChanged(string value) => Songs = Filtered(value);
+    partial void OnFilterChanged(string value) => Songs = SongFilter.Filter(_all, value);
 
     partial void OnSelectedSongChanged(TrackSummary? value)
     {
@@ -76,12 +73,4 @@ public partial class StudioApplyViewModel : ViewModelBase
     [RelayCommand]
     private void Close() => Closed?.Invoke(this, EventArgs.Empty);
 
-    private IReadOnlyList<TrackSummary> Filtered(string filter)
-    {
-        var terms = filter.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        return [.. _all
-            .Where(t => terms.All(term =>
-                $"{t.Title} {t.Artist} {t.Album}".Contains(term, StringComparison.CurrentCultureIgnoreCase)))
-            .Take(MaxListed)];
-    }
 }

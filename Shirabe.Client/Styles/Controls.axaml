@@ -202,6 +202,9 @@
     <Style Selector="Button.quiet:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
     </Style>
+    <Style Selector="Button.quiet:disabled">
+        <Setter Property="Opacity" Value="0.45" />
+    </Style>
 
     <!-- Page headings -->
     <Style Selector="TextBlock.page-title">

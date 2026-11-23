@@ -125,6 +125,10 @@
                                                     HorizontalAlignment="Left" IsVisible="{Binding CanCopy}"
                                                     Command="{Binding $parent[ItemsControl].((vm:PropertiesViewModel)DataContext).CopyDocumentCommand}"
                                                     CommandParameter="{Binding}" />
+                                            <Button Classes="quiet" Content="Edit in Studio..." Padding="12,6" FontSize="12" Margin="0,6,0,0"
+                                                    HorizontalAlignment="Left" IsVisible="{Binding CanEdit}"
+                                                    Command="{Binding $parent[ItemsControl].((vm:PropertiesViewModel)DataContext).EditDocumentCommand}"
+                                                    CommandParameter="{Binding}" />
                                         </StackPanel>
                                     </Border>
                                 </DataTemplate>

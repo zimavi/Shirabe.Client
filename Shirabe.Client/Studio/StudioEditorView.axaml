@@ -1,0 +1,95 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:studio="using:Shirabe.Client.Studio"
+             xmlns:meta="using:Shirabe.Metadata"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="560"
+             x:Class="Shirabe.Client.Studio.StudioEditorView"
+             x:DataType="studio:StudioEditorViewModel">
+    <Panel>
+        <ScrollViewer>
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" Margin="0,12,12,16">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                <TextBlock Text="{Binding Heading}" FontSize="18" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Classes="quiet" Content="Close editor" Padding="14,8" Command="{Binding CloseCommand}" />
+            </Grid>
+
+            <StackPanel Grid.Row="1" Spacing="4" Margin="0,8,0,10">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{Binding TargetText}" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis" />
+                    <Button Grid.Column="1" Classes="quiet" Content="Choose song..." Padding="12,6" FontSize="12"
+                            Command="{Binding ChooseSongCommand}" IsVisible="{Binding CanChooseSong}" />
+                </Grid>
+                <TextBlock Text="{Binding Status}" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="#6CC38A" IsVisible="{Binding IsValid}" />
+                <TextBlock Text="{Binding Status}" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="IndianRed" IsVisible="{Binding !IsValid}" />
+            </StackPanel>
+
+            <TextBox Grid.Row="2" Text="{Binding Text}" AcceptsReturn="True" TextWrapping="NoWrap" Height="320"
+                     FontFamily="Consolas, Menlo, monospace" FontSize="13" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" AutomationProperties.Name="Document" />
+
+            <ScrollViewer Grid.Row="3" MaxHeight="150" Margin="0,10,0,0" IsVisible="{Binding HasProblems}">
+                <ItemsControl ItemsSource="{Binding Problems}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="meta:DocumentProblem">
+                            <Grid ColumnDefinitions="70,*" Margin="0,2">
+                                <TextBlock Text="Error" FontWeight="SemiBold" Foreground="IndianRed" IsVisible="{Binding IsError}" />
+                                <TextBlock Text="Warning" FontWeight="SemiBold" Foreground="#E0B050" IsVisible="{Binding !IsError}" />
+                                <StackPanel Grid.Column="1" Spacing="1">
+                                    <SelectableTextBlock Text="{Binding Path}" FontFamily="Consolas, Menlo, monospace" FontSize="12" />
+                                    <SelectableTextBlock Text="{Binding Message}" FontSize="12" TextWrapping="Wrap"
+                                                         Foreground="{DynamicResource TextSecondaryBrush}" />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="4" Spacing="8" Margin="0,12,0,0">
+                <!-- Writing into the audio file changes the audio file itself: ask first -->
+                <Border IsVisible="{Binding ConfirmingEmbed}" Background="{DynamicResource SurfaceBrush}"
+                        CornerRadius="{DynamicResource RadiusSmall}" Padding="16">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Write this document into the audio file?" FontWeight="SemiBold" />
+                        <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource TextSecondaryBrush}">
+                            This changes the audio file itself: its tags are rewritten with the document added. A copy is kept while it is
+                            written, and put back if anything about the song other than the new tag turns out different. Anyone you share
+                            the file with receives the document.
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                            <Button Classes="quiet" Content="Cancel" Padding="14,8" Command="{Binding CancelEmbedCommand}" />
+                            <Button Classes="accent" Content="Write into the file" Command="{Binding ConfirmEmbedCommand}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <ContentControl Content="{Binding Apply}" />
+
+                <TextBlock Text="{Binding Notice}" Foreground="#6CC38A" FontSize="12" TextWrapping="Wrap" IsVisible="{Binding HasNotice}" />
+                <TextBlock Text="{Binding Error}" Foreground="IndianRed" FontSize="12" TextWrapping="Wrap" IsVisible="{Binding HasError}" />
+
+                <WrapPanel>
+                    <Button Classes="quiet" Content="Format" Padding="14,8" Margin="0,0,8,8" Command="{Binding FormatCommand}"
+                            ToolTip.Tip="Tidy the indentation" />
+                    <Button Classes="accent" Content="Save as file..." Margin="0,0,8,8" Command="{Binding SaveAsFileCommand}"
+                            ToolTip.Tip="Save the document anywhere you choose" />
+                    <Button Classes="quiet" Content="Save as sidecar" Padding="14,8" Margin="0,0,8,8" Command="{Binding SaveAsSidecarCommand}"
+                            ToolTip.Tip="Write .shirabe.json beside the song's audio file. Anyone you share the folder with can read it." />
+                    <Button Classes="quiet" Content="Write into the audio file..." Padding="14,8" Margin="0,0,8,8" Command="{Binding StartEmbedCommand}"
+                            ToolTip.Tip="Put the document into the tags of the audio file itself" />
+                    <Button Classes="quiet" Content="Apply to the library..." Padding="14,8" Margin="0,0,8,8" Command="{Binding ApplyToLibraryCommand}"
+                            ToolTip.Tip="Preview, then add the document to this song in your library" />
+                </WrapPanel>
+            </StackPanel>
+        </Grid>
+        </ScrollViewer>
+
+        <!-- Choosing the song, over the editor -->
+        <Border Background="#B0000000" IsVisible="{Binding Picking, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <ContentControl Content="{Binding Picking}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Border>
+    </Panel>
+</UserControl>

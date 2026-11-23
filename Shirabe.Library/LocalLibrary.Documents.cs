@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Shirabe.Core.Library;
 using Shirabe.Core.Metadata;
 using Shirabe.Library.Model;
 using Shirabe.Metadata;
@@ -27,6 +28,51 @@ public sealed partial class LocalLibrary : IDocumentStore
         static int Rank(string layer) => Array.IndexOf(LayerOrder, layer) is var i and >= 0 ? i : LayerOrder.Length;
         return [.. rows.OrderBy(r => Rank(r.Layer)).ThenBy(r => r.Origin, StringComparer.Ordinal)
             .Select(r => new StoredDocument(r.Origin, r.Layer, r.Json, r.Revision, r.ErrorCount, r.LoadedUtc))];
+    }
+
+    /// <summary>
+    /// Lets the documents say what they say (standard, section 10.3): title, artist, album, cover link and a page link come
+    /// from the canonical document, then the community one, and the tags fill whatever none of them has. Worked out when the
+    /// list is read, so a scan, an apply or an edit shows at once and nothing needs undoing when a document goes away.
+    /// Documents that break the standard are not relied on, and personal ones are never merged into the list automatically.
+    /// </summary>
+    private static async Task<IReadOnlyList<TrackSummary>> WithDocumentsAsync(
+        LibraryDbContext db, List<TrackSummary> tracks, CancellationToken ct)
+    {
+        var rows = await db.MetadataDocuments.AsNoTracking()
+            .Where(d => d.ErrorCount == 0 && (d.Layer == "canonical" || d.Layer == "community"))
+            .Select(d => new { d.RecordingId, d.Layer, d.Origin, d.Json })
+            .ToListAsync(ct);
+        if (rows.Count == 0) return tracks;
+
+        // The person's own choice first, then what the files say; the sidecar is the newer of the two kinds in a file.
+        static int OriginRank(string origin) => origin switch { DocumentOrigin.Applied => 0, DocumentOrigin.Sidecar => 1, _ => 2 };
+        var byRecording = rows.GroupBy(r => r.RecordingId).ToDictionary(g => g.Key, g => g
+            .OrderBy(r => r.Layer == "canonical" ? 0 : 1).ThenBy(r => OriginRank(r.Origin))
+            .Select(r => MetadataDocument.TryParseFile(r.Json, out var parsed, out _) ? parsed[0] : null)
+            .OfType<MetadataDocument>().ToList());
+
+        var retitled = false;
+        for (var i = 0; i < tracks.Count; i++)
+        {
+            if (!byRecording.TryGetValue(tracks[i].RecordingId, out var documents)) continue;
+
+            var said = Resolution.Resolve(documents);
+            var track = tracks[i];
+            tracks[i] = track with
+            {
+                Title = said.Title ?? track.Title,
+                Artist = said.Artist ?? track.Artist,
+                Album = said.Album ?? track.Album,
+                CoverUrl = said.CoverUrl,
+                LinkUrl = said.LinkUrl,
+                LinkLabel = said.LinkLabel,
+            };
+            retitled |= tracks[i].Title != track.Title;
+        }
+
+        // The query sorted by the tags' titles; only a changed title can break that order.
+        return retitled ? [.. tracks.OrderBy(t => t.Title, StringComparer.OrdinalIgnoreCase).ThenBy(t => t.RecordingId)] : tracks;
     }
 
     public async Task<IReadOnlyList<string>> RefreshFromFileAsync(Guid recordingId, CancellationToken cancellationToken = default)
@@ -283,7 +329,7 @@ public sealed partial class LocalLibrary : IDocumentStore
 
         var from = document.SourceName is { } name ? $"{document.SourceKind}, {name}" : document.SourceKind;
         var text = $"Keep this {layer} document ({from}, revision {document.Revision}) with the song. "
-                   + "It is shown in the song's properties; its fields do not change the Songs list yet."
+                   + "It is shown in the song's properties, and the title, artist and album it gives replace the tags' in the Songs list."
                    + (existing is null ? "" : $" It replaces the one kept before (revision {existing.Revision}).");
         if (dryRun) return [new ApplyOutcome(ApplyKind.Keep, text)];
 

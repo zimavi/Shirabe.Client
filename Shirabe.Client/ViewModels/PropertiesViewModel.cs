@@ -41,6 +41,12 @@ public partial class PropertiesViewModel : ViewModelBase
 
     public bool HasExport => _filePicker is not null;
 
+    /// <summary>Studio can take a document of this song to edit. Set by whoever shows the dialog, before it is loaded.</summary>
+    public bool CanEditInStudio { get; set; }
+
+    /// <summary>The person wants to edit this stored document in Studio.</summary>
+    public event EventHandler<StoredDocument>? EditRequested;
+
     public TrackSummary Track { get; }
 
     public string Title => Track.Title;
@@ -187,13 +193,19 @@ public partial class PropertiesViewModel : ViewModelBase
         try
         {
             var problems = await _documents.RefreshFromFileAsync(Track.RecordingId);
-            Documents = [.. (await _documents.GetDocumentsAsync(Track.RecordingId)).Select(d => new FileDocumentViewModel(d))];
+            Documents = [.. (await _documents.GetDocumentsAsync(Track.RecordingId)).Select(d => new FileDocumentViewModel(d, CanEditInStudio))];
             DocumentsNotice = problems.Count > 0 ? string.Join('\n', problems) : null;
         }
         catch (Exception ex)
         {
             DocumentsNotice = $"Could not load the documents of this song: {ex.Message}";
         }
+    }
+
+    [RelayCommand]
+    private void EditDocument(FileDocumentViewModel? document)
+    {
+        if (document is not null) EditRequested?.Invoke(this, document.Stored);
     }
 
     /// <summary>Anything typed, added or removed in the dialog that has not been saved.</summary>
