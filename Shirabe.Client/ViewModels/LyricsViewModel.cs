@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
 using Shirabe.Client.Services;
 using Shirabe.Core.Lyrics;
 
@@ -55,7 +56,9 @@ public sealed partial class LyricLineViewModel : ObservableObject
         Line = line;
         _until = line.End ?? until;
         Words = line.Words is { Count: > 0 } words ? [.. words.Select(w => new LyricWordViewModel(w))] : [];
-        BackgroundWords = line.BackgroundWords is { Count: > 0 } sung ? [.. sung.Select(w => new LyricWordViewModel(w))] : [];
+        BackgroundWords = line.BackgroundWords is { Count: > 0 } sung
+            ? [.. sung.Select(w => new LyricWordViewModel(w))]
+            : [];
     }
 
     private readonly TimeSpan? _until;
@@ -63,7 +66,8 @@ public sealed partial class LyricLineViewModel : ObservableObject
     public LyricLine Line { get; }
 
     /// <summary>The line's text, without its background vocal when that is switched off.</summary>
-    public string Text => ShowBackground || Line.Background is null || !Line.Text.EndsWith(Line.Background, StringComparison.Ordinal)
+    public string Text => ShowBackground || Line.Background is null ||
+                          !Line.Text.EndsWith(Line.Background, StringComparison.Ordinal)
         ? Line.Text
         : Line.Text[..^Line.Background.Length].TrimEnd();
 
@@ -155,6 +159,8 @@ public partial class LyricsViewModel : ViewModelBase
     private CancellationTokenSource? _loading;
     private TrackKey? _loadedFor;
     private IReadOnlyList<LyricLine> _timeline = [];
+    private readonly HashSet<int> _active = []; // rows being sung now (see LyricsTimeline.Active)
+    private readonly List<int> _sungNow = [];
     private readonly AppSettings _settings;
 
     // The song the lyrics were looked up for, so a late answer for the previous song is recognised and dropped.
@@ -294,7 +300,14 @@ public partial class LyricsViewModel : ViewModelBase
         SourceText = lyrics is null ? null : $"Lyrics {lyrics.Source}";
         CurrentIndex = -1;
         _timeline = lyrics?.Lines ?? [];
-        Lines = lyrics is null ? [] : [.. lyrics.Lines.Select((l, i) => new LyricLineViewModel(l, i + 1 < lyrics.Lines.Count ? lyrics.Lines[i + 1].Start : null))];
+        _active.Clear();
+        Lines = lyrics is null
+            ? []
+            :
+            [
+                .. lyrics.Lines.Select((l, i) =>
+                    new LyricLineViewModel(l, i + 1 < lyrics.Lines.Count ? lyrics.Lines[i + 1].Start : null))
+            ];
         ApplyDisplaySettings();
         OnPropertyChanged(nameof(NoLyricsText));
         OnPropertyChanged(nameof(NoLyricsHint));
@@ -307,20 +320,25 @@ public partial class LyricsViewModel : ViewModelBase
         if (!IsSynced || Lines.Count == 0) return;
 
         var position = clock - Delay;
-        var index = LyricsTimeline.CurrentIndex(_timeline, position);
-        if (index != CurrentIndex)
-        {
-            if (CurrentIndex >= 0)
-            {
-                Lines[CurrentIndex].IsCurrent = false;
-                Lines[CurrentIndex].ResetWords();
-            }
+        LyricsTimeline.Active(_timeline, position, _sungNow);
 
-            if (index >= 0) Lines[index].IsCurrent = true;
-            CurrentIndex = index;
+        // A line that is no longer sung starts over; every line sung now (more than one when lines overlap) is brought up to date.
+        _active.RemoveWhere(row =>
+        {
+            if (_sungNow.Contains(row)) return false;
+            Lines[row].IsCurrent = false;
+            Lines[row].ResetWords();
+            return true;
+        });
+
+        foreach (var row in _sungNow)
+        {
+            if (_active.Add(row)) Lines[row].IsCurrent = true;
+            Lines[row].UpdateWords(position);
         }
 
-        if (index >= 0) Lines[index].UpdateWords(position);
+        // The view scrolls to the latest line that started.
+        CurrentIndex = _sungNow.Count > 0 ? _sungNow[0] : -1;
     }
 
     /// <summary>Moves playback to the start of a line. Plain lyrics have no times and gaps are not lines, so nothing happens.</summary>

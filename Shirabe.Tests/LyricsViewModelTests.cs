@@ -2,6 +2,7 @@ using Shirabe.Client.Services;
 using Shirabe.Client.ViewModels;
 using Shirabe.Core.Library;
 using Shirabe.Core.Lyrics;
+
 using Xunit;
 
 namespace Shirabe.Tests;
@@ -42,10 +43,12 @@ public class LyricsViewModelTests
     }
 
     private static TrackSummary Song(string title) =>
-        new(Guid.NewGuid(), title, "Artist", null, null, new Uri(Path.Combine(Path.GetTempPath(), title + ".mp3")).AbsoluteUri);
+        new(Guid.NewGuid(), title, "Artist", null, null,
+            new Uri(Path.Combine(Path.GetTempPath(), title + ".mp3")).AbsoluteUri);
 
     private static SongLyrics Timed(params (double Seconds, string Text)[] lines) =>
-        SongLyrics.Of([.. lines.Select(l => new LyricLine(TimeSpan.FromSeconds(l.Seconds), null, l.Text))], "beside the song: a.lrc")!;
+        SongLyrics.Of([.. lines.Select(l => new LyricLine(TimeSpan.FromSeconds(l.Seconds), null, l.Text))],
+            "beside the song: a.lrc")!;
 
     private static SongLyrics Plain(params string[] lines) =>
         SongLyrics.Of([.. lines.Select(l => new LyricLine(null, null, l))], "in the file's tags")!;
@@ -213,7 +216,10 @@ public class LyricsViewModelTests
         [
             new LyricLine(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(8), "lead (ooh aah)",
                 [new LyricWord(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3), "lead")], "(ooh aah)",
-                [new LyricWord(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(6), "(ooh", true), new LyricWord(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(7), "aah)")]),
+                [
+                    new LyricWord(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(6), "(ooh", true),
+                    new LyricWord(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(7), "aah)")
+                ]),
         ], "x"));
         await Settle();
         var line = _lyrics.Lines[0];
@@ -236,7 +242,8 @@ public class LyricsViewModelTests
         var a = Song("A");
         await _player.PlayAsync(a);
         _player.IsLyricsOpen = true;
-        _source.Answer(a, SongLyrics.Of([new LyricLine(TimeSpan.FromSeconds(1), null, "lead (ooh)", null, "(ooh)")], "x"));
+        _source.Answer(a,
+            SongLyrics.Of([new LyricLine(TimeSpan.FromSeconds(1), null, "lead (ooh)", null, "(ooh)")], "x"));
         await Settle();
 
         Assert.True(_lyrics.Lines[0].HasBackgroundText);
@@ -250,8 +257,11 @@ public class LyricsViewModelTests
         await _player.PlayAsync(a);
         _player.IsLyricsOpen = true;
         _source.Answer(a, SongLyrics.Of(
-            [new LyricLine(TimeSpan.Zero, TimeSpan.FromSeconds(9), ""), new LyricLine(TimeSpan.FromSeconds(9), null, "first line", null, null, null, LyricVoice.Second),
-             new LyricLine(TimeSpan.FromSeconds(12), null, "together", null, null, null, LyricVoice.Group)], "x"));
+        [
+            new LyricLine(TimeSpan.Zero, TimeSpan.FromSeconds(9), ""),
+            new LyricLine(TimeSpan.FromSeconds(9), null, "first line", null, null, null, LyricVoice.Second),
+            new LyricLine(TimeSpan.FromSeconds(12), null, "together", null, null, null, LyricVoice.Group)
+        ], "x"));
         await Settle();
 
         Assert.True(_lyrics.Lines[0].IsPause);
@@ -277,7 +287,8 @@ public class LyricsViewModelTests
         _player.IsLyricsOpen = true;
         // The break has no end of its own (like an empty line in LRC): it lasts until the next line.
         _source.Answer(a, SongLyrics.Of(
-            [new LyricLine(TimeSpan.FromSeconds(10), null, ""), new LyricLine(TimeSpan.FromSeconds(20), null, "next")], "x"));
+            [new LyricLine(TimeSpan.FromSeconds(10), null, ""), new LyricLine(TimeSpan.FromSeconds(20), null, "next")],
+            "x"));
         await Settle();
         var pause = _lyrics.Lines[0];
 
@@ -313,7 +324,10 @@ public class LyricsViewModelTests
         await _player.PlayAsync(a);
         _player.IsLyricsOpen = true;
         _source.Answer(a, SongLyrics.Of(
-            [new LyricLine(TimeSpan.FromSeconds(5), null, "one"), new LyricLine(TimeSpan.FromSeconds(10), null, ""), new LyricLine(TimeSpan.FromSeconds(20), null, "three")], "x"));
+        [
+            new LyricLine(TimeSpan.FromSeconds(5), null, "one"), new LyricLine(TimeSpan.FromSeconds(10), null, ""),
+            new LyricLine(TimeSpan.FromSeconds(20), null, "three")
+        ], "x"));
         await Settle();
 
         _lyrics.SeekToLineCommand.Execute(_lyrics.Lines[2]);
@@ -378,7 +392,8 @@ public class LyricsViewModelTests
     }
 
     [Fact]
-    public async Task While_playing_the_engine_clock_decides_and_a_stale_copy_of_the_position_cannot_move_the_line_back()
+    public async Task
+        While_playing_the_engine_clock_decides_and_a_stale_copy_of_the_position_cannot_move_the_line_back()
     {
         var a = Song("A");
         await _player.PlayAsync(a);
@@ -409,7 +424,8 @@ public class LyricsViewModelTests
         At(10.4);
         Assert.Equal(0, _lyrics.CurrentIndex);
 
-        _settings.LyricsDelayMs = -500; // earlier: the line at 20 s is current from 19.5 s, and the change shows without waiting for a frame
+        _settings.LyricsDelayMs =
+            -500; // earlier: the line at 20 s is current from 19.5 s, and the change shows without waiting for a frame
         At(19.0);
         Assert.Equal(0, _lyrics.CurrentIndex);
         _audio.Position = TimeSpan.FromSeconds(19.6);
@@ -440,7 +456,10 @@ public class LyricsViewModelTests
         await _player.PlayAsync(a);
         _player.IsLyricsOpen = true;
         _source.Answer(a, SongLyrics.Of(
-            [new LyricLine(TimeSpan.Zero, TimeSpan.FromSeconds(9), ""), new LyricLine(TimeSpan.FromSeconds(9), null, "words")], "x"));
+        [
+            new LyricLine(TimeSpan.Zero, TimeSpan.FromSeconds(9), ""),
+            new LyricLine(TimeSpan.FromSeconds(9), null, "words")
+        ], "x"));
         await Settle();
         Assert.All(_lyrics.Lines, l => Assert.True(l.IsShown));
 
@@ -463,19 +482,90 @@ public class LyricsViewModelTests
         _source.Answer(a, SongLyrics.Of(
         [
             new LyricLine(TimeSpan.FromSeconds(1), null, "lead (ooh)", null, "(ooh)"),
-            new LyricLine(TimeSpan.FromSeconds(5), null, "sung (aah)", [new LyricWord(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(6), "sung")], "(aah)",
+            new LyricLine(TimeSpan.FromSeconds(5), null, "sung (aah)",
+                [new LyricWord(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(6), "sung")], "(aah)",
                 [new LyricWord(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(7), "(aah)")]),
         ], "x"));
         await Settle();
         var (plain, worded) = (_lyrics.Lines[0], _lyrics.Lines[1]);
-        Assert.Equal(("lead (ooh)", true, true), (plain.Text, plain.BackgroundTextVisible, worded.BackgroundWordsVisible));
+        Assert.Equal(("lead (ooh)", true, true),
+            (plain.Text, plain.BackgroundTextVisible, worded.BackgroundWordsVisible));
 
         _settings.ShowBackgroundVocals = false;
 
         Assert.Equal(("lead", false, false), (plain.Text, plain.BackgroundTextVisible, worded.BackgroundWordsVisible));
 
         _settings.ShowBackgroundVocals = true;
-        Assert.Equal(("lead (ooh)", true, true), (plain.Text, plain.BackgroundTextVisible, worded.BackgroundWordsVisible));
+        Assert.Equal(("lead (ooh)", true, true),
+            (plain.Text, plain.BackgroundTextVisible, worded.BackgroundWordsVisible));
+    }
+
+    // "I Don't Know (C.Y.T. Remix)": a line starts (24.85 s) while the one before it is still being sung (until 26.18 s).
+    private static SongLyrics Overlapping() => SongLyrics.Of(
+    [
+        new LyricLine(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(20), "lead",
+        [
+            new LyricWord(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(15), "one", true),
+            new LyricWord(TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(20), "two"),
+        ]),
+        new LyricLine(TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(25), "echo",
+        [
+            new LyricWord(TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(20), "three", true),
+            new LyricWord(TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(25), "four"),
+        ]),
+        new LyricLine(TimeSpan.FromSeconds(40), null, "after"),
+    ], "x")!;
+
+    [Fact]
+    public async Task A_line_that_starts_while_the_previous_one_is_still_sung_leaves_both_current_and_both_filling()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, Overlapping());
+        await Settle();
+        var (lead, echo) = (_lyrics.Lines[0], _lyrics.Lines[1]);
+
+        At(12.5);
+        Assert.Equal([true, false], [lead.IsCurrent, echo.IsCurrent]);
+
+        At(17.5); // the echo has started; the lead is still in its second word
+        Assert.Equal([true, true], [lead.IsCurrent, echo.IsCurrent]);
+        Assert.Equal(1, _lyrics.CurrentIndex); // the view follows the latest line
+        Assert.Equal([1.0, 0.5], lead.Words.Select(w => w.Progress));
+        Assert.Equal([0.5, 0.0], echo.Words.Select(w => w.Progress));
+
+        At(22.5); // the lead ended at 20 s: only the echo goes on
+        Assert.Equal([false, true], [lead.IsCurrent, echo.IsCurrent]);
+        Assert.All(lead.Words, w => Assert.Equal(0, w.Progress)); // and it starts over, ready for a seek back
+        Assert.Equal([1.0, 0.5], echo.Words.Select(w => w.Progress));
+
+        At(30); // after everything the echo stays current until the next line starts
+        Assert.Equal([false, true], [lead.IsCurrent, echo.IsCurrent]);
+
+        At(41);
+        Assert.All(_lyrics.Lines.Take(2), l => Assert.False(l.IsCurrent));
+        Assert.True(_lyrics.Lines[2].IsCurrent);
+    }
+
+    [Fact]
+    public async Task A_seek_back_into_an_overlap_brings_both_lines_back_and_a_seek_before_it_clears_them()
+    {
+        var a = Song("A");
+        await _player.PlayAsync(a);
+        _player.IsLyricsOpen = true;
+        _source.Answer(a, Overlapping());
+        await Settle();
+        var (lead, echo) = (_lyrics.Lines[0], _lyrics.Lines[1]);
+        At(45);
+
+        At(18);
+        Assert.Equal([true, true], [lead.IsCurrent, echo.IsCurrent]);
+        Assert.Equal([1.0, 0.6], lead.Words.Select(w => w.Progress), new DotComparer());
+
+        At(5);
+        Assert.Equal([false, false], [lead.IsCurrent, echo.IsCurrent]);
+        Assert.Equal(-1, _lyrics.CurrentIndex);
     }
 
     [Fact]
