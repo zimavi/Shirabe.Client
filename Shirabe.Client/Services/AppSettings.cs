@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Text.Json;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Shirabe.Client.Services;
@@ -56,6 +57,10 @@ public partial class AppSettings : ObservableObject
     /// <summary>Turns off the fade and slide animations (see the <c>.motion</c> class in Styles/Controls.axaml).</summary>
     [ObservableProperty]
     public partial bool ReduceMotion { get; set; }
+
+    /// <summary>Language tag such as "uk" or "pt-BR"; empty follows the system's language.</summary>
+    [ObservableProperty]
+    public partial string Language { get; set; } = "";
 
     /// <summary>Name of the chosen <see cref="Theme"/>.</summary>
     [ObservableProperty]

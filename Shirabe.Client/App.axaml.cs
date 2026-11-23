@@ -1,10 +1,13 @@
+using System.Windows.Input;
+
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Avalonia.Platform;
 using Avalonia.Threading;
+
 using Shirabe.Audio;
+using Shirabe.Client.Localization;
 using Shirabe.Client.Services;
 using Shirabe.Client.Studio;
 using Shirabe.Client.ViewModels;
@@ -31,16 +34,24 @@ public partial class App : Application
         var dataFolder = Path.GetDirectoryName(Path.GetFullPath(GetLibraryPath()))!;
         var settings = AppSettings.Load(Path.Combine(dataFolder, "settings.json"));
         var themes = ThemeCatalog.Load(Path.Combine(dataFolder, "themes"));
+
+        // The language is set before any view exists and follows the setting while the app runs.
+        Loc.Instance.SetLanguage(settings.Language);
+        settings.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(AppSettings.Language)) Loc.Instance.SetLanguage(settings.Language);
+        };
+
         var mainViewModel = CreateMainViewModel(
-            new SettingsViewModel(settings, themes), (library, store) => new StudioViewModel(new FilePicker(GetMainWindow), library, store), settings, out var player);
-        _ = new Appearance(this, settings, themes, mainViewModel.Player); // subscribes itself; applies the theme before any window exists
+            new SettingsViewModel(settings, themes),
+            (library, store) => new StudioViewModel(new FilePicker(GetMainWindow), library, store), settings,
+            out var player);
+        _ = new Appearance(this, settings, themes,
+            mainViewModel.Player); // subscribes itself; applies the theme before any window exists
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var window = new MainWindow
-            {
-                DataContext = mainViewModel
-            };
+            var window = new MainWindow { DataContext = mainViewModel };
             desktop.MainWindow = window;
             SetUpTray(desktop, window, mainViewModel.Player);
 
@@ -54,9 +65,11 @@ public partial class App : Application
 
             // Follows the "Discord presence" setting while the app runs.
             DiscordPresence? presence = null;
+
             void SyncPresence()
             {
-                var wanted = settings.DiscordPresenceEnabled && DiscordPresence.ApplicationId.Length > 0 && mainViewModel.Player is not null;
+                var wanted = settings.DiscordPresenceEnabled && DiscordPresence.ApplicationId.Length > 0 &&
+                             mainViewModel.Player is not null;
                 if (wanted && presence is null) presence = new DiscordPresence(mainViewModel.Player!, settings);
                 else if (!wanted && presence is not null)
                 {
@@ -83,14 +96,16 @@ public partial class App : Application
                 Dispatcher.UIThread.Post(async () =>
                 {
                     // Bring back the last session (paused), then save changes from here on.
-                    if (settings.ResumeLastSession && session.Load() is { } saved) await playerViewModel.RestoreAsync(saved);
+                    if (settings.ResumeLastSession && session.Load() is { } saved)
+                        await playerViewModel.RestoreAsync(saved);
                     session.Attach(playerViewModel);
 
                     // "Open with Shirabe" / `Shirabe.Client.Desktop.exe song.mp3`: play the first argument instead of the restored song.
                     // A metadata document opens in Studio; anything else is audio to play.
                     if (desktop.Args is [var path, ..])
                     {
-                        if (path.EndsWith(".shirabe.json", StringComparison.OrdinalIgnoreCase)) await mainViewModel.OpenInStudioAsync(path);
+                        if (path.EndsWith(".shirabe.json", StringComparison.OrdinalIgnoreCase))
+                            await mainViewModel.OpenInStudioAsync(path);
                         else await playerViewModel.OpenAsync(path);
                     }
                 });
@@ -103,10 +118,7 @@ public partial class App : Application
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            singleViewPlatform.MainView = new MainView
-            {
-                DataContext = mainViewModel
-            };
+            singleViewPlatform.MainView = new MainView { DataContext = mainViewModel };
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -124,12 +136,21 @@ public partial class App : Application
             window.Activate();
         }
 
-        var open = new NativeMenuItem("Open Shirabe");
-        open.Click += (_, _) => Open();
-        var quit = new NativeMenuItem("Quit");
-        quit.Click += (_, _) => desktop.Shutdown();
+        // Each item gets its text from a key, again whenever the language changes.
+        var menu = new NativeMenu();
 
-        var menu = new NativeMenu { open, new NativeMenuItemSeparator() };
+        void AddItem(string key, Action? click = null, ICommand? command = null)
+        {
+            var item = new NativeMenuItem { Command = command };
+            if (click is not null) item.Click += (_, _) => click();
+            void SetText() => item.Header = Loc.Get(key);
+            SetText();
+            Loc.Instance.LanguageChanged += (_, _) => SetText();
+            menu.Add(item);
+        }
+
+        AddItem("Tray_Open", Open);
+        menu.Add(new NativeMenuItemSeparator());
         if (player is not null)
         {
             var playPause = new NativeMenuItem(player.PlayPauseText) { Command = player.TogglePlayPauseCommand };
@@ -137,13 +158,13 @@ public partial class App : Application
             {
                 if (e.PropertyName == nameof(PlayerViewModel.PlayPauseText)) playPause.Header = player.PlayPauseText;
             };
-            menu.Add(new NativeMenuItem("Previous") { Command = player.PreviousCommand });
+            AddItem("Player_Previous", command: player.PreviousCommand);
             menu.Add(playPause);
-            menu.Add(new NativeMenuItem("Next") { Command = player.NextCommand });
+            AddItem("Player_Next", command: player.NextCommand);
             menu.Add(new NativeMenuItemSeparator());
         }
 
-        menu.Add(quit);
+        AddItem("Tray_Quit", () => desktop.Shutdown());
         tray.Menu = menu;
         tray.Clicked += (_, _) => Open();
 
@@ -158,7 +179,8 @@ public partial class App : Application
 
     // The app still opens without a working audio engine so the reason can be shown, e.g. a missing bass.dll.
     private static MainViewModel CreateMainViewModel(
-        SettingsViewModel settings, Func<LocalLibrary?, IDocumentStore?, StudioViewModel> studio, AppSettings appSettings, out IAudioPlayer? player)
+        SettingsViewModel settings, Func<LocalLibrary?, IDocumentStore?, StudioViewModel> studio,
+        AppSettings appSettings, out IAudioPlayer? player)
     {
         try
         {
@@ -168,7 +190,8 @@ public partial class App : Application
                                        or EntryPointNotFoundException or InvalidOperationException)
         {
             player = null;
-            return new MainViewModel(null, null, $"Could not start the audio engine: {ex.Message}\n\nSee native/README.md.");
+            return new MainViewModel(null, null,
+                $"Could not start the audio engine: {ex.Message}\n\nSee native/README.md.");
         }
 
         var playerViewModel = new PlayerViewModel(player);
@@ -184,18 +207,22 @@ public partial class App : Application
                 track => new PropertiesViewModel(library, library, track, new FilePicker(GetMainWindow), library));
             // Studio writes through the player-aware store: the song that is playing is open, and a file that is open cannot be written to.
             return new MainViewModel(playerViewModel, songs, null, settings: settings,
-                studioFactory: () => studio(library, new PlayerAwareDocumentStore(library, playerViewModel)), lyricsSource: new LocalLyricsSource());
+                studioFactory: () => studio(library, new PlayerAwareDocumentStore(library, playerViewModel)),
+                lyricsSource: new LocalLyricsSource());
         }
         catch (Exception ex)
         {
             return new MainViewModel(playerViewModel, null, null,
-                $"The music library could not be opened ({libraryPath}): {ex.Message}", settings, () => studio(null, null));
+                $"The music library could not be opened ({libraryPath}): {ex.Message}", settings,
+                () => studio(null, null));
         }
     }
 
     // SHIRABE_LIBRARY_DB points the app at another database file (testing, portable setups); settings and themes follow it.
     private static string GetLibraryPath() =>
-        Environment.GetEnvironmentVariable("SHIRABE_LIBRARY_DB") is { Length: > 0 } custom ? custom : LocalLibrary.DefaultPath;
+        Environment.GetEnvironmentVariable("SHIRABE_LIBRARY_DB") is { Length: > 0 } custom
+            ? custom
+            : LocalLibrary.DefaultPath;
 
     private static TopLevel? GetMainWindow() =>
         (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;

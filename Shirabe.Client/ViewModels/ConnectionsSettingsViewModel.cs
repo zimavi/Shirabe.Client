@@ -3,7 +3,7 @@ using Shirabe.Client.Services;
 namespace Shirabe.Client.ViewModels;
 
 public sealed class ConnectionsSettingsViewModel(AppSettings settings)
-    : SettingsPageViewModel("Connections", "Discord and online lookups")
+    : SettingsPageViewModel("Connections_Title", "Connections_Description")
 {
     public AppSettings Settings { get; } = settings;
 }

@@ -3,71 +3,79 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:loc="using:Shirabe.Client.Localization"
              mc:Ignorable="d" d:DesignWidth="232" d:DesignHeight="600"
              x:Class="Shirabe.Client.Views.SidebarView"
              x:DataType="vm:MainViewModel">
     <!-- Home and Songs exist. Albums, Artists and Playlists are shown disabled until their pages are built. -->
     <Border Background="{DynamicResource SidebarBrush}" Padding="12,0,12,16">
         <DockPanel>
-        <!-- Pinned to the bottom -->
-        <Button DockPanel.Dock="Bottom" Classes="nav" Classes.selected="{Binding IsSettingsSelected}" Command="{Binding ShowSettingsCommand}"
-                AutomationProperties.Name="Settings">
-            <StackPanel Orientation="Horizontal" Spacing="12">
-                <PathIcon Data="{DynamicResource Icon.Settings}" Width="18" Height="18" />
-                <TextBlock Text="Settings" />
+            <!-- Pinned to the bottom -->
+            <Button DockPanel.Dock="Bottom" Classes="nav" Classes.selected="{Binding IsSettingsSelected}"
+                    Command="{Binding ShowSettingsCommand}"
+                    AutomationProperties.Name="{loc:T Nav_Settings}">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <PathIcon Data="{DynamicResource Icon.Settings}" Width="18" Height="18" />
+                    <TextBlock Text="{loc:T Nav_Settings}" />
+                </StackPanel>
+            </Button>
+            <StackPanel Spacing="2">
+                <!-- Level with the window caption buttons -->
+                <StackPanel Orientation="Horizontal" Spacing="10" Height="48" Margin="12,0,0,8">
+                    <PathIcon Data="{DynamicResource Icon.Note}" Width="22" Height="22" VerticalAlignment="Center"
+                              Foreground="{DynamicResource AccentBrush}" />
+                    <TextBlock Text="Shirabe" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                </StackPanel>
+
+                <Button Classes="nav" Classes.selected="{Binding IsHomeSelected}" Command="{Binding ShowHomeCommand}"
+                        AutomationProperties.Name="{loc:T Nav_Home}">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{DynamicResource Icon.Home}" Width="18" Height="18" />
+                        <TextBlock Text="{loc:T Nav_Home}" />
+                    </StackPanel>
+                </Button>
+
+                <TextBlock Classes="section" Text="{loc:T Nav_SectionLibrary}" Margin="12,22,0,6" />
+
+                <Button Classes="nav" Classes.selected="{Binding IsSongsSelected}" Command="{Binding ShowSongsCommand}"
+                        AutomationProperties.Name="{loc:T Nav_Songs}">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{DynamicResource Icon.Note}" Width="18" Height="18" />
+                        <TextBlock Text="{loc:T Nav_Songs}" />
+                    </StackPanel>
+                </Button>
+                <Button Classes="nav" IsEnabled="False" ToolTip.Tip="{loc:T Nav_NotAvailable}"
+                        ToolTip.ShowOnDisabled="True">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{DynamicResource Icon.Album}" Width="18" Height="18" />
+                        <TextBlock Text="{loc:T Nav_Albums}" />
+                    </StackPanel>
+                </Button>
+                <Button Classes="nav" IsEnabled="False" ToolTip.Tip="{loc:T Nav_NotAvailable}"
+                        ToolTip.ShowOnDisabled="True">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{DynamicResource Icon.Artist}" Width="18" Height="18" />
+                        <TextBlock Text="{loc:T Nav_Artists}" />
+                    </StackPanel>
+                </Button>
+                <Button Classes="nav" IsEnabled="False" ToolTip.Tip="{loc:T Nav_NotAvailable}"
+                        ToolTip.ShowOnDisabled="True">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{DynamicResource Icon.Playlist}" Width="18" Height="18" />
+                        <TextBlock Text="{loc:T Nav_Playlists}" />
+                    </StackPanel>
+                </Button>
+
+                <TextBlock Classes="section" Text="{loc:T Nav_SectionCreate}" Margin="12,22,0,6" />
+
+                <Button Classes="nav" Classes.selected="{Binding IsStudioSelected}"
+                        Command="{Binding ShowStudioCommand}" AutomationProperties.Name="{loc:T Nav_Studio}">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{DynamicResource Icon.Studio}" Width="18" Height="18" />
+                        <TextBlock Text="{loc:T Nav_Studio}" />
+                    </StackPanel>
+                </Button>
             </StackPanel>
-        </Button>
-        <StackPanel Spacing="2">
-            <!-- Level with the window caption buttons -->
-            <StackPanel Orientation="Horizontal" Spacing="10" Height="48" Margin="12,0,0,8">
-                <PathIcon Data="{DynamicResource Icon.Note}" Width="22" Height="22" VerticalAlignment="Center"
-                          Foreground="{DynamicResource AccentBrush}" />
-                <TextBlock Text="Shirabe" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
-            </StackPanel>
-
-            <Button Classes="nav" Classes.selected="{Binding IsHomeSelected}" Command="{Binding ShowHomeCommand}" AutomationProperties.Name="Home">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <PathIcon Data="{DynamicResource Icon.Home}" Width="18" Height="18" />
-                    <TextBlock Text="Home" />
-                </StackPanel>
-            </Button>
-
-            <TextBlock Classes="section" Text="LIBRARY" Margin="12,22,0,6" />
-
-            <Button Classes="nav" Classes.selected="{Binding IsSongsSelected}" Command="{Binding ShowSongsCommand}" AutomationProperties.Name="Songs">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <PathIcon Data="{DynamicResource Icon.Note}" Width="18" Height="18" />
-                    <TextBlock Text="Songs" />
-                </StackPanel>
-            </Button>
-            <Button Classes="nav" IsEnabled="False" ToolTip.Tip="Not available yet" ToolTip.ShowOnDisabled="True">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <PathIcon Data="{DynamicResource Icon.Album}" Width="18" Height="18" />
-                    <TextBlock Text="Albums" />
-                </StackPanel>
-            </Button>
-            <Button Classes="nav" IsEnabled="False" ToolTip.Tip="Not available yet" ToolTip.ShowOnDisabled="True">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <PathIcon Data="{DynamicResource Icon.Artist}" Width="18" Height="18" />
-                    <TextBlock Text="Artists" />
-                </StackPanel>
-            </Button>
-            <Button Classes="nav" IsEnabled="False" ToolTip.Tip="Not available yet" ToolTip.ShowOnDisabled="True">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <PathIcon Data="{DynamicResource Icon.Playlist}" Width="18" Height="18" />
-                    <TextBlock Text="Playlists" />
-                </StackPanel>
-            </Button>
-
-            <TextBlock Classes="section" Text="CREATE" Margin="12,22,0,6" />
-
-            <Button Classes="nav" Classes.selected="{Binding IsStudioSelected}" Command="{Binding ShowStudioCommand}" AutomationProperties.Name="Studio">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <PathIcon Data="{DynamicResource Icon.Studio}" Width="18" Height="18" />
-                    <TextBlock Text="Studio" />
-                </StackPanel>
-            </Button>
-        </StackPanel>
         </DockPanel>
     </Border>
 </UserControl>

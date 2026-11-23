@@ -4,15 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Shirabe.Client.ViewModels"
              xmlns:views="using:Shirabe.Client.Views"
+             xmlns:loc="using:Shirabe.Client.Localization"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
              x:Class="Shirabe.Client.Views.AppearanceSettingsView"
              x:DataType="vm:AppearanceSettingsViewModel">
     <StackPanel Spacing="24">
         <StackPanel Spacing="6">
-            <TextBlock Classes="section" Text="THEME" />
-            <views:SettingRow Title="Theme" Description="The colours of the whole app.">
+            <TextBlock Classes="section" Text="{loc:T Appearance_SectionTheme}" />
+            <views:SettingRow Title="{loc:T Appearance_Theme}" Description="{loc:T Appearance_ThemeDescription}">
                 <ComboBox ItemsSource="{Binding ThemeNames}" SelectedItem="{Binding Settings.ThemeName}" MinWidth="160"
-                          AutomationProperties.Name="Theme" />
+                          AutomationProperties.Name="{loc:T Appearance_Theme}" />
             </views:SettingRow>
             <TextBlock Text="{Binding CustomThemesHint}" FontSize="12" TextWrapping="Wrap"
                        Foreground="{DynamicResource TextSecondaryBrush}" />
@@ -21,17 +22,19 @@
         </StackPanel>
 
         <StackPanel Spacing="6">
-            <TextBlock Classes="section" Text="ACCENT" />
-            <views:SettingRow Title="Follow the cover"
-                              Description="Tints the accent colour from the cover of the song that is playing. Off keeps the theme's own accent.">
-                <ToggleSwitch IsChecked="{Binding Settings.FollowCoverAccent}" AutomationProperties.Name="Follow the cover" />
+            <TextBlock Classes="section" Text="{loc:T Appearance_SectionAccent}" />
+            <views:SettingRow Title="{loc:T Appearance_Follow}" Description="{loc:T Appearance_FollowDescription}">
+                <ToggleSwitch IsChecked="{Binding Settings.FollowCoverAccent}"
+                              AutomationProperties.Name="{loc:T Appearance_Follow}" />
             </views:SettingRow>
         </StackPanel>
 
         <StackPanel Spacing="6">
-            <TextBlock Classes="section" Text="MOTION" />
-            <views:SettingRow Title="Reduce motion" Description="Turns off the fade and slide animations.">
-                <ToggleSwitch IsChecked="{Binding Settings.ReduceMotion}" AutomationProperties.Name="Reduce motion" />
+            <TextBlock Classes="section" Text="{loc:T Appearance_SectionMotion}" />
+            <views:SettingRow Title="{loc:T Appearance_ReduceMotion}"
+                              Description="{loc:T Appearance_ReduceMotionDescription}">
+                <ToggleSwitch IsChecked="{Binding Settings.ReduceMotion}"
+                              AutomationProperties.Name="{loc:T Appearance_ReduceMotion}" />
             </views:SettingRow>
         </StackPanel>
     </StackPanel>

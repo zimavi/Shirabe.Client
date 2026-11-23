@@ -4,41 +4,51 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Shirabe.Client.ViewModels"
              xmlns:views="using:Shirabe.Client.Views"
+             xmlns:loc="using:Shirabe.Client.Localization"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
              x:Class="Shirabe.Client.Views.LyricsSettingsView"
              x:DataType="vm:LyricsSettingsViewModel">
     <StackPanel Spacing="24">
         <StackPanel Spacing="6">
-            <TextBlock Classes="section" Text="TEXT" />
-            <views:SettingRow Title="Text size" Description="How large the lyrics are in the lyrics panel.">
+            <TextBlock Classes="section" Text="{loc:T Lyrics_SectionText}" />
+            <views:SettingRow Title="{loc:T Lyrics_TextSize}" Description="{loc:T Lyrics_TextSizeDescription}">
                 <StackPanel Orientation="Horizontal" Spacing="12">
-                    <Slider Classes="shirabe" Theme="{StaticResource ShirabeSlider}" Minimum="12" Maximum="32" SmallChange="1" LargeChange="2"
+                    <Slider Classes="shirabe" Theme="{StaticResource ShirabeSlider}" Minimum="12" Maximum="32"
+                            SmallChange="1" LargeChange="2"
                             TickFrequency="1" IsSnapToTickEnabled="True" Width="180" VerticalAlignment="Center"
-                            Value="{Binding Settings.LyricsTextSize, Mode=TwoWay}" AutomationProperties.Name="Lyrics text size" />
-                    <TextBlock Text="{Binding TextSizeText}" MinWidth="48" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            Value="{Binding Settings.LyricsTextSize, Mode=TwoWay}"
+                            AutomationProperties.Name="{loc:T Lyrics_TextSizeName}" />
+                    <TextBlock Text="{Binding TextSizeText}" MinWidth="48" VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
                 </StackPanel>
             </views:SettingRow>
         </StackPanel>
 
         <StackPanel Spacing="6">
-            <TextBlock Classes="section" Text="WHAT IS SHOWN" />
-            <views:SettingRow Title="Background vocals" Description="Shows the background vocals (the parts in brackets) that some lyrics have.">
-                <ToggleSwitch IsChecked="{Binding Settings.ShowBackgroundVocals}" AutomationProperties.Name="Background vocals" />
+            <TextBlock Classes="section" Text="{loc:T Lyrics_SectionShown}" />
+            <views:SettingRow Title="{loc:T Lyrics_BackgroundVocals}"
+                              Description="{loc:T Lyrics_BackgroundVocalsDescription}">
+                <ToggleSwitch IsChecked="{Binding Settings.ShowBackgroundVocals}"
+                              AutomationProperties.Name="{loc:T Lyrics_BackgroundVocals}" />
             </views:SettingRow>
-            <views:SettingRow Title="Break markers" Description="Shows the three dots that fill in during an instrumental break.">
-                <ToggleSwitch IsChecked="{Binding Settings.ShowPauseMarkers}" AutomationProperties.Name="Break markers" />
+            <views:SettingRow Title="{loc:T Lyrics_BreakMarkers}" Description="{loc:T Lyrics_BreakMarkersDescription}">
+                <ToggleSwitch IsChecked="{Binding Settings.ShowPauseMarkers}"
+                              AutomationProperties.Name="{loc:T Lyrics_BreakMarkers}" />
             </views:SettingRow>
         </StackPanel>
 
         <StackPanel Spacing="6">
-            <TextBlock Classes="section" Text="TIMING" />
-            <views:SettingRow Title="Highlight delay"
-                              Description="If the highlight runs ahead of the sound, raise this; if it lags, lower it. The sound leaves your speakers a little after the position the player reports.">
+            <TextBlock Classes="section" Text="{loc:T Lyrics_SectionTiming}" />
+            <views:SettingRow Title="{loc:T Lyrics_Delay}"
+                              Description="{loc:T Lyrics_DelayDescription}">
                 <StackPanel Orientation="Horizontal" Spacing="12">
-                    <Slider Classes="shirabe" Theme="{StaticResource ShirabeSlider}" Minimum="-500" Maximum="500" SmallChange="10" LargeChange="50"
+                    <Slider Classes="shirabe" Theme="{StaticResource ShirabeSlider}" Minimum="-500" Maximum="500"
+                            SmallChange="10" LargeChange="50"
                             TickFrequency="10" IsSnapToTickEnabled="True" Width="180" VerticalAlignment="Center"
-                            Value="{Binding Settings.LyricsDelayMs, Mode=TwoWay}" AutomationProperties.Name="Lyrics highlight delay" />
-                    <TextBlock Text="{Binding DelayText}" MinWidth="64" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            Value="{Binding Settings.LyricsDelayMs, Mode=TwoWay}"
+                            AutomationProperties.Name="{loc:T Lyrics_DelayName}" />
+                    <TextBlock Text="{Binding DelayText}" MinWidth="64" VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
                 </StackPanel>
             </views:SettingRow>
         </StackPanel>

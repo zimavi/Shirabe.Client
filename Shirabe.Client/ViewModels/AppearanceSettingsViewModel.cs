@@ -1,26 +1,28 @@
+using Shirabe.Client.Localization;
 using Shirabe.Client.Services;
 
 namespace Shirabe.Client.ViewModels;
 
 public sealed class AppearanceSettingsViewModel : SettingsPageViewModel
 {
+    private readonly string? _themesFolder;
+
     public AppearanceSettingsViewModel(AppSettings settings, ThemeCatalog themes)
-        : base("Appearance", "Theme and accent colour")
+        : base("Appearance_Title", "Appearance_Description")
     {
         Settings = settings;
+        _themesFolder = themes.Folder;
         ThemeNames = [.. themes.Themes.Select(theme => theme.Name)];
         ThemeProblems = string.Join('\n', themes.Problems);
-        CustomThemesHint = "Add your own: put a .json file with a \"name\" and any of these colours as #RRGGBB "
-                           + "(accent, background, sidebar, surface, surfaceHover, divider, textPrimary, textSecondary, track) "
-                           + (themes.Folder is null ? "in the themes folder" : $"in {themes.Folder}")
-                           + ", then restart. Colours left out come from Dark.";
+        RefreshOnLanguageChange(nameof(CustomThemesHint));
     }
 
     public AppSettings Settings { get; }
 
     public IReadOnlyList<string> ThemeNames { get; }
 
-    public string CustomThemesHint { get; }
+    public string CustomThemesHint =>
+        Loc.Get("Appearance_CustomThemesHint", _themesFolder ?? Loc.Get("Appearance_ThemesFolder"));
 
     /// <summary>Theme files that could not be used and why, one per line.</summary>
     public string ThemeProblems { get; }

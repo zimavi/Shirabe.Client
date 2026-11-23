@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+
+    <!-- Sidebar -->
+    <data name="Nav_Home" xml:space="preserve"><value>Home</value></data>
+    <data name="Nav_Songs" xml:space="preserve"><value>Songs</value></data>
+    <data name="Nav_Albums" xml:space="preserve"><value>Albums</value></data>
+    <data name="Nav_Artists" xml:space="preserve"><value>Artists</value></data>
+    <data name="Nav_Playlists" xml:space="preserve"><value>Playlists</value></data>
+    <data name="Nav_Studio" xml:space="preserve"><value>Studio</value></data>
+    <data name="Nav_Settings" xml:space="preserve"><value>Settings</value></data>
+    <data name="Nav_SectionLibrary" xml:space="preserve"><value>LIBRARY</value>
+        <comment>Small heading above the library entries in the sidebar.</comment></data>
+    <data name="Nav_SectionCreate" xml:space="preserve"><value>CREATE</value>
+        <comment>Small heading above the Studio entry in the sidebar.</comment></data>
+    <data name="Nav_NotAvailable" xml:space="preserve"><value>Not available yet</value>
+        <comment>Tooltip of a sidebar entry whose page does not exist yet.</comment></data>
+
+    <!-- Window buttons -->
+    <data name="Window_Minimize" xml:space="preserve"><value>Minimize</value></data>
+    <data name="Window_Maximize" xml:space="preserve"><value>Maximize</value></data>
+    <data name="Window_Restore" xml:space="preserve"><value>Restore</value></data>
+    <data name="Window_Close" xml:space="preserve"><value>Close</value></data>
+
+    <!-- Player bar and tray menu -->
+    <data name="Player_Shuffle" xml:space="preserve"><value>Shuffle</value></data>
+    <data name="Player_Previous" xml:space="preserve"><value>Previous</value></data>
+    <data name="Player_Next" xml:space="preserve"><value>Next</value></data>
+    <data name="Player_Play" xml:space="preserve"><value>Play</value></data>
+    <data name="Player_Pause" xml:space="preserve"><value>Pause</value></data>
+    <data name="Player_PlayPause" xml:space="preserve"><value>Play or pause</value></data>
+    <data name="Player_Repeat" xml:space="preserve"><value>Repeat</value></data>
+    <data name="Player_RepeatOff" xml:space="preserve"><value>Repeat: off</value></data>
+    <data name="Player_RepeatAll" xml:space="preserve"><value>Repeat: all songs</value></data>
+    <data name="Player_RepeatOne" xml:space="preserve"><value>Repeat: this song</value></data>
+    <data name="Player_Lyrics" xml:space="preserve"><value>Lyrics</value></data>
+    <data name="Player_Queue" xml:space="preserve"><value>Queue</value></data>
+    <data name="Player_Mute" xml:space="preserve"><value>Mute</value></data>
+    <data name="Player_Volume" xml:space="preserve"><value>Volume</value></data>
+    <data name="Tray_Open" xml:space="preserve"><value>Open Shirabe</value></data>
+    <data name="Tray_Quit" xml:space="preserve"><value>Quit</value></data>
+
+    <!-- Settings: General -->
+    <data name="General_Title" xml:space="preserve"><value>General</value></data>
+    <data name="General_Description" xml:space="preserve"><value>Startup and language</value></data>
+    <data name="General_SectionStartup" xml:space="preserve"><value>STARTUP</value></data>
+    <data name="General_Resume" xml:space="preserve"><value>Resume last session</value></data>
+    <data name="General_ResumeDescription" xml:space="preserve"><value>Brings back the last song (paused, where you left it), the volume, shuffle and repeat when Shirabe starts. Off forgets them.</value></data>
+    <data name="General_SectionLanguage" xml:space="preserve"><value>LANGUAGE</value></data>
+    <data name="General_Language" xml:space="preserve"><value>Language</value></data>
+    <data name="General_LanguageDescription" xml:space="preserve"><value>The language of the app. Parts that are not translated yet stay in English.</value></data>
+    <data name="Language_System" xml:space="preserve"><value>System default</value></data>
+
+    <!-- Settings: Appearance -->
+    <data name="Appearance_Title" xml:space="preserve"><value>Appearance</value></data>
+    <data name="Appearance_Description" xml:space="preserve"><value>Theme and accent colour</value></data>
+    <data name="Appearance_SectionTheme" xml:space="preserve"><value>THEME</value></data>
+    <data name="Appearance_Theme" xml:space="preserve"><value>Theme</value></data>
+    <data name="Appearance_ThemeDescription" xml:space="preserve"><value>The colours of the whole app.</value></data>
+    <data name="Appearance_CustomThemesHint" xml:space="preserve"><value>Add your own: put a .json file with a "name" and any of these colours as #RRGGBB (accent, background, sidebar, surface, surfaceHover, divider, textPrimary, textSecondary, track) in {0}, then restart. Colours left out come from Dark.</value>
+        <comment>{0} is a folder path, or the text of Appearance_ThemesFolder. Keep the colour names (accent, background...) and "name" as they are: they are keys in the file.</comment></data>
+    <data name="Appearance_ThemesFolder" xml:space="preserve"><value>the themes folder</value></data>
+    <data name="Appearance_SectionAccent" xml:space="preserve"><value>ACCENT</value></data>
+    <data name="Appearance_Follow" xml:space="preserve"><value>Follow the cover</value></data>
+    <data name="Appearance_FollowDescription" xml:space="preserve"><value>Tints the accent colour from the cover of the song that is playing. Off keeps the theme's own accent.</value></data>
+    <data name="Appearance_SectionMotion" xml:space="preserve"><value>MOTION</value></data>
+    <data name="Appearance_ReduceMotion" xml:space="preserve"><value>Reduce motion</value></data>
+    <data name="Appearance_ReduceMotionDescription" xml:space="preserve"><value>Turns off the fade and slide animations.</value></data>
+
+    <!-- Settings: Lyrics -->
+    <data name="Lyrics_Title" xml:space="preserve"><value>Lyrics</value></data>
+    <data name="Lyrics_Description" xml:space="preserve"><value>Text size, vocals and timing</value></data>
+    <data name="Lyrics_SectionText" xml:space="preserve"><value>TEXT</value></data>
+    <data name="Lyrics_TextSize" xml:space="preserve"><value>Text size</value></data>
+    <data name="Lyrics_TextSizeDescription" xml:space="preserve"><value>How large the lyrics are in the lyrics panel.</value></data>
+    <data name="Lyrics_TextSizeName" xml:space="preserve"><value>Lyrics text size</value>
+        <comment>Accessible name of the slider.</comment></data>
+    <data name="Lyrics_TextSizeValue" xml:space="preserve"><value>{0} pt</value></data>
+    <data name="Lyrics_SectionShown" xml:space="preserve"><value>WHAT IS SHOWN</value></data>
+    <data name="Lyrics_BackgroundVocals" xml:space="preserve"><value>Background vocals</value></data>
+    <data name="Lyrics_BackgroundVocalsDescription" xml:space="preserve"><value>Shows the background vocals (the parts in brackets) that some lyrics have.</value></data>
+    <data name="Lyrics_BreakMarkers" xml:space="preserve"><value>Break markers</value></data>
+    <data name="Lyrics_BreakMarkersDescription" xml:space="preserve"><value>Shows the three dots that fill in during an instrumental break.</value></data>
+    <data name="Lyrics_SectionTiming" xml:space="preserve"><value>TIMING</value></data>
+    <data name="Lyrics_Delay" xml:space="preserve"><value>Highlight delay</value></data>
+    <data name="Lyrics_DelayDescription" xml:space="preserve"><value>If the highlight runs ahead of the sound, raise this; if it lags, lower it. The sound leaves your speakers a little after the position the player reports.</value></data>
+    <data name="Lyrics_DelayName" xml:space="preserve"><value>Lyrics highlight delay</value>
+        <comment>Accessible name of the slider.</comment></data>
+    <data name="Lyrics_NoDelay" xml:space="preserve"><value>No delay</value></data>
+    <data name="Lyrics_DelayValue" xml:space="preserve"><value>{0} ms</value>
+        <comment>{0} is a number with a sign, such as +120 or -50.</comment></data>
+
+    <!-- Settings: Connections -->
+    <data name="Connections_Title" xml:space="preserve"><value>Connections</value></data>
+    <data name="Connections_Description" xml:space="preserve"><value>Discord and online lookups</value></data>
+    <data name="Connections_SectionDiscord" xml:space="preserve"><value>DISCORD</value></data>
+    <data name="Connections_Presence" xml:space="preserve"><value>Show what I'm listening to</value></data>
+    <data name="Connections_PresenceDescription" xml:space="preserve"><value>Shows the song as a "Listening to" card on your Discord profile while it plays. Needs Discord running.</value></data>
+    <data name="Connections_PresenceName" xml:space="preserve"><value>Discord presence</value>
+        <comment>Accessible name of the switch.</comment></data>
+    <data name="Connections_CoverLookup" xml:space="preserve"><value>Look up album covers online</value></data>
+    <data name="Connections_CoverLookupDescription" xml:space="preserve"><value>Sends the artist and album name to Apple's iTunes Search to find a cover for the Discord card. Nothing else leaves your computer.</value></data>
+    <data name="Connections_CoverLookupName" xml:space="preserve"><value>Cover lookup</value>
+        <comment>Accessible name of the switch.</comment></data>
+    <data name="Connections_SectionArtwork" xml:space="preserve"><value>ARTWORK</value></data>
+    <data name="Connections_DownloadArtwork" xml:space="preserve"><value>Download linked artwork</value></data>
+    <data name="Connections_DownloadArtworkDescription" xml:space="preserve"><value>When a song's metadata links to a cover, it is downloaded as the song is shown and kept on this computer. The website it comes from can see your address and that you played this song.</value></data>
+</root>

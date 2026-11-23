@@ -4,14 +4,31 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Shirabe.Client.ViewModels"
              xmlns:views="using:Shirabe.Client.Views"
+             xmlns:loc="using:Shirabe.Client.Localization"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
              x:Class="Shirabe.Client.Views.GeneralSettingsView"
              x:DataType="vm:GeneralSettingsViewModel">
-    <StackPanel Spacing="6">
-        <TextBlock Classes="section" Text="STARTUP" />
-        <views:SettingRow Title="Resume last session"
-                          Description="Brings back the last song (paused, where you left it), the volume, shuffle and repeat when Shirabe starts. Off forgets them.">
-            <ToggleSwitch IsChecked="{Binding Settings.ResumeLastSession}" AutomationProperties.Name="Resume last session" />
-        </views:SettingRow>
+    <StackPanel Spacing="24">
+        <StackPanel Spacing="6">
+            <TextBlock Classes="section" Text="{loc:T General_SectionStartup}" />
+            <views:SettingRow Title="{loc:T General_Resume}" Description="{loc:T General_ResumeDescription}">
+                <ToggleSwitch IsChecked="{Binding Settings.ResumeLastSession}"
+                              AutomationProperties.Name="{loc:T General_Resume}" />
+            </views:SettingRow>
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+            <TextBlock Classes="section" Text="{loc:T General_SectionLanguage}" />
+            <views:SettingRow Title="{loc:T General_Language}" Description="{loc:T General_LanguageDescription}">
+                <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage}" MinWidth="160"
+                          AutomationProperties.Name="{loc:T General_Language}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:LanguageOption">
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </views:SettingRow>
+        </StackPanel>
     </StackPanel>
 </UserControl>

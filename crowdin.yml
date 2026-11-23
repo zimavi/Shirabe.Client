@@ -1,0 +1,11 @@
+# Crowdin CLI / GitHub integration config.
+# The project id and token come from the environment (never commit them):
+#   CROWDIN_PROJECT_ID, CROWDIN_PERSONAL_TOKEN
+project_id_env: CROWDIN_PROJECT_ID
+api_token_env: CROWDIN_PERSONAL_TOKEN
+base_path: .
+
+files:
+  - source: /Shirabe.Client/Resources/Strings.resx
+    # Crowdin writes Strings.uk.resx, Strings.pt-BR.resx ...; the build turns each into a satellite assembly.
+    translation: /Shirabe.Client/Resources/Strings.%locale%.resx

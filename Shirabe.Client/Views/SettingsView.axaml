@@ -3,13 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:loc="using:Shirabe.Client.Localization"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
              x:Class="Shirabe.Client.Views.SettingsView"
              x:DataType="vm:SettingsViewModel">
     <Grid ColumnDefinitions="260,*" Margin="32,16,32,0">
         <!-- The pages; the open one is shown on the right, its view found from its view model type (see ViewLocator) -->
         <StackPanel Grid.Column="0" Spacing="12" Margin="0,0,24,0">
-            <TextBlock Classes="page-title" Text="Settings" />
+            <TextBlock Classes="page-title" Text="{loc:T Nav_Settings}" />
             <ListBox Classes="settings-pages" ItemsSource="{Binding Pages}" SelectedItem="{Binding SelectedPage}">
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="vm:SettingsPageViewModel">

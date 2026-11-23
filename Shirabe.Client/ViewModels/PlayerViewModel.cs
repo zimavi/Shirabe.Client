@@ -1,5 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
+using Shirabe.Client.Localization;
 using Shirabe.Core.Library;
 using Shirabe.Core.Media;
 using Shirabe.Core.Playback;
@@ -28,17 +30,16 @@ public partial class PlayerViewModel : ViewModelBase
         _player.StateChanged += (_, _) => OnUiThread(() => IsPlaying = _player.State == PlaybackState.Playing);
         _player.Ended += (_, _) => OnUiThread(OnEnded);
         _queue.Changed += (_, _) => QueueItems = [.. _queue.Items];
+        RefreshOnLanguageChange(nameof(PlayPauseText), nameof(RepeatText));
     }
 
-    [ObservableProperty]
-    public partial string Title { get; set; } = "Nothing playing";
+    [ObservableProperty] public partial string Title { get; set; } = "Nothing playing";
 
     /// <summary>Second line of the now-playing area: the artist, or "Local file" for a dropped file.</summary>
     [ObservableProperty]
     public partial string? Subtitle { get; set; }
 
-    [ObservableProperty]
-    public partial string? Album { get; set; }
+    [ObservableProperty] public partial string? Album { get; set; }
 
     /// <summary>The song that is loaded, playing or not; null until the first one.</summary>
     [ObservableProperty]
@@ -70,11 +71,12 @@ public partial class PlayerViewModel : ViewModelBase
     public partial bool IsPlaying { get; set; }
 
     /// <summary>What the play/pause command will do now, for menus that have text instead of an icon.</summary>
-    public string PlayPauseText => IsPlaying ? "Pause" : "Play";
+    public string PlayPauseText => Loc.Get(IsPlaying ? "Player_Pause" : "Player_Play");
 
     /// <summary>0.0 (silent) to 1.0 (full), bound two-way to the volume slider.</summary>
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(VolumeText), nameof(IsVolumeMuted), nameof(IsVolumeLow), nameof(IsVolumeMedium), nameof(IsVolumeHigh))]
+    [NotifyPropertyChangedFor(nameof(VolumeText), nameof(IsVolumeMuted), nameof(IsVolumeLow), nameof(IsVolumeMedium),
+        nameof(IsVolumeHigh))]
     public partial double Volume { get; set; }
 
     /// <summary>Shown in the volume slider's tooltip.</summary>
@@ -98,8 +100,7 @@ public partial class PlayerViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(PositionText))]
     public partial double PositionSeconds { get; set; }
 
-    [ObservableProperty]
-    public partial bool IsShuffleOn { get; set; }
+    [ObservableProperty] public partial bool IsShuffleOn { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsRepeatActive), nameof(IsRepeatOne), nameof(RepeatText))]
@@ -110,8 +111,7 @@ public partial class PlayerViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(HasQueue))]
     public partial IReadOnlyList<QueueItem> QueueItems { get; set; } = [];
 
-    [ObservableProperty]
-    public partial bool IsQueueOpen { get; set; }
+    [ObservableProperty] public partial bool IsQueueOpen { get; set; }
 
     /// <summary>The lyrics panel. It takes the same place as the queue, so only one of the two is open at a time.</summary>
     [ObservableProperty]
@@ -135,9 +135,9 @@ public partial class PlayerViewModel : ViewModelBase
 
     public string RepeatText => Repeat switch
     {
-        RepeatMode.All => "Repeat: all songs",
-        RepeatMode.One => "Repeat: this song",
-        _ => "Repeat: off",
+        RepeatMode.All => Loc.Get("Player_RepeatAll"),
+        RepeatMode.One => Loc.Get("Player_RepeatOne"),
+        _ => Loc.Get("Player_RepeatOff"),
     };
 
     public string PositionText => FormatTime(PositionSeconds);
@@ -148,7 +148,8 @@ public partial class PlayerViewModel : ViewModelBase
     public Task OpenAsync(string path)
     {
         var track = new TrackSummary(
-            Guid.NewGuid(), Path.GetFileNameWithoutExtension(path), "Local file", null, null, new Uri(Path.GetFullPath(path)).AbsoluteUri);
+            Guid.NewGuid(), Path.GetFileNameWithoutExtension(path), "Local file", null, null,
+            new Uri(Path.GetFullPath(path)).AbsoluteUri);
         return PlayTracksAsync([track], 0);
     }
 
@@ -158,7 +159,8 @@ public partial class PlayerViewModel : ViewModelBase
     public async Task PlayTracksAsync(IReadOnlyList<TrackSummary> tracks, int startIndex)
     {
         _queue.SetQueue(tracks, startIndex);
-        await PlayCurrentAsync(skipFailures: false); // the user picked this song: if it fails, say so instead of moving on
+        await PlayCurrentAsync(
+            skipFailures: false); // the user picked this song: if it fails, say so instead of moving on
     }
 
     /// <summary>Puts a song at the end of the queue; starts it if nothing is playing.</summary>
@@ -347,7 +349,8 @@ public partial class PlayerViewModel : ViewModelBase
         }
         catch (Exception ex) when (ex is FileNotFoundException or DirectoryNotFoundException)
         {
-            ErrorMessage = $"Cannot play {track.Title}: the file was moved or deleted. Add its folder again to update the library.";
+            ErrorMessage =
+                $"Cannot play {track.Title}: the file was moved or deleted. Add its folder again to update the library.";
             return false;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException

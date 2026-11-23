@@ -4,25 +4,28 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Shirabe.Client.ViewModels"
              xmlns:views="using:Shirabe.Client.Views"
+             xmlns:loc="using:Shirabe.Client.Localization"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
              x:Class="Shirabe.Client.Views.ConnectionsSettingsView"
              x:DataType="vm:ConnectionsSettingsViewModel">
     <StackPanel Spacing="6">
-        <TextBlock Classes="section" Text="DISCORD" />
-        <views:SettingRow Title="Show what I'm listening to"
-                          Description="Shows the song as a &quot;Listening to&quot; card on your Discord profile while it plays. Needs Discord running.">
-            <ToggleSwitch IsChecked="{Binding Settings.DiscordPresenceEnabled}" AutomationProperties.Name="Discord presence" />
+        <TextBlock Classes="section" Text="{loc:T Connections_SectionDiscord}" />
+        <views:SettingRow Title="{loc:T Connections_Presence}" Description="{loc:T Connections_PresenceDescription}">
+            <ToggleSwitch IsChecked="{Binding Settings.DiscordPresenceEnabled}"
+                          AutomationProperties.Name="{loc:T Connections_PresenceName}" />
         </views:SettingRow>
-        <views:SettingRow Title="Look up album covers online"
-                          Description="Sends the artist and album name to Apple's iTunes Search to find a cover for the Discord card. Nothing else leaves your computer."
+        <views:SettingRow Title="{loc:T Connections_CoverLookup}"
+                          Description="{loc:T Connections_CoverLookupDescription}"
                           IsEnabled="{Binding Settings.DiscordPresenceEnabled}">
-            <ToggleSwitch IsChecked="{Binding Settings.CoverLookupEnabled}" AutomationProperties.Name="Cover lookup" />
+            <ToggleSwitch IsChecked="{Binding Settings.CoverLookupEnabled}"
+                          AutomationProperties.Name="{loc:T Connections_CoverLookupName}" />
         </views:SettingRow>
 
-        <TextBlock Classes="section" Text="ARTWORK" Margin="0,12,0,0" />
-        <views:SettingRow Title="Download linked artwork"
-                          Description="When a song's metadata links to a cover, it is downloaded as the song is shown and kept on this computer. The website it comes from can see your address and that you played this song.">
-            <ToggleSwitch IsChecked="{Binding Settings.DownloadArtworkEnabled}" AutomationProperties.Name="Download linked artwork" />
+        <TextBlock Classes="section" Text="{loc:T Connections_SectionArtwork}" Margin="0,12,0,0" />
+        <views:SettingRow Title="{loc:T Connections_DownloadArtwork}"
+                          Description="{loc:T Connections_DownloadArtworkDescription}">
+            <ToggleSwitch IsChecked="{Binding Settings.DownloadArtworkEnabled}"
+                          AutomationProperties.Name="{loc:T Connections_DownloadArtwork}" />
         </views:SettingRow>
     </StackPanel>
 </UserControl>

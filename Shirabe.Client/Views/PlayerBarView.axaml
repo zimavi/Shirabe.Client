@@ -5,6 +5,7 @@
              xmlns:vm="using:Shirabe.Client.ViewModels"
              xmlns:views="using:Shirabe.Client.Views"
              xmlns:conv="using:Shirabe.Client.Converters"
+             xmlns:loc="using:Shirabe.Client.Localization"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="88"
              x:Class="Shirabe.Client.Views.PlayerBarView"
              x:DataType="vm:PlayerViewModel">
@@ -37,19 +38,20 @@
             <Grid Grid.Column="1" RowDefinitions="40,Auto" RowSpacing="2" MaxWidth="560" Margin="24,0"
                   VerticalAlignment="Center">
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-                    <Button Classes="icon" Classes.active="{Binding IsShuffleOn}" Command="{Binding ToggleShuffleCommand}"
-                            ToolTip.Tip="Shuffle" AutomationProperties.Name="Shuffle">
+                    <Button Classes="icon" Classes.active="{Binding IsShuffleOn}"
+                            Command="{Binding ToggleShuffleCommand}"
+                            ToolTip.Tip="{loc:T Player_Shuffle}" AutomationProperties.Name="{loc:T Player_Shuffle}">
                         <Panel>
-                            <PathIcon Data="{DynamicResource Icon.Shuffle}" IsVisible="{Binding IsShuffleOn}"/>
-                            <PathIcon Data="{DynamicResource Icon.ShuffleOff}" IsVisible="{Binding !IsShuffleOn}"/>
+                            <PathIcon Data="{DynamicResource Icon.Shuffle}" IsVisible="{Binding IsShuffleOn}" />
+                            <PathIcon Data="{DynamicResource Icon.ShuffleOff}" IsVisible="{Binding !IsShuffleOn}" />
                         </Panel>
                     </Button>
                     <Button Classes="icon" Command="{Binding PreviousCommand}"
-                            ToolTip.Tip="Previous" AutomationProperties.Name="Previous">
+                            ToolTip.Tip="{loc:T Player_Previous}" AutomationProperties.Name="{loc:T Player_Previous}">
                         <PathIcon Data="{DynamicResource Icon.SkipPrevious}" Width="22" Height="22" />
                     </Button>
                     <Button Classes="play" Command="{Binding TogglePlayPauseCommand}"
-                            AutomationProperties.Name="Play or pause">
+                            AutomationProperties.Name="{loc:T Player_PlayPause}">
                         <Panel>
                             <PathIcon Data="{DynamicResource Icon.Play}" Width="22" Height="22"
                                       IsVisible="{Binding !IsPlaying}" />
@@ -58,11 +60,12 @@
                         </Panel>
                     </Button>
                     <Button Classes="icon" Command="{Binding NextCommand}"
-                            ToolTip.Tip="Next" AutomationProperties.Name="Next">
+                            ToolTip.Tip="{loc:T Player_Next}" AutomationProperties.Name="{loc:T Player_Next}">
                         <PathIcon Data="{DynamicResource Icon.SkipNext}" Width="22" Height="22" />
                     </Button>
-                    <Button Classes="icon" Classes.active="{Binding IsRepeatActive}" Command="{Binding CycleRepeatCommand}"
-                            ToolTip.Tip="{Binding RepeatText}" AutomationProperties.Name="Repeat">
+                    <Button Classes="icon" Classes.active="{Binding IsRepeatActive}"
+                            Command="{Binding CycleRepeatCommand}"
+                            ToolTip.Tip="{Binding RepeatText}" AutomationProperties.Name="{loc:T Player_Repeat}">
                         <Panel>
                             <PathIcon Data="{DynamicResource Icon.RepeatOff}" IsVisible="{Binding !IsRepeatActive}" />
                             <PathIcon Data="{DynamicResource Icon.Repeat}" IsVisible="{Binding !IsRepeatOne}" />
@@ -73,7 +76,8 @@
                 <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto">
                     <TextBlock Grid.Column="0" Text="{Binding PositionText}" FontSize="12" MinWidth="36"
                                VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
-                    <Slider Grid.Column="1" Classes="shirabe" Theme="{StaticResource ShirabeSlider}" Minimum="0" Maximum="{Binding DurationSeconds}"
+                    <Slider Grid.Column="1" Classes="shirabe" Theme="{StaticResource ShirabeSlider}" Minimum="0"
+                            Maximum="{Binding DurationSeconds}"
                             Value="{Binding PositionSeconds, Mode=TwoWay}"
                             IsEnabled="{Binding HasMedia}" Margin="8,0" VerticalAlignment="Center" />
                     <TextBlock Grid.Column="2" Text="{Binding DurationText}" FontSize="12" MinWidth="36"
@@ -86,14 +90,15 @@
             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8"
                         HorizontalAlignment="Right" VerticalAlignment="Center">
                 <Button Classes="icon" Classes.active="{Binding IsLyricsOpen}" Command="{Binding ToggleLyricsCommand}"
-                        ToolTip.Tip="Lyrics" AutomationProperties.Name="Lyrics">
+                        ToolTip.Tip="{loc:T Player_Lyrics}" AutomationProperties.Name="{loc:T Player_Lyrics}">
                     <PathIcon Data="{DynamicResource Icon.Lyrics}" />
                 </Button>
                 <Button Classes="icon" Classes.active="{Binding IsQueueOpen}" Command="{Binding ToggleQueueCommand}"
-                        ToolTip.Tip="Queue" AutomationProperties.Name="Queue">
+                        ToolTip.Tip="{loc:T Player_Queue}" AutomationProperties.Name="{loc:T Player_Queue}">
                     <PathIcon Data="{DynamicResource Icon.Playlist}" />
                 </Button>
-                <Button Classes="icon" Command="{Binding ToggleMuteCommand}" AutomationProperties.Name="Mute">
+                <Button Classes="icon" Command="{Binding ToggleMuteCommand}"
+                        AutomationProperties.Name="{loc:T Player_Mute}">
                     <Panel>
                         <PathIcon Data="{DynamicResource Icon.VolumeOff}" IsVisible="{Binding IsVolumeMuted}" />
                         <PathIcon Data="{DynamicResource Icon.VolumeMute}" IsVisible="{Binding IsVolumeLow}" />
@@ -103,7 +108,7 @@
                 </Button>
                 <!-- No "shirabe" class: that one hides the thumb until hovered, the volume thumb stays visible -->
                 <Slider Theme="{StaticResource ShirabeSlider}" Minimum="0" Maximum="1" Width="110"
-                        Value="{Binding Volume, Mode=TwoWay}" AutomationProperties.Name="Volume"
+                        Value="{Binding Volume, Mode=TwoWay}" AutomationProperties.Name="{loc:T Player_Volume}"
                         ToolTip.Tip="{Binding VolumeText}" ToolTip.ShowDelay="0"
                         PointerWheelChanged="OnVolumeWheel" />
             </StackPanel>

@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:chrome="using:Avalonia.Controls.Chrome"
+             xmlns:loc="using:Shirabe.Client.Localization"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="40"
              x:Class="Shirabe.Client.Views.TitleBarView"
              Height="40">
@@ -13,16 +14,18 @@
         <Border Background="Transparent" chrome:WindowDecorationProperties.ElementRole="TitleBar" />
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-            <Button Classes="caption" Click="OnMinimize" ToolTip.Tip="Minimize" AutomationProperties.Name="Minimize">
+            <Button Classes="caption" Click="OnMinimize" ToolTip.Tip="{loc:T Window_Minimize}"
+                    AutomationProperties.Name="{loc:T Window_Minimize}">
                 <PathIcon Data="{DynamicResource Icon.Minimize}" />
             </Button>
-            <Button x:Name="MaximizeButton" Classes="caption" Click="OnToggleMaximize" AutomationProperties.Name="Maximize">
+            <Button x:Name="MaximizeButton" Classes="caption" Click="OnToggleMaximize">
                 <Panel>
                     <PathIcon x:Name="MaximizeIcon" Data="{DynamicResource Icon.Maximize}" />
                     <PathIcon x:Name="RestoreIcon" Data="{DynamicResource Icon.Restore}" IsVisible="False" />
                 </Panel>
             </Button>
-            <Button Classes="caption close" Click="OnClose" ToolTip.Tip="Close" AutomationProperties.Name="Close">
+            <Button Classes="caption close" Click="OnClose" ToolTip.Tip="{loc:T Window_Close}"
+                    AutomationProperties.Name="{loc:T Window_Close}">
                 <PathIcon Data="{DynamicResource Icon.Close}" />
             </Button>
         </StackPanel>
