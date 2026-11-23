@@ -1,6 +1,8 @@
 ﻿using System;
 using Avalonia;
 
+using Velopack;
+
 namespace Shirabe.Client.Desktop;
 
 sealed class Program
@@ -11,6 +13,7 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        VelopackApp.Build().Run();
         Shirabe.Client.Services.DebugLog.Attach(); // Debug builds: every thrown exception goes to the console
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }

@@ -12,3 +12,5 @@ native/**/*.dylib
 /wiki/
 /docs/STATUS.md
 .idea/
+publish/
+Releases/
