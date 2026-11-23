@@ -7,7 +7,7 @@ This product includes software developed by zimavi.
 THIRD-PARTY COMPONENTS (BUNDLED IN BINARY RELEASES)
 -------------------------------------------------------------------------------
 
-BASS Audio Library
+1. BASS Audio Library
 Copyright (c) 2003-2026 Un4seen Developments Ltd. All rights reserved.
 https://www.un4seen.com/
 

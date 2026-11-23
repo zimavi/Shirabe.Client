@@ -18,6 +18,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Include="..\LICENSE.txt;..\NOTICE.txt">
+        <Link>%(Filename)%(Extension)</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+  <ItemGroup>
         <ProjectReference Include="..\Shirabe.Client\Shirabe.Client.csproj"/>
     </ItemGroup>
 
