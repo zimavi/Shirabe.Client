@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="340" d:DesignHeight="600"
+             x:Class="Shirabe.Client.Views.LyricsView"
+             x:DataType="vm:LyricsViewModel">
+    <Border Background="{DynamicResource SidebarBrush}" BorderBrush="{DynamicResource DividerBrush}" BorderThickness="1,0,0,0">
+        <Grid RowDefinitions="Auto,*">
+            <StackPanel Grid.Row="0" Margin="20,16,20,8" Spacing="2">
+                <TextBlock Text="Lyrics" FontSize="20" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding SourceText}" FontSize="12" TextTrimming="CharacterEllipsis"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           IsVisible="{Binding SourceText, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            </StackPanel>
+
+            <ScrollViewer x:Name="Scroller" Grid.Row="1" IsVisible="{Binding HasLyrics}" HorizontalScrollBarVisibility="Disabled">
+                <!-- Timed lyrics: the line being sung is bright, the others dimmed; plain lyrics are all readable (see TextBlock.lyric). -->
+                <ItemsControl x:Name="LinesList" ItemsSource="{Binding Lines}" Classes.timed="{Binding IsSynced}" Margin="20,8,20,120">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:LyricLineViewModel">
+                            <TextBlock Classes="lyric" Classes.current="{Binding IsCurrent}" Text="{Binding Text}" TextWrapping="Wrap" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="1" Spacing="6" Margin="24,0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        IsVisible="{Binding HasNoLyrics}">
+                <TextBlock Text="{Binding NoLyricsText}" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock Text="{Binding NoLyricsHint}" FontSize="12" TextWrapping="Wrap" TextAlignment="Center"
+                           Foreground="{DynamicResource TextSecondaryBrush}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

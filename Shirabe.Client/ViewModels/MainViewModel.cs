@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Shirabe.Client.Services;
 using Shirabe.Client.Studio;
+using Shirabe.Core.Lyrics;
 
 namespace Shirabe.Client.ViewModels;
 
@@ -18,9 +19,11 @@ public partial class MainViewModel : ViewModelBase
     /// <param name="libraryNotice">Why the music library could not be opened, shown on the Home page.</param>
     /// <param name="settings">Null in tests: the settings page then works on defaults that are not saved.</param>
     /// <param name="studioFactory">Builds Studio when it is first opened, so listeners who never open it pay nothing. Null: no Studio.</param>
+    /// <param name="lyricsSource">Where lyrics come from. Null: the lyrics panel always says there are none.</param>
     public MainViewModel(PlayerViewModel? player, SongsViewModel? songs, string? startupError, string? libraryNotice = null,
-        SettingsViewModel? settings = null, Func<StudioViewModel>? studioFactory = null)
+        SettingsViewModel? settings = null, Func<StudioViewModel>? studioFactory = null, ILyricsSource? lyricsSource = null)
     {
+        Lyrics = player is null ? null : new LyricsViewModel(player, lyricsSource);
         _studioFactory = studioFactory;
         Player = player;
         Songs = songs;
@@ -43,6 +46,9 @@ public partial class MainViewModel : ViewModelBase
     public PlayerViewModel? Player { get; }
 
     public SongsViewModel? Songs { get; }
+
+    /// <summary>The lyrics panel's content; null when there is no player.</summary>
+    public LyricsViewModel? Lyrics { get; }
 
     public SettingsViewModel Settings { get; }
 

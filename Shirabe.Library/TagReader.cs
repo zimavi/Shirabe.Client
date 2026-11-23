@@ -1,3 +1,4 @@
+using Shirabe.Core.Lyrics;
 using Shirabe.Core.Metadata;
 
 namespace Shirabe.Library;
@@ -13,6 +14,9 @@ internal sealed record FileTags(
     TimeSpan? Duration,
     byte[]? Cover,
     string? EmbeddedDocument);
+
+/// <summary>Lyrics found in a file's tags: timed lines (ID3 SYLT) and texts (USLT, Vorbis LYRICS...), which may themselves be LRC or TTML.</summary>
+internal sealed record TagLyrics(IReadOnlyList<LyricLine> Synced, IReadOnlyList<string> Texts);
 
 internal static class TagReader
 {
@@ -90,6 +94,29 @@ internal static class TagReader
         var track = new ATL.Track(path);
         track.AdditionalFields["SHIRABE_METADATA"] = json;
         if (!track.Save()) throw new IOException("The tag could not be written (this format may not support writing tags).");
+    }
+
+    /// <exception cref="InvalidDataException">The file is not audio, or it is corrupt.</exception>
+    public static TagLyrics ReadLyrics(string path)
+    {
+        var track = new ATL.Track(path);
+        IReadOnlyList<LyricLine> synced = [];
+        var texts = new List<string>();
+
+        foreach (var info in track.Lyrics)
+        {
+            if (synced.Count == 0 && info.SynchronizedLyrics is { Count: > 0 } phrases)
+                synced = [.. phrases
+                    .Select(p => new LyricLine(
+                        TimeSpan.FromMilliseconds(p.TimestampStart),
+                        p.TimestampEnd > p.TimestampStart ? TimeSpan.FromMilliseconds(p.TimestampEnd) : null,
+                        (p.Text ?? "").Trim()))
+                    .OrderBy(l => l.Start)];
+
+            if (!string.IsNullOrWhiteSpace(info.UnsynchronizedLyrics)) texts.Add(info.UnsynchronizedLyrics);
+        }
+
+        return new TagLyrics(synced, texts);
     }
 
     /// <summary>The <c>SHIRABE_METADATA</c> tag (standard, section 13.3). ATL files it under that name for ID3v2 and Vorbis comments; MP4 freeform atoms may carry a prefix.</summary>

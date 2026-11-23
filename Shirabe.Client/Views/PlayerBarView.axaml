@@ -85,6 +85,10 @@
             <!-- Queue and volume -->
             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8"
                         HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button Classes="icon" Classes.active="{Binding IsLyricsOpen}" Command="{Binding ToggleLyricsCommand}"
+                        ToolTip.Tip="Lyrics" AutomationProperties.Name="Lyrics">
+                    <PathIcon Data="{DynamicResource Icon.Lyrics}" />
+                </Button>
                 <Button Classes="icon" Classes.active="{Binding IsQueueOpen}" Command="{Binding ToggleQueueCommand}"
                         ToolTip.Tip="Queue" AutomationProperties.Name="Queue">
                     <PathIcon Data="{DynamicResource Icon.Playlist}" />

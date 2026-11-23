@@ -53,5 +53,8 @@
       <Compile Update="Studio\StudioEditorView.axaml.cs">
         <DependentUpon>StudioEditorView.axaml</DependentUpon>
       </Compile>
+      <Compile Update="Views\LyricsView.axaml.cs">
+        <DependentUpon>LyricsView.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

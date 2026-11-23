@@ -267,7 +267,7 @@
         <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
     </Style>
 
-    <!-- Queue panel: closed it is invisible and just outside the window on the right; "open" brings it in. -->
+    <!-- Queue and lyrics panels (both use this class): closed it is invisible and just outside the window on the right; "open" brings it in. -->
     <Style Selector="Panel.queue-panel">
         <Setter Property="Opacity" Value="0" />
         <Setter Property="RenderTransform" Value="translateX(340px)" />
@@ -275,6 +275,26 @@
     <Style Selector="Panel.queue-panel.open">
         <Setter Property="Opacity" Value="1" />
         <Setter Property="RenderTransform" Value="none" />
+    </Style>
+
+    <!-- Lyrics: plain lyrics are all readable; in timed lyrics (ItemsControl.timed) only the current line is bright. -->
+    <Style Selector="TextBlock.lyric">
+        <Setter Property="FontSize" Value="17" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Margin" Value="0,7" />
+    </Style>
+    <Style Selector="ItemsControl.timed TextBlock.lyric">
+        <Setter Property="Opacity" Value="0.4" />
+    </Style>
+    <Style Selector="ItemsControl.timed TextBlock.lyric.current">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+    <Style Selector=".motion ItemsControl.timed TextBlock.lyric">
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.25" />
+            </Transitions>
+        </Setter>
     </Style>
 
     <!-- Motion. Everything animated is under ".motion", a class the main window carries unless the

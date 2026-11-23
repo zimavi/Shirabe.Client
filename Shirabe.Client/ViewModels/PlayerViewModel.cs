@@ -113,6 +113,20 @@ public partial class PlayerViewModel : ViewModelBase
     [ObservableProperty]
     public partial bool IsQueueOpen { get; set; }
 
+    /// <summary>The lyrics panel. It takes the same place as the queue, so only one of the two is open at a time.</summary>
+    [ObservableProperty]
+    public partial bool IsLyricsOpen { get; set; }
+
+    partial void OnIsQueueOpenChanged(bool value)
+    {
+        if (value) IsLyricsOpen = false;
+    }
+
+    partial void OnIsLyricsOpenChanged(bool value)
+    {
+        if (value) IsQueueOpen = false;
+    }
+
     public bool HasQueue => QueueItems.Count > 0;
 
     public bool IsRepeatActive => Repeat != RepeatMode.Off;
@@ -280,6 +294,9 @@ public partial class PlayerViewModel : ViewModelBase
 
     [RelayCommand]
     private void ToggleQueue() => IsQueueOpen = !IsQueueOpen;
+
+    [RelayCommand]
+    private void ToggleLyrics() => IsLyricsOpen = !IsLyricsOpen;
 
     [RelayCommand]
     private async Task PlayQueueItemAsync(QueueItem? item)

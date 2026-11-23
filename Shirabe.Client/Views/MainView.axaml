@@ -34,6 +34,13 @@
                        IsEnabled="{Binding Player.IsQueueOpen}">
                     <views:QueueView DataContext="{Binding Player}" />
                 </Panel>
+
+                <!-- Lyrics take the queue's place (the player closes one when the other opens), with the same open/close style. -->
+                <Panel Grid.Column="1" Width="340" HorizontalAlignment="Right" Margin="0,40,0,0"
+                       Classes="queue-panel" Classes.open="{Binding Player.IsLyricsOpen}"
+                       IsEnabled="{Binding Player.IsLyricsOpen}">
+                    <views:LyricsView DataContext="{Binding Lyrics}" />
+                </Panel>
             </Grid>
 
             <views:PlayerBarView Grid.Row="1" DataContext="{Binding Player}" />
