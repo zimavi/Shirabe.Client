@@ -10,3 +10,5 @@ native/**/*.dylib
 
 # Drafts of the project wiki. The GitHub wiki is its own git repository, so this folder stays out of this one.
 /wiki/
+/docs/STATUS.md
+.idea/
