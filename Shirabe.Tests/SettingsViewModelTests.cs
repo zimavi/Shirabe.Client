@@ -1,5 +1,7 @@
+using Shirabe.Client;
 using Shirabe.Client.Services;
 using Shirabe.Client.ViewModels;
+
 using Xunit;
 
 namespace Shirabe.Tests;
@@ -12,7 +14,8 @@ public class SettingsViewModelTests
         var viewModel = new SettingsViewModel(new AppSettings(), new ThemeCatalog([], []));
 
         Assert.Same(viewModel.Pages[0], viewModel.SelectedPage);
-        Assert.Equal(["General", "Appearance", "Lyrics", "Connections"], viewModel.Pages.Select(page => page.Title));
+        Assert.Equal(["General", "Appearance", "Lyrics", "Connections", "About"],
+            viewModel.Pages.Select(page => page.Title));
     }
 
     [Fact]
@@ -37,7 +40,7 @@ public class SettingsViewModelTests
         foreach (var model in all)
         {
             var name = model.GetType().FullName!.Replace("ViewModel", "View");
-            Assert.True(typeof(Shirabe.Client.ViewLocator).Assembly.GetType(name) is not null, $"missing view {name}");
+            Assert.True(typeof(ViewLocator).Assembly.GetType(name) is not null, $"missing view {name}");
         }
     }
 }

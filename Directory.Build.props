@@ -1,0 +1,17 @@
+<Project>
+  <!-- version.txt (one line, SemVer such as 0.1.0 or 0.2.0-beta.1) is the one place the version lives: the app, the
+       installers and the GitHub workflows (`cat version.txt`) all read it. -->
+  <PropertyGroup>
+    <Version>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)version.txt').Trim())</Version>
+  </PropertyGroup>
+
+  <!-- The commit goes into the assembly's informational version as "<version>+<commit>" (the SDK appends it from
+       SourceRevisionId). CI can pass -p:SourceRevisionId=$GITHUB_SHA; otherwise ask git, and go without when there is none. -->
+  <Target Name="ShirabeGitRevision" BeforeTargets="GetAssemblyVersion;InitializeSourceControlInformation"
+          Condition="'$(SourceRevisionId)' == '' And Exists('$(MSBuildThisFileDirectory).git')">
+    <Exec Command="git rev-parse --short=9 HEAD" ConsoleToMSBuild="true" StandardOutputImportance="low"
+          IgnoreExitCode="true" ContinueOnError="true" WorkingDirectory="$(MSBuildThisFileDirectory)">
+      <Output TaskParameter="ConsoleOutput" PropertyName="SourceRevisionId"/>
+    </Exec>
+  </Target>
+</Project>

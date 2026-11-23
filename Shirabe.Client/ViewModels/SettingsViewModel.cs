@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+
 using Shirabe.Client.Services;
 
 namespace Shirabe.Client.ViewModels;
@@ -16,6 +17,7 @@ public partial class SettingsViewModel : ViewModelBase
             new AppearanceSettingsViewModel(settings, themes),
             new LyricsSettingsViewModel(settings),
             new ConnectionsSettingsViewModel(settings),
+            new AboutViewModel(),
         ];
         SelectedPage = Pages[0];
     }
@@ -25,6 +27,5 @@ public partial class SettingsViewModel : ViewModelBase
 
     public IReadOnlyList<SettingsPageViewModel> Pages { get; }
 
-    [ObservableProperty]
-    public partial SettingsPageViewModel SelectedPage { get; set; }
+    [ObservableProperty] public partial SettingsPageViewModel SelectedPage { get; set; }
 }

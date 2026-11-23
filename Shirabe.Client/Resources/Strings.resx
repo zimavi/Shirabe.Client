@@ -32,7 +32,7 @@
         <comment>Sidebar entry for the editor where music metadata (credits, covers, custom fields) is created. "Studio" means a creative workspace; a feature name, so a commonly used loanword is fine.</comment></data>
     <data name="Nav_Settings" xml:space="preserve"><value>Settings</value>
         <comment>Sidebar entry, title of the settings page and accessible name of the sidebar button.</comment></data>
-    <data name="Nav_SectionLibrary" xml:space="preserve"><value>LIBRARY</value>s
+    <data name="Nav_SectionLibrary" xml:space="preserve"><value>LIBRARY</value>
         <comment>Small heading above the library entries in the sidebar.</comment></data>
     <data name="Nav_SectionCreate" xml:space="preserve"><value>CREATE</value>
         <comment>Small heading above the Studio entry in the sidebar.</comment></data>
@@ -194,4 +194,56 @@
         <comment>Name of an on/off switch. "Linked" means a song's metadata contains a web link to its cover image. Also its accessible name.</comment></data>
     <data name="Connections_DownloadArtworkDescription" xml:space="preserve"><value>When a song's metadata links to a cover, it is downloaded as the song is shown and kept on this computer. The website it comes from can see your address and that you played this song.</value>
         <comment>Privacy explanation under the switch: keep the meaning exact. "Your address" means the user's internet (IP) address.</comment></data>
+
+    <!-- Settings: About -->
+    <data name="About_Title" xml:space="preserve"><value>About</value>
+        <comment>Name of a settings page, in the list of pages. It shows the app's version, license and credits.</comment></data>
+    <data name="About_Description" xml:space="preserve"><value>Version, license and credits</value>
+        <comment>One short line under the page name "About" in the list of settings pages.</comment></data>
+    <data name="About_SectionApp" xml:space="preserve"><value>SHIRABE</value>
+        <comment>Small heading above the version and links. "Shirabe" is the product name: do not translate it. Keep it uppercase if the language has letter case.</comment></data>
+    <data name="About_Tagline" xml:space="preserve"><value>Music deserves more than a play button.</value>
+        <comment>The project's motto, shown at the top of the About page. Translate the idea, not word for word. "Play button" is the button that starts a song.</comment></data>
+    <data name="About_Version" xml:space="preserve"><value>Version</value>
+        <comment>Name of the row that shows the app's version number, for example 0.1.0.</comment></data>
+    <data name="About_VersionDescription" xml:space="preserve"><value>Mention this when you report a problem.</value>
+        <comment>Short hint under "Version".</comment></data>
+    <data name="About_Commit" xml:space="preserve"><value>Build</value>
+        <comment>Name of the row that shows the short code (a git commit hash such as ce863a5e7) identifying the exact source code this build was made from.</comment></data>
+    <data name="About_CommitDescription" xml:space="preserve"><value>The exact source code this build was made from.</value>
+        <comment>Short hint under "Build".</comment></data>
+    <data name="About_License" xml:space="preserve"><value>License</value>
+        <comment>Name of the row that tells under which license the app is released.</comment></data>
+    <data name="About_LicenseDescription" xml:space="preserve"><value>Shirabe is free and open source, under the Apache License 2.0.</value>
+        <comment>Hint under "License". "Apache License 2.0" is the official license name: do not translate it.</comment></data>
+    <data name="About_Source" xml:space="preserve"><value>Source code</value>
+        <comment>Name of a row with a button that opens the project's page on GitHub.</comment></data>
+    <data name="About_SourceDescription" xml:space="preserve"><value>Shirabe is developed in the open on GitHub.</value>
+        <comment>Hint under "Source code". "GitHub" is a product name.</comment></data>
+    <data name="About_ReportProblem" xml:space="preserve"><value>Report a problem</value>
+        <comment>Name of a row with a button that opens the project's issue tracker on GitHub.</comment></data>
+    <data name="About_ReportProblemDescription" xml:space="preserve"><value>Found a bug or have an idea? Open an issue on GitHub.</value>
+        <comment>Hint under "Report a problem". An "issue" is a report on GitHub's issue tracker.</comment></data>
+    <data name="About_Open" xml:space="preserve"><value>Open</value>
+        <comment>Button that opens a web page in the browser. Short: it sits at the right end of a row.</comment></data>
+    <data name="About_SectionCredits" xml:space="preserve"><value>CREDITS</value>
+        <comment>Small heading above the list of people. Keep it uppercase if the language has letter case.</comment></data>
+    <data name="About_Author" xml:space="preserve"><value>Author and maintainer</value>
+        <comment>Role of the person named in the row's description. The name itself is not translated.</comment></data>
+    <data name="About_SectionAudio" xml:space="preserve"><value>AUDIO ENGINE</value>
+        <comment>Small heading above the notice about the audio library used to play music. Keep it uppercase if the language has letter case.</comment></data>
+    <data name="About_AudioNotice" xml:space="preserve"><value>Audio playback uses BASS, Copyright © 1999-2026 Un4seen Developments Ltd. BASS is proprietary software. It is not covered by Shirabe's license and is used under Un4seen's terms for free, non-commercial use.</value>
+        <comment>Legal notice: keep the meaning exact. "BASS" and "Un4seen Developments Ltd." are names: do not translate them. "Proprietary" means not open source.</comment></data>
+    <data name="About_AudioWebsite" xml:space="preserve"><value>BASS website</value>
+        <comment>Name of a row with a button that opens the BASS audio library's website. "BASS" is a product name.</comment></data>
+    <data name="About_AudioWebsiteDescription" xml:space="preserve"><value>Un4seen Developments</value>
+        <comment>Hint under "BASS website": the company that makes BASS. A company name: do not translate it.</comment></data>
+    <data name="About_SectionThirdParty" xml:space="preserve"><value>THIRD-PARTY COMPONENTS</value>
+        <comment>Small heading above the list of open-source libraries and resources the app is built with. Keep it uppercase if the language has letter case.</comment></data>
+    <data name="About_ThirdPartyIntro" xml:space="preserve"><value>Shirabe is built with these open-source components. Each one is used under its own license.</value>
+        <comment>Sentence above the list of components. "Open-source" means the source code is public and free to use.</comment></data>
+    <data name="About_CopyHint" xml:space="preserve"><value>Click to copy</value>
+        <comment>Tooltip of the version and build buttons: clicking one copies its text to the clipboard.</comment></data>
+    <data name="About_Copied" xml:space="preserve"><value>Copied</value>
+        <comment>Shown for a moment on the version or build button after its text was copied to the clipboard. Short: it replaces the button's text.</comment></data>
 </root>

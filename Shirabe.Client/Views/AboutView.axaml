@@ -1,0 +1,72 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:views="using:Shirabe.Client.Views"
+             xmlns:loc="using:Shirabe.Client.Localization"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="800"
+             x:Class="Shirabe.Client.Views.AboutView"
+             x:DataType="vm:AboutViewModel">
+    <StackPanel Spacing="24">
+        <StackPanel Spacing="6">
+            <TextBlock Classes="section" Text="{loc:T About_SectionApp}" />
+            <TextBlock Text="{loc:T About_Tagline}" TextWrapping="Wrap" Margin="0,0,0,6"
+                       Foreground="{DynamicResource TextSecondaryBrush}" />
+            <views:SettingRow Title="{loc:T About_Version}" Description="{loc:T About_VersionDescription}">
+                <Button Classes="copy" Content="{Binding Version}" Tag="{Binding Version}"
+                        ToolTip.Tip="{loc:T About_CopyHint}" />
+            </views:SettingRow>
+            <views:SettingRow Title="{loc:T About_Commit}" Description="{loc:T About_CommitDescription}"
+                              IsVisible="{Binding HasCommit}">
+                <Button Classes="copy" Content="{Binding Commit}" Tag="{Binding Commit}"
+                        ToolTip.Tip="{loc:T About_CopyHint}" />
+            </views:SettingRow>
+            <views:SettingRow Title="{loc:T About_License}" Description="{loc:T About_LicenseDescription}">
+                <Button Content="{loc:T About_Open}" Tag="{Binding LicenseUrl}" />
+            </views:SettingRow>
+            <views:SettingRow Title="{loc:T About_Source}" Description="{loc:T About_SourceDescription}">
+                <Button Content="{loc:T About_Open}" Tag="{Binding RepositoryUrl}" />
+            </views:SettingRow>
+            <views:SettingRow Title="{loc:T About_ReportProblem}" Description="{loc:T About_ReportProblemDescription}">
+                <Button Content="{loc:T About_Open}" Tag="{Binding IssuesUrl}" />
+            </views:SettingRow>
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+            <TextBlock Classes="section" Text="{loc:T About_SectionCredits}" />
+            <views:SettingRow Title="zimavi" Description="{loc:T About_Author}">
+                <Button Content="{loc:T About_Open}" Tag="{Binding AuthorUrl}" />
+            </views:SettingRow>
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+            <TextBlock Classes="section" Text="{loc:T About_SectionAudio}" />
+            <TextBlock Text="{loc:T About_AudioNotice}" TextWrapping="Wrap" Margin="0,0,0,6"
+                       Foreground="{DynamicResource TextSecondaryBrush}" />
+            <views:SettingRow Title="{loc:T About_AudioWebsite}" Description="{loc:T About_AudioWebsiteDescription}">
+                <Button Content="{loc:T About_Open}" Tag="{Binding BassUrl}" />
+            </views:SettingRow>
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+            <TextBlock Classes="section" Text="{loc:T About_SectionThirdParty}" />
+            <TextBlock Text="{loc:T About_ThirdPartyIntro}" TextWrapping="Wrap" Margin="0,0,0,6"
+                       Foreground="{DynamicResource TextSecondaryBrush}" />
+            <ItemsControl ItemsSource="{Binding Components}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="6" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ThirdPartyComponent">
+                        <views:SettingRow Title="{Binding Name}" Description="{Binding License}">
+                            <Button Content="{loc:T About_Open}" Tag="{Binding Url}" />
+                        </views:SettingRow>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
