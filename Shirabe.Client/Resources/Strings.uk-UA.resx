@@ -313,27 +313,27 @@
         <comment>Heading shown in the lyrics panel while no song is loaded.</comment></data>
   <data name="LyricsPanel_NoLyrics" xml:space="preserve"><value>Немає тексту для цієї пісні</value>
         <comment>Heading shown in the lyrics panel when the loaded song has no lyrics.</comment></data>
-  <data name="LyricsPanel_PlayHint" xml:space="preserve"><value>Play a song to see its lyrics here.</value>
+  <data name="LyricsPanel_PlayHint" xml:space="preserve"><value>Відтворіть пісню, щоб побачити її текст.</value>
         <comment>Hint under "Nothing is playing".</comment></data>
-  <data name="LyricsPanel_AddHint" xml:space="preserve"><value>Put a .lrc or .ttml file with the same name beside the song, or add lyrics to the file's tags.</value>
+  <data name="LyricsPanel_AddHint" xml:space="preserve"><value>Покладіть .lrc або .ttml файл з тим самим ім'ям біля пісні, або додайте текст в теги файлу.</value>
         <comment>Hint under "No lyrics for this song". ".lrc" and ".ttml" are file extensions: keep them. "Tags" are the information stored inside the audio file (title, artist, lyrics...).</comment></data>
   <!-- Home page -->
-  <data name="Home_DropTitle" xml:space="preserve"><value>Drop an audio file here</value>
+  <data name="Home_DropTitle" xml:space="preserve"><value>Перетягніть сюди аудіофайл</value>
         <comment>Large text on the start page's drop area. Read together with Home_DropHint: "Drop an audio file here" + "to start listening".</comment></data>
-  <data name="Home_DropHint" xml:space="preserve"><value>to start listening</value>
+  <data name="Home_DropHint" xml:space="preserve"><value>щоб почати прослуховувати</value>
         <comment>Second line under Home_DropTitle. It continues the sentence of the line above it.</comment></data>
   <!-- Player messages and startup problems -->
-  <data name="Player_NothingPlaying" xml:space="preserve"><value>Nothing playing</value>
+  <data name="Player_NothingPlaying" xml:space="preserve"><value>Нічого не відтворюється</value>
         <comment>Title in the player bar while no song is loaded.</comment></data>
-  <data name="Player_CannotPlay" xml:space="preserve"><value>Cannot play {0}: {1}</value>
+  <data name="Player_CannotPlay" xml:space="preserve"><value>Не вдалося відтворити {0}: {1}</value>
         <comment>Error in the player bar. {0} is a song title, {1} the technical reason, often in English.</comment></data>
-  <data name="Player_CannotPlayAgain" xml:space="preserve"><value>Cannot play {0} again: {1}</value>
+  <data name="Player_CannotPlayAgain" xml:space="preserve"><value>Не вдалося відтворити {0} знову: {1}</value>
         <comment>Error in the player bar when a song could not be loaded again after the app released its file for a moment. {0} is a song title, {1} the technical reason, often in English.</comment></data>
-  <data name="Player_FileGone" xml:space="preserve"><value>Cannot play {0}: the file was moved or deleted. Add its folder again to update the library.</value>
+  <data name="Player_FileGone" xml:space="preserve"><value>Не вдалося відтворити {0}: файл переміщений або видалений. Додайте його в теку ще раз, щоб оновити бібліотеку.</value>
         <comment>Error in the player bar. {0} is a song title.</comment></data>
-  <data name="Startup_AudioEngine" xml:space="preserve"><value>Could not start the audio engine: {0}&#10;&#10;See native/README.md.</value>
+  <data name="Startup_AudioEngine" xml:space="preserve"><value>Не вдалося запустити звукову підсистему: {0}&#10;&#10;Подивіться native/README.md.</value>
         <comment>Error shown on the start page when the sound library (BASS) is missing. {0} is the technical reason, often in English. Keep the line breaks and "native/README.md" (a file name).</comment></data>
-  <data name="Startup_LibraryOpen" xml:space="preserve"><value>The music library could not be opened ({0}): {1}</value>
+  <data name="Startup_LibraryOpen" xml:space="preserve"><value>Не вдалося відкрити музичну бібліотеку ({0}): {1}</value>
         <comment>Error shown on the start page. {0} is the path of the library's database file, {1} the technical reason, often in English.</comment></data>
   <!-- Notifications and updates -->
   <data name="Connections_SectionUpdates" xml:space="preserve"><value>ОНОВЛЕННЯ</value>
