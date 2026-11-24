@@ -82,7 +82,7 @@
   <!-- Settings: General -->
   <data name="General_Title" xml:space="preserve"><value>General</value>
         <comment>Name of a settings page, in the list of pages. Holds the everyday options.</comment></data>
-  <data name="General_Description" xml:space="preserve"><value>Startup and language</value>
+  <data name="General_Description" xml:space="preserve"><value>Startup, window and language</value>
         <comment>One short line under the page name "General" in the list of settings pages. Lists what is on the page.</comment></data>
   <data name="General_SectionStartup" xml:space="preserve"><value>STARTUP</value>
         <comment>Small heading above the settings about what happens when the app starts. Keep it uppercase if the language has letter case.</comment></data>
@@ -90,6 +90,12 @@
         <comment>Name of an on/off switch. Also its accessible name.</comment></data>
   <data name="General_ResumeDescription" xml:space="preserve"><value>Brings back the last song (paused, where you left it), the volume, shuffle and repeat when Shirabe starts. Off forgets them.</value>
         <comment>Explanation under the "Resume last session" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="General_SectionWindow" xml:space="preserve"><value>WINDOW</value>
+        <comment>Small heading above the settings about the app's window. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="General_KeepInTray" xml:space="preserve"><value>Keep running in the tray</value>
+        <comment>Name of an on/off switch. Also its accessible name. "Tray" is the system tray (notification area) with the app's small icon.</comment></data>
+  <data name="General_KeepInTrayDescription" xml:space="preserve"><value>Closing the window hides it and the music keeps playing; use the tray icon to bring it back. Off: closing the window quits Shirabe. Some desktops have no system tray, so turn this off there.</value>
+        <comment>Explanation under the "Keep running in the tray" switch. "Off" means the switch is turned off. "Tray" is the system tray (notification area).</comment></data>
   <data name="General_SectionLanguage" xml:space="preserve"><value>LANGUAGE</value>
         <comment>Small heading above the language setting. Keep it uppercase if the language has letter case.</comment></data>
   <data name="General_Language" xml:space="preserve"><value>Language</value>
