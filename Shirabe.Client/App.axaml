@@ -16,6 +16,10 @@
                                         macOS='/Assets/tray.png',
                                         Linux='/Assets/tray.png',
                                         x:TypeArguments='WindowIcon'}">
+                <!-- Filled in App.axaml.cs. The menu instance must stay the same: macOS fails if it is replaced. -->
+                <TrayIcon.Menu>
+                    <NativeMenu />
+                </TrayIcon.Menu>
             </TrayIcon>
         </TrayIcons>
     </TrayIcon.Icons>

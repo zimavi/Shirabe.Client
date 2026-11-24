@@ -143,6 +143,9 @@ public partial class App : Application
     {
         if (TrayIcon.GetIcons(this)?.FirstOrDefault() is not { } tray) return;
 
+        // Items go into the menu declared in App.axaml; replacing it (tray.Menu = new ...) crashes the macOS backend.
+        if (tray.Menu is not { } menu) return;
+
         void Open()
         {
             window.Show();
@@ -151,8 +154,6 @@ public partial class App : Application
         }
 
         // Each item gets its text from a key, again whenever the language changes.
-        var menu = new NativeMenu();
-
         void AddItem(string key, Action? click = null, ICommand? command = null)
         {
             var item = new NativeMenuItem { Command = command };
@@ -179,7 +180,6 @@ public partial class App : Application
         }
 
         AddItem("Tray_Quit", () => desktop.Shutdown());
-        tray.Menu = menu;
         tray.Clicked += (_, _) => Open();
 
         // Only the user's own close (X, Alt+F4) is intercepted: Quit and OS shutdown must still end the app.
