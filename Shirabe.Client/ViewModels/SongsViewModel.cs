@@ -1,5 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
+using Shirabe.Client.Localization;
 using Shirabe.Client.Services;
 using Shirabe.Core.Library;
 
@@ -25,18 +27,15 @@ public partial class SongsViewModel(
     [NotifyPropertyChangedFor(nameof(ShowEmptyState))]
     public partial bool IsScanning { get; set; }
 
-    [ObservableProperty]
-    public partial int ScanProcessed { get; set; }
+    [ObservableProperty] public partial int ScanProcessed { get; set; }
 
-    [ObservableProperty]
-    public partial int ScanTotal { get; set; }
+    [ObservableProperty] public partial int ScanTotal { get; set; }
 
     /// <summary>Progress while scanning, then a summary of the last scan.</summary>
     [ObservableProperty]
     public partial string? ScanText { get; set; }
 
-    [ObservableProperty]
-    public partial string? ErrorMessage { get; set; }
+    [ObservableProperty] public partial string? ErrorMessage { get; set; }
 
     /// <summary>The open properties dialog, or null. It is shown over the page.</summary>
     [ObservableProperty]
@@ -50,7 +49,8 @@ public partial class SongsViewModel(
     /// <summary>Not while scanning: the list is still empty then, and "No songs yet" would be wrong.</summary>
     public bool ShowEmptyState => !HasTracks && !IsScanning;
 
-    public string Summary => Tracks.Count == 1 ? "1 song" : $"{Tracks.Count:N0} songs";
+    // The page reloads every time it opens (MainViewModel.ShowSongsAsync), so this follows a language change by itself.
+    public string Summary => Loc.Get("Songs_Summary", Tracks.Count);
 
     public async Task LoadAsync()
     {
@@ -63,7 +63,7 @@ public partial class SongsViewModel(
         catch (Exception ex)
         {
             // A broken database must not take the app down: say what happened and keep playing.
-            ErrorMessage = $"Could not load the library: {ex.Message}";
+            ErrorMessage = Loc.Get("Songs_LoadFailed", ex.Message);
             _loadFailed = true;
         }
     }
@@ -78,7 +78,7 @@ public partial class SongsViewModel(
         IsScanning = true;
         ScanProcessed = 0;
         ScanTotal = 0;
-        ScanText = "Looking for music...";
+        ScanText = Loc.Get("Songs_ScanLooking");
         ErrorMessage = null;
 
         // Reports come from the scanner's thread; marshal them to the UI thread (inline in tests).
@@ -86,7 +86,7 @@ public partial class SongsViewModel(
         {
             ScanProcessed = p.Processed;
             ScanTotal = p.Total;
-            ScanText = $"Scanning {p.Processed:N0} of {p.Total:N0}";
+            ScanText = Loc.Get("Songs_ScanProgress", p.Processed, p.Total);
         }));
 
         try
@@ -95,12 +95,12 @@ public partial class SongsViewModel(
         }
         catch (OperationCanceledException)
         {
-            ScanText = "Scan cancelled";
+            ScanText = Loc.Get("Songs_ScanCancelled");
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
             ScanText = null;
-            ErrorMessage = $"Could not scan {folder}: {ex.Message}";
+            ErrorMessage = Loc.Get("Songs_ScanFailed", folder, ex.Message);
         }
         finally
         {
@@ -166,11 +166,17 @@ public partial class SongsViewModel(
 
     private static string Describe(ScanResult result)
     {
-        var parts = new List<string> { $"{result.Added:N0} added", $"{result.Updated:N0} updated", $"{result.Unchanged:N0} unchanged" };
-        if (result.MarkedMissing > 0) parts.Add($"{result.MarkedMissing:N0} no longer found");
-        if (result.Failed.Count > 0) parts.Add($"{result.Failed.Count:N0} could not be read");
-        if (result.DocumentProblems is { Count: > 0 } documents) parts.Add($"{documents.Count:N0} metadata document problems");
-        return "Scan finished: " + string.Join(", ", parts);
+        var parts = new List<string>
+        {
+            Loc.Get("Songs_ScanAdded", result.Added),
+            Loc.Get("Songs_ScanUpdated", result.Updated),
+            Loc.Get("Songs_ScanUnchanged", result.Unchanged),
+        };
+        if (result.MarkedMissing > 0) parts.Add(Loc.Get("Songs_ScanMissing", result.MarkedMissing));
+        if (result.Failed.Count > 0) parts.Add(Loc.Get("Songs_ScanFailedFiles", result.Failed.Count));
+        if (result.DocumentProblems is { Count: > 0 } documents)
+            parts.Add(Loc.Get("Songs_ScanDocumentProblems", documents.Count));
+        return Loc.Get("Songs_ScanFinished", string.Join(", ", parts));
     }
 
     private sealed class CallbackProgress<T>(Action<T> report) : IProgress<T>

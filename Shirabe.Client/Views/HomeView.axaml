@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:loc="using:Shirabe.Client.Localization"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
              x:Class="Shirabe.Client.Views.HomeView"
              x:DataType="vm:HomeViewModel">
@@ -12,9 +13,9 @@
             <StackPanel Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <PathIcon Data="{DynamicResource Icon.Note}" Width="48" Height="48"
                           Foreground="{DynamicResource TextSecondaryBrush}" />
-                <TextBlock Text="Drop an audio file here" FontSize="20" FontWeight="SemiBold"
+                <TextBlock Text="{loc:T Home_DropTitle}" FontSize="20" FontWeight="SemiBold"
                            HorizontalAlignment="Center" />
-                <TextBlock Text="to start listening" HorizontalAlignment="Center"
+                <TextBlock Text="{loc:T Home_DropHint}" HorizontalAlignment="Center"
                            Foreground="{DynamicResource TextSecondaryBrush}" />
             </StackPanel>
         </Panel>

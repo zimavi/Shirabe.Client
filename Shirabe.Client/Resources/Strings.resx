@@ -21,7 +21,7 @@
     <data name="Nav_Home" xml:space="preserve"><value>Home</value>
         <comment>Sidebar entry for the start page. Short: it has to fit the sidebar.</comment></data>
     <data name="Nav_Songs" xml:space="preserve"><value>Songs</value>
-        <comment>Sidebar entry for the page that lists every song (track) in the user's music library.</comment></data>
+        <comment>Sidebar entry and heading of the page that lists every song (track) in the user's music library.</comment></data>
     <data name="Nav_Albums" xml:space="preserve"><value>Albums</value>
         <comment>Sidebar entry for the page that will list albums. Shown greyed out for now.</comment></data>
     <data name="Nav_Artists" xml:space="preserve"><value>Artists</value>
@@ -57,7 +57,7 @@
     <data name="Player_Next" xml:space="preserve"><value>Next</value>
         <comment>Tooltip of the button that goes to the next song, and an item of the tray icon menu.</comment></data>
     <data name="Player_Play" xml:space="preserve"><value>Play</value>
-        <comment>Tray icon menu item that starts playback. Verb. Shown while the music is paused.</comment></data>
+        <comment>Verb. Tray icon menu item that starts playback (shown while the music is paused), item of the song context menu, and accessible name of the play button on a song's cover.</comment></data>
     <data name="Player_Pause" xml:space="preserve"><value>Pause</value>
         <comment>Tray icon menu item that pauses playback. Verb. Shown while the music is playing.</comment></data>
     <data name="Player_PlayPause" xml:space="preserve"><value>Play or pause</value>
@@ -71,9 +71,9 @@
     <data name="Player_RepeatOne" xml:space="preserve"><value>Repeat: this song</value>
         <comment>Tooltip of the repeat button when the current song plays again and again.</comment></data>
     <data name="Player_Lyrics" xml:space="preserve"><value>Lyrics</value>
-        <comment>Tooltip and accessible name of the button that opens the panel with the words of the song (song lyrics, not poetry).</comment></data>
+        <comment>Tooltip and accessible name of the button that opens the panel with the words of the song (song lyrics, not poetry). Also the heading of that panel.</comment></data>
     <data name="Player_Queue" xml:space="preserve"><value>Queue</value>
-        <comment>Tooltip and accessible name of the button that opens the list of songs that will play next (the play queue).</comment></data>
+        <comment>Tooltip and accessible name of the button that opens the list of songs that will play next (the play queue). Also the heading of that list.</comment></data>
     <data name="Player_Mute" xml:space="preserve"><value>Mute</value>
         <comment>Accessible name of the speaker icon button that switches the sound off and on. Not shown as text.</comment></data>
     <data name="Player_Volume" xml:space="preserve"><value>Volume</value>
@@ -252,6 +252,102 @@
         <comment>Tooltip of the version and build buttons: clicking one copies its text to the clipboard.</comment></data>
     <data name="About_Copied" xml:space="preserve"><value>Copied</value>
         <comment>Shown for a moment on the version or build button after its text was copied to the clipboard. Short: it replaces the button's text.</comment></data>
+    <!-- Songs page -->
+    <data name="Common_UnknownArtist" xml:space="preserve"><value>Unknown artist</value>
+        <comment>Shown in place of the artist's name when a song has none (song list, queue, player bar).</comment></data>
+    <data name="Songs_Cancel" xml:space="preserve"><value>Cancel</value>
+        <comment>Button that stops the scan of a music folder that is in progress.</comment></data>
+    <data name="Songs_AddFolder" xml:space="preserve"><value>Add folder</value>
+        <comment>Button that opens a dialog to choose a folder with music; the app then scans it and adds the songs to the library.</comment></data>
+    <data name="Songs_Summary" xml:space="preserve"><value>In the library: {0:N0}</value>
+        <comment>Line under the page heading "Songs". {0:N0} is the number of songs, formatted with thousands separators: keep {0:N0} as it is. Worded without a counted noun on purpose, so it needs no plural forms.</comment></data>
+    <data name="Songs_ColTitle" xml:space="preserve"><value>TITLE</value>
+        <comment>Column heading of the song list: the song's title. Keep it uppercase if the language has letter case. Short.</comment></data>
+    <data name="Songs_ColArtist" xml:space="preserve"><value>ARTIST</value>
+        <comment>Column heading of the song list: the performer. Keep it uppercase if the language has letter case. Short.</comment></data>
+    <data name="Songs_ColAlbum" xml:space="preserve"><value>ALBUM</value>
+        <comment>Column heading of the song list: the album the song is on. Keep it uppercase if the language has letter case. Short.</comment></data>
+    <data name="Songs_ColTime" xml:space="preserve"><value>TIME</value>
+        <comment>Column heading of the song list: the song's length (duration). Keep it uppercase if the language has letter case. Short.</comment></data>
+    <data name="Songs_PlayNext" xml:space="preserve"><value>Play next</value>
+        <comment>Item of the song context menu: puts the song right after the one that is playing.</comment></data>
+    <data name="Songs_AddToQueue" xml:space="preserve"><value>Add to queue</value>
+        <comment>Item of the song context menu: puts the song at the end of the play queue.</comment></data>
+    <data name="Songs_Properties" xml:space="preserve"><value>Properties</value>
+        <comment>Item of the song context menu: opens a dialog with the song's details, tags and custom fields.</comment></data>
+    <data name="Songs_EmptyTitle" xml:space="preserve"><value>No songs yet</value>
+        <comment>Heading shown on the Songs page while the library is empty.</comment></data>
+    <data name="Songs_EmptyHint" xml:space="preserve"><value>Add a folder and Shirabe will find the music in it.</value>
+        <comment>Hint under "No songs yet". "Shirabe" is the app's name: do not translate it.</comment></data>
+    <data name="Songs_ChooseFolder" xml:space="preserve"><value>Choose a music folder</value>
+        <comment>Title of the operating system's folder dialog opened by "Add folder".</comment></data>
+    <data name="Songs_LoadFailed" xml:space="preserve"><value>Could not load the library: {0}</value>
+        <comment>Error line on the Songs page. {0} is the technical reason, often in English.</comment></data>
+    <data name="Songs_ScanLooking" xml:space="preserve"><value>Looking for music...</value>
+        <comment>Status while a folder scan starts, before the number of files is known.</comment></data>
+    <data name="Songs_ScanProgress" xml:space="preserve"><value>Scanning {0:N0} of {1:N0}</value>
+        <comment>Status during a folder scan: {0} files done, {1} files in total. Keep {0:N0} and {1:N0} as they are.</comment></data>
+    <data name="Songs_ScanCancelled" xml:space="preserve"><value>Scan cancelled</value>
+        <comment>Status after the user stopped a folder scan.</comment></data>
+    <data name="Songs_ScanFailed" xml:space="preserve"><value>Could not scan {0}: {1}</value>
+        <comment>Error line on the Songs page. {0} is a folder path, {1} the technical reason, often in English.</comment></data>
+    <data name="Songs_ScanFinished" xml:space="preserve"><value>Scan finished: {0}</value>
+        <comment>Summary after a folder scan. {0} is a list of results separated by commas, made from the "Songs_Scan..." texts, e.g. "3 added, 1 updated, 10 unchanged".</comment></data>
+    <data name="Songs_ScanAdded" xml:space="preserve"><value>{0:N0} added</value>
+        <comment>Part of the scan summary: how many new songs were found. Keep {0:N0} as it is.</comment></data>
+    <data name="Songs_ScanUpdated" xml:space="preserve"><value>{0:N0} updated</value>
+        <comment>Part of the scan summary: how many songs were already known but changed (for example retagged). Keep {0:N0} as it is.</comment></data>
+    <data name="Songs_ScanUnchanged" xml:space="preserve"><value>{0:N0} unchanged</value>
+        <comment>Part of the scan summary: how many songs were already known and had not changed. Keep {0:N0} as it is.</comment></data>
+    <data name="Songs_ScanMissing" xml:space="preserve"><value>{0:N0} no longer found</value>
+        <comment>Part of the scan summary: how many known songs have disappeared from the folder. Keep {0:N0} as it is.</comment></data>
+    <data name="Songs_ScanFailedFiles" xml:space="preserve"><value>{0:N0} could not be read</value>
+        <comment>Part of the scan summary: how many files were skipped because they are damaged or not audio. Keep {0:N0} as it is.</comment></data>
+    <data name="Songs_ScanDocumentProblems" xml:space="preserve"><value>Metadata document problems: {0:N0}</value>
+        <comment>Part of the scan summary: how many metadata documents (small .shirabe.json files or tags that describe a song) were damaged or broke the format's rules. Keep {0:N0} as it is.</comment></data>
+
+    <!-- Queue panel -->
+    <data name="Queue_Clear" xml:space="preserve"><value>Clear</value>
+        <comment>Small button in the queue panel that empties the queue.</comment></data>
+    <data name="Queue_ClearTip" xml:space="preserve"><value>Remove everything except the song that is playing</value>
+        <comment>Tooltip of the "Clear" button of the queue panel.</comment></data>
+    <data name="Queue_Remove" xml:space="preserve"><value>Remove from queue</value>
+        <comment>Tooltip and accessible name of the small X button on a queue row.</comment></data>
+    <data name="Queue_EmptyTitle" xml:space="preserve"><value>The queue is empty</value>
+        <comment>Heading shown in the queue panel when no songs are queued.</comment></data>
+    <data name="Queue_EmptyHint" xml:space="preserve"><value>Play a song from the list to start one.</value>
+        <comment>Hint under "The queue is empty". "One" means a queue.</comment></data>
+
+    <!-- Lyrics panel -->
+    <data name="LyricsPanel_NothingPlaying" xml:space="preserve"><value>Nothing is playing</value>
+        <comment>Heading shown in the lyrics panel while no song is loaded.</comment></data>
+    <data name="LyricsPanel_NoLyrics" xml:space="preserve"><value>No lyrics for this song</value>
+        <comment>Heading shown in the lyrics panel when the loaded song has no lyrics.</comment></data>
+    <data name="LyricsPanel_PlayHint" xml:space="preserve"><value>Play a song to see its lyrics here.</value>
+        <comment>Hint under "Nothing is playing".</comment></data>
+    <data name="LyricsPanel_AddHint" xml:space="preserve"><value>Put a .lrc or .ttml file with the same name beside the song, or add lyrics to the file's tags.</value>
+        <comment>Hint under "No lyrics for this song". ".lrc" and ".ttml" are file extensions: keep them. "Tags" are the information stored inside the audio file (title, artist, lyrics...).</comment></data>
+
+    <!-- Home page -->
+    <data name="Home_DropTitle" xml:space="preserve"><value>Drop an audio file here</value>
+        <comment>Large text on the start page's drop area. Read together with Home_DropHint: "Drop an audio file here" + "to start listening".</comment></data>
+    <data name="Home_DropHint" xml:space="preserve"><value>to start listening</value>
+        <comment>Second line under Home_DropTitle. It continues the sentence of the line above it.</comment></data>
+
+    <!-- Player messages and startup problems -->
+    <data name="Player_NothingPlaying" xml:space="preserve"><value>Nothing playing</value>
+        <comment>Title in the player bar while no song is loaded.</comment></data>
+    <data name="Player_CannotPlay" xml:space="preserve"><value>Cannot play {0}: {1}</value>
+        <comment>Error in the player bar. {0} is a song title, {1} the technical reason, often in English.</comment></data>
+    <data name="Player_CannotPlayAgain" xml:space="preserve"><value>Cannot play {0} again: {1}</value>
+        <comment>Error in the player bar when a song could not be loaded again after the app released its file for a moment. {0} is a song title, {1} the technical reason, often in English.</comment></data>
+    <data name="Player_FileGone" xml:space="preserve"><value>Cannot play {0}: the file was moved or deleted. Add its folder again to update the library.</value>
+        <comment>Error in the player bar. {0} is a song title.</comment></data>
+    <data name="Startup_AudioEngine" xml:space="preserve"><value>Could not start the audio engine: {0}&#10;&#10;See native/README.md.</value>
+        <comment>Error shown on the start page when the sound library (BASS) is missing. {0} is the technical reason, often in English. Keep the line breaks and "native/README.md" (a file name).</comment></data>
+    <data name="Startup_LibraryOpen" xml:space="preserve"><value>The music library could not be opened ({0}): {1}</value>
+        <comment>Error shown on the start page. {0} is the path of the library's database file, {1} the technical reason, often in English.</comment></data>
+
     <!-- Notifications and updates -->
     <data name="Connections_SectionUpdates" xml:space="preserve"><value>UPDATES</value>
         <comment>Small heading above the setting about checking for new versions. Keep it uppercase if the language has letter case.</comment></data>

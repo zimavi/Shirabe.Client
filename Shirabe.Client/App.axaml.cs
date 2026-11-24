@@ -201,7 +201,7 @@ public partial class App : Application
         {
             player = null;
             return new MainViewModel(null, null,
-                $"Could not start the audio engine: {ex.Message}\n\nSee native/README.md.");
+                Loc.Get("Startup_AudioEngine", ex.Message));
         }
 
         var playerViewModel = new PlayerViewModel(player);
@@ -223,7 +223,7 @@ public partial class App : Application
         catch (Exception ex)
         {
             return new MainViewModel(playerViewModel, null, null,
-                $"The music library could not be opened ({libraryPath}): {ex.Message}", settings,
+                Loc.Get("Startup_LibraryOpen", libraryPath, ex.Message), settings,
                 () => studio(null, null));
         }
     }

@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
+using Shirabe.Client.Localization;
 using Shirabe.Client.Services;
 using Shirabe.Core.Lyrics;
 
@@ -256,11 +257,11 @@ public partial class LyricsViewModel : ViewModelBase
 
     public bool HasNoLyrics => Lines.Count == 0;
 
-    public string NoLyricsText => _player.CurrentTrack is null ? "Nothing is playing" : "No lyrics for this song";
+    public string NoLyricsText =>
+        Loc.Get(_player.CurrentTrack is null ? "LyricsPanel_NothingPlaying" : "LyricsPanel_NoLyrics");
 
-    public string NoLyricsHint => _player.CurrentTrack is null
-        ? "Play a song to see its lyrics here."
-        : "Put a .lrc or .ttml file with the same name beside the song, or add lyrics to the file's tags.";
+    public string NoLyricsHint =>
+        Loc.Get(_player.CurrentTrack is null ? "LyricsPanel_PlayHint" : "LyricsPanel_AddHint");
 
     private async Task RefreshAsync()
     {

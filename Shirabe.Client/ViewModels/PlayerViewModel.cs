@@ -33,7 +33,9 @@ public partial class PlayerViewModel : ViewModelBase
         RefreshOnLanguageChange(nameof(PlayPauseText), nameof(RepeatText));
     }
 
-    [ObservableProperty] public partial string Title { get; set; } = "Nothing playing";
+    [ObservableProperty]
+    public partial string Title { get; set; } =
+        Loc.Get("Player_NothingPlaying"); // shortcut: stays in the startup language until a song is loaded
 
     /// <summary>Second line of the now-playing area: the artist, or "Local file" for a dropped file.</summary>
     [ObservableProperty]
@@ -234,7 +236,7 @@ public partial class PlayerViewModel : ViewModelBase
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
             {
-                ErrorMessage = $"Cannot play {track.Title} again: {ex.Message}";
+                ErrorMessage = Loc.Get("Player_CannotPlayAgain", track.Title, ex.Message);
             }
         }
     }
@@ -349,20 +351,19 @@ public partial class PlayerViewModel : ViewModelBase
         }
         catch (Exception ex) when (ex is FileNotFoundException or DirectoryNotFoundException)
         {
-            ErrorMessage =
-                $"Cannot play {track.Title}: the file was moved or deleted. Add its folder again to update the library.";
+            ErrorMessage = Loc.Get("Player_FileGone", track.Title);
             return false;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException
                                        or UriFormatException or NotSupportedException)
         {
-            ErrorMessage = $"Cannot play {track.Title}: {ex.Message}";
+            ErrorMessage = Loc.Get("Player_CannotPlay", track.Title, ex.Message);
             return false;
         }
 
         ErrorMessage = null;
         Title = track.Title;
-        Subtitle = track.Artist ?? "Unknown artist";
+        Subtitle = track.Artist ?? Loc.Get("Common_UnknownArtist");
         Album = track.Album;
         ArtworkPath = track.ArtworkPath;
         CurrentTrack = track;

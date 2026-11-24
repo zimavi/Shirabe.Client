@@ -5,18 +5,22 @@
              xmlns:vm="using:Shirabe.Client.ViewModels"
              xmlns:core="using:Shirabe.Core.Playback"
              xmlns:views="using:Shirabe.Client.Views"
+             xmlns:loc="using:Shirabe.Client.Localization"
              mc:Ignorable="d" d:DesignWidth="340" d:DesignHeight="600"
              x:Class="Shirabe.Client.Views.QueueView"
              x:DataType="vm:PlayerViewModel">
-    <Border Background="{DynamicResource SidebarBrush}" BorderBrush="{DynamicResource DividerBrush}" BorderThickness="1,0,0,0">
+    <Border Background="{DynamicResource SidebarBrush}" BorderBrush="{DynamicResource DividerBrush}"
+            BorderThickness="1,0,0,0">
         <Grid RowDefinitions="Auto,*">
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="20,16,12,8">
-                <TextBlock Grid.Column="0" Text="Queue" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
-                <Button Grid.Column="1" Classes="quiet" Content="Clear" Padding="12,6" FontSize="12"
-                        Command="{Binding ClearQueueCommand}" ToolTip.Tip="Remove everything except the song that is playing" />
+                <TextBlock Grid.Column="0" Text="{loc:T Player_Queue}" FontSize="20" FontWeight="SemiBold"
+                           VerticalAlignment="Center" />
+                <Button Grid.Column="1" Classes="quiet" Content="{loc:T Queue_Clear}" Padding="12,6" FontSize="12"
+                        Command="{Binding ClearQueueCommand}" ToolTip.Tip="{loc:T Queue_ClearTip}" />
             </Grid>
 
-            <ListBox x:Name="QueueList" Grid.Row="1" Classes="songs" ItemsSource="{Binding QueueItems}" SelectionMode="Single"
+            <ListBox x:Name="QueueList" Grid.Row="1" Classes="songs" ItemsSource="{Binding QueueItems}"
+                     SelectionMode="Single"
                      Margin="8,0" DoubleTapped="OnDoubleTapped">
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="core:QueueItem">
@@ -28,12 +32,18 @@
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                     <TextBlock Classes="title" Text="{Binding Track.Title}" FontWeight="SemiBold"
                                                TextTrimming="CharacterEllipsis" />
-                                    <TextBlock Text="{Binding Track.Artist, TargetNullValue='Unknown artist'}" FontSize="12"
+                                    <TextBlock Text="{Binding Track.Artist}" FontSize="12"
                                                Foreground="{DynamicResource TextSecondaryBrush}"
-                                               TextTrimming="CharacterEllipsis" />
+                                               TextTrimming="CharacterEllipsis"
+                                               IsVisible="{Binding Track.Artist, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                    <TextBlock Text="{loc:T Common_UnknownArtist}" FontSize="12"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"
+                                               TextTrimming="CharacterEllipsis"
+                                               IsVisible="{Binding Track.Artist, Converter={x:Static ObjectConverters.IsNull}}" />
                                 </StackPanel>
                                 <Button Grid.Column="2" Classes="icon" IsVisible="{Binding !IsCurrent}"
-                                        ToolTip.Tip="Remove from queue" AutomationProperties.Name="Remove from queue"
+                                        ToolTip.Tip="{loc:T Queue_Remove}"
+                                        AutomationProperties.Name="{loc:T Queue_Remove}"
                                         Command="{Binding $parent[ListBox].((vm:PlayerViewModel)DataContext).RemoveQueueItemCommand}"
                                         CommandParameter="{Binding}">
                                     <PathIcon Data="{DynamicResource Icon.Close}" Width="14" Height="14" />
@@ -46,8 +56,8 @@
 
             <StackPanel Grid.Row="1" Spacing="6" HorizontalAlignment="Center" VerticalAlignment="Center"
                         IsVisible="{Binding !HasQueue}">
-                <TextBlock Text="The queue is empty" FontWeight="SemiBold" HorizontalAlignment="Center" />
-                <TextBlock Text="Play a song from the list to start one." FontSize="12"
+                <TextBlock Text="{loc:T Queue_EmptyTitle}" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock Text="{loc:T Queue_EmptyHint}" FontSize="12"
                            Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" />
             </StackPanel>
         </Grid>

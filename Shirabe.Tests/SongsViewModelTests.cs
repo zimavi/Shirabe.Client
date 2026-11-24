@@ -1,6 +1,7 @@
 using Shirabe.Client.ViewModels;
 using Shirabe.Core.Library;
 using Shirabe.Core.Media;
+
 using Xunit;
 
 namespace Shirabe.Tests;
@@ -30,7 +31,7 @@ public class SongsViewModelTests
 
         Assert.Equal(2, _viewModel.Tracks.Count);
         Assert.True(_viewModel.HasTracks);
-        Assert.Equal("2 songs", _viewModel.Summary);
+        Assert.Equal("In the library: 2", _viewModel.Summary);
         Assert.False(_viewModel.ShowEmptyState);
     }
 
@@ -41,7 +42,7 @@ public class SongsViewModelTests
 
         await _viewModel.LoadAsync();
 
-        Assert.Equal("1 song", _viewModel.Summary);
+        Assert.Equal("In the library: 1", _viewModel.Summary);
     }
 
     [Fact]
@@ -76,7 +77,8 @@ public class SongsViewModelTests
         await _viewModel.AddFolderCommand.ExecuteAsync(null);
 
         Assert.Equal(_picker.Choice, _scanner.ScannedFolder);
-        Assert.Equal("Scan finished: 3 added, 1 updated, 10 unchanged, 2 no longer found, 1 could not be read", _viewModel.ScanText);
+        Assert.Equal("Scan finished: 3 added, 1 updated, 10 unchanged, 2 no longer found, 1 could not be read",
+            _viewModel.ScanText);
         Assert.Equal(3, _viewModel.Tracks.Count);
         Assert.False(_viewModel.IsScanning);
     }
@@ -149,9 +151,11 @@ public class SongsViewModelTests
 
         await _viewModel.PlayCommand.ExecuteAsync(_viewModel.Tracks[1]);
 
-        Assert.Equal(new Uri(Path.Combine(Path.GetTempPath(), "Two.flac")).LocalPath, Assert.IsType<LocalFileSource>(_audio.Loaded).Path);
+        Assert.Equal(new Uri(Path.Combine(Path.GetTempPath(), "Two.flac")).LocalPath,
+            Assert.IsType<LocalFileSource>(_audio.Loaded).Path);
         Assert.Equal(["One", "Two", "Three"], _playerViewModel.QueueItems.Select(i => i.Track.Title));
-        Assert.Equal("Two", _playerViewModel.QueueItems[_playerViewModel.QueueItems.ToList().FindIndex(i => i.IsCurrent)].Track.Title);
+        Assert.Equal("Two",
+            _playerViewModel.QueueItems[_playerViewModel.QueueItems.ToList().FindIndex(i => i.IsCurrent)].Track.Title);
     }
 
     [Fact]
