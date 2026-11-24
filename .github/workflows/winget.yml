@@ -1,0 +1,41 @@
+name: Publish to WinGet
+
+# Manual only. Opens a pull request to microsoft/winget-pkgs for one GitHub release (the latest one unless a tag is given).
+# One-time setup: the package must already exist in winget-pkgs, you need a fork of microsoft/winget-pkgs, and a repository
+# secret WINGET_TOKEN holding a classic personal access token with the public_repo and workflow scopes.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to submit, such as v0.1.1. Empty means the latest release.
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  winget:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pick the release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          # With no tag, gh shows the latest release, which is never a draft or a pre-release.
+          tag=${TAG:-$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName)}
+          if [[ "$(gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json isPrerelease --jq .isPrerelease)" == true ]]; then
+            echo "::error::$tag is a pre-release; only stable releases go to WinGet"
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      # The version is the tag without its "v". Only the MSI is matched: the release also has Setup.exe, which the manifest does not use.
+      - uses: vedantmgoyal9/winget-releaser@v2
+        with:
+          identifier: zimavi.Shirabe
+          release-tag: ${{ steps.release.outputs.tag }}
+          installers-regex: '\.msi$'
+          release-notes-url: https://github.com/${{ github.repository }}/releases/tag/${{ steps.release.outputs.tag }}
+          token: ${{ secrets.WINGET_TOKEN }}
