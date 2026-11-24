@@ -106,10 +106,17 @@ jobs:
           ln -s /Applications dmg/Applications
           hdiutil create -volname Shirabe -srcfolder dmg -ov -format UDZO dist/Shirabe-osx-arm64.dmg
 
+      # vpk also writes Velopack's update feed (.nupkg, releases.*.json, RELEASES*); nothing reads it, the app only
+      # notifies about new releases through GitHub's API, so it stays out of the release.
       - uses: actions/upload-artifact@v7
         with:
           name: release-${{ matrix.rid }}
-          path: dist/*
+          path: |
+            dist/*
+            !dist/*.nupkg
+            !dist/releases.*.json
+            !dist/assets.*.json
+            !dist/RELEASES*
           if-no-files-found: error
 
   release:
@@ -127,7 +134,7 @@ jobs:
           pattern: release-*
           merge-multiple: true
 
-      # vpk only records a hash for the .nupkg; Winget and Flathub need one for the installers and the tarball.
+      # Winget and Flathub need a hash for the installers and the tarball.
       - name: SHA256 of every file
         working-directory: dist
         run: |

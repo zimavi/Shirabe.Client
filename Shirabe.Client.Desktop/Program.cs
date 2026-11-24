@@ -23,7 +23,7 @@ sealed class Program
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure(() => new App { UpdateSource = new VelopackUpdateSource(new GitHubReleases()) })
+        => AppBuilder.Configure(() => new App { UpdateSource = new GitHubReleases() })
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();
