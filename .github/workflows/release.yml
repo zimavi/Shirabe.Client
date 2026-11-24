@@ -1,0 +1,144 @@
+name: Release
+
+# Push a tag v<version> (it must equal version.txt) to build every package and publish a GitHub Release.
+# "Run workflow" by hand builds everything and keeps the files as workflow artifacts, but publishes nothing.
+on:
+  push:
+    tags: [ "v*" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.read.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: read
+        run: |
+          version=$(tr -d '[:space:]' < version.txt)
+          if [[ "$GITHUB_REF_TYPE" == tag && "$GITHUB_REF_NAME" != "v$version" ]]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match version.txt ($version)"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: version
+    strategy:
+      matrix:
+        include:
+          - { os: windows-latest, rid: win-x64, bass: bass.dll }
+          - { os: ubuntu-latest, rid: linux-x64, bass: libbass.so }
+          - { os: macos-latest, rid: osx-arm64, bass: libbass.dylib }
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      # vpk must be the same version as the Velopack package the app is built with.
+      - name: Install vpk
+        run: |
+          velopack=$(sed -n 's/.*Include="Velopack" Version="\([^"]*\)".*/\1/p' Directory.Packages.props)
+          dotnet tool install -g vpk --version "$velopack"
+
+      - name: Publish (self-contained)
+        run: |
+          dotnet publish Shirabe.Client.Desktop/Shirabe.Client.Desktop.csproj -c Release -r ${{ matrix.rid }} \
+            --self-contained -p:SourceRevisionId="${GITHUB_SHA::9}" -o publish
+          # The build only warns when the BASS download fails; do not ship an app without its audio library.
+          test -f "publish/${{ matrix.bass }}" || { echo "::error::${{ matrix.bass }} is missing from the publish folder"; exit 1; }
+
+      # Setup.exe and .msi, plus the feed files (.nupkg, releases.win.json) that installed copies check for updates.
+      - name: Pack (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          vpk pack --packId Shirabe --packVersion "$VERSION" --packTitle Shirabe --packAuthors zimavi \
+            --packDir publish --mainExe Shirabe.exe --runtime win-x64 --icon Shirabe.Client/Assets/app.ico \
+            --msi --noPortable --outputDir dist
+
+      # .AppImage and its feed files with vpk; .tar.gz, .deb and .rpm from the same publish folder.
+      - name: Pack (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          vpk pack --packId Shirabe --packVersion "$VERSION" --packTitle Shirabe --packAuthors zimavi \
+            --packDir publish --mainExe Shirabe --runtime linux-x64 --icon Shirabe.Client/Assets/Icon.png \
+            --categories "AudioVideo;Audio;Player" --outputDir dist
+
+          find publish -name '*.pdb' -delete
+          tar --owner=0 --group=0 --transform 's,^publish,Shirabe,' -czf "dist/Shirabe-$VERSION-linux-x64.tar.gz" publish
+
+          nfpm=v2.49.0
+          curl -fsSL "https://github.com/goreleaser/nfpm/releases/download/$nfpm/nfpm_${nfpm#v}_Linux_x86_64.tar.gz" | tar -xz -C "$RUNNER_TEMP" nfpm
+          for kind in deb rpm; do
+            "$RUNNER_TEMP/nfpm" package --config packaging/linux/nfpm.yaml --packager $kind --target "dist/Shirabe-$VERSION-linux-x64.$kind"
+          done
+          # tree entries keep the file modes of the publish folder: the launcher must stay executable
+          dpkg-deb -c "dist/Shirabe-$VERSION-linux-x64.deb" | grep -E '^-rwxr-xr-x .* \./opt/shirabe/Shirabe$'
+
+      # vpk makes the .app (no auto-update manifest in it: the app falls back to the notify-only GitHub check); the .dmg is built here.
+      - name: Pack (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          mkdir icon.iconset
+          for s in 16 32 128 256; do
+            sips -z $s $s Shirabe.Client/Assets/Icon.png --out icon.iconset/icon_${s}x${s}.png
+            sips -z $((s*2)) $((s*2)) Shirabe.Client/Assets/Icon.png --out icon.iconset/icon_${s}x${s}@2x.png
+          done
+          iconutil -c icns icon.iconset -o Shirabe.icns
+
+          vpk bundle --packId Shirabe --packVersion "$VERSION" --packTitle Shirabe --packAuthors zimavi \
+            --packDir publish --mainExe Shirabe --runtime osx-arm64 --icon Shirabe.icns --outputDir bundle
+
+          mkdir -p dmg dist
+          cp -R bundle/Shirabe.app dmg/
+          ln -s /Applications dmg/Applications
+          hdiutil create -volname Shirabe -srcfolder dmg -ov -format UDZO dist/Shirabe-osx-arm64.dmg
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-${{ matrix.rid }}
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    needs: [ version, build ]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: dist
+          pattern: release-*
+          merge-multiple: true
+
+      # vpk only records a hash for the .nupkg; Winget and Flathub need one for the installers and the tarball.
+      - name: SHA256 of every file
+        working-directory: dist
+        run: |
+          sha256sum * > ../SHA256SUMS.txt
+          mv ../SHA256SUMS.txt .
+          { echo '```'; cat SHA256SUMS.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Create the release
+        run: |
+          prerelease=()
+          [[ "$VERSION" == *-* ]] && prerelease=(--prerelease)
+          gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --title "Shirabe $VERSION" --generate-notes "${prerelease[@]}"

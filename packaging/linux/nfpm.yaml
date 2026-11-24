@@ -1,0 +1,35 @@
+# .deb and .rpm from the self-contained publish folder (nfpm: https://nfpm.goreleaser.com).
+# Run from the repo root with VERSION set and the publish output in ./publish:
+#   VERSION=$(cat version.txt) nfpm package --config packaging/linux/nfpm.yaml --packager deb --target dist/
+name: shirabe
+arch: amd64
+platform: linux
+version: ${VERSION}
+version_schema: semver # 0.2.0-beta.1 becomes 0.2.0~beta.1, so a final release sorts after its betas
+section: sound
+priority: optional
+maintainer: zimavi <https://github.com/zimavi>
+description: |-
+  Music player for the music you already have.
+  Local library, lyrics, queue and rich metadata, with no account or server.
+homepage: https://github.com/zimavi/Shirabe.Client
+license: Apache-2.0
+
+# The app is self-contained (it brings its own .NET runtime); fontconfig is the one thing Skia loads from the system.
+overrides:
+  deb:
+    depends: [ libfontconfig1 ]
+  rpm:
+    depends: [ fontconfig ]
+
+contents:
+  - src: publish/
+    dst: /opt/shirabe
+    type: tree
+  - src: /opt/shirabe/Shirabe
+    dst: /usr/bin/shirabe
+    type: symlink
+  - src: packaging/linux/shirabe.desktop
+    dst: /usr/share/applications/shirabe.desktop
+  - src: Shirabe.Client/Assets/Icon.png
+    dst: /usr/share/pixmaps/shirabe.png
