@@ -18,6 +18,14 @@
         </StackPanel>
 
         <StackPanel Spacing="6">
+            <TextBlock Classes="section" Text="{loc:T General_SectionWindow}" />
+            <views:SettingRow Title="{loc:T General_KeepInTray}" Description="{loc:T General_KeepInTrayDescription}">
+                <ToggleSwitch IsChecked="{Binding Settings.KeepRunningInTray}"
+                              AutomationProperties.Name="{loc:T General_KeepInTray}" />
+            </views:SettingRow>
+        </StackPanel>
+
+        <StackPanel Spacing="6">
             <TextBlock Classes="section" Text="{loc:T General_SectionLanguage}" />
             <views:SettingRow Title="{loc:T General_Language}" Description="{loc:T General_LanguageDescription}">
                 <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage}" MinWidth="160"

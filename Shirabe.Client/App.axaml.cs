@@ -59,7 +59,7 @@ public partial class App : Application
         {
             var window = new MainWindow { DataContext = mainViewModel };
             desktop.MainWindow = window;
-            SetUpTray(desktop, window, mainViewModel.Player);
+            SetUpTray(desktop, window, mainViewModel.Player, settings);
 
             // Animation styles apply under ".motion" (Styles/Controls.axaml); "Reduce motion" removes the class.
             void SyncMotion() => window.Classes.Set("motion", !settings.ReduceMotion);
@@ -134,8 +134,12 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    /// <summary>Tray icon with Open, media controls and Quit. Closing the window hides it instead of ending the app.</summary>
-    private void SetUpTray(IClassicDesktopStyleApplicationLifetime desktop, Window window, PlayerViewModel? player)
+    /// <summary>
+    /// Tray icon with Open, media controls and Quit. Closing the window hides it instead of ending the app, unless the
+    /// user turned "Keep running in the tray" off.
+    /// </summary>
+    private void SetUpTray(IClassicDesktopStyleApplicationLifetime desktop, Window window, PlayerViewModel? player,
+        AppSettings settings)
     {
         if (TrayIcon.GetIcons(this)?.FirstOrDefault() is not { } tray) return;
 
@@ -181,7 +185,7 @@ public partial class App : Application
         // Only the user's own close (X, Alt+F4) is intercepted: Quit and OS shutdown must still end the app.
         window.Closing += (_, e) =>
         {
-            if (e.CloseReason != WindowCloseReason.WindowClosing) return;
+            if (e.CloseReason != WindowCloseReason.WindowClosing || !settings.KeepRunningInTray) return;
             e.Cancel = true;
             window.Hide();
         };

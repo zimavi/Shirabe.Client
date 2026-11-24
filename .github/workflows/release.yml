@@ -120,8 +120,6 @@ jobs:
       contents: write
     env:
       VERSION: ${{ needs.version.outputs.version }}
-      GH_TOKEN: ${{ github.token }}
-      GH_REPO: ${{ github.repository }}
     steps:
       - uses: actions/download-artifact@v8
         with:
@@ -137,8 +135,11 @@ jobs:
           mv ../SHA256SUMS.txt .
           { echo '```'; cat SHA256SUMS.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Create the release
-        run: |
-          prerelease=()
-          [[ "$VERSION" == *-* ]] && prerelease=(--prerelease)
-          gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --title "Shirabe $VERSION" --generate-notes "${prerelease[@]}"
+      # generate_release_notes: GitHub's changelog (merged PRs since the previous release); group it with .github/release.yml.
+      - uses: softprops/action-gh-release@v3
+        with:
+          name: Shirabe ${{ env.VERSION }}
+          files: dist/*
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          prerelease: ${{ contains(env.VERSION, '-') }}

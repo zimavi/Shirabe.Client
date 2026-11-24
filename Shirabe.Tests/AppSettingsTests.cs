@@ -1,4 +1,5 @@
 using Shirabe.Client.Services;
+
 using Xunit;
 
 namespace Shirabe.Tests;
@@ -20,10 +21,13 @@ public sealed class AppSettingsTests : IDisposable
 
         Assert.True(settings.ResumeLastSession);
         Assert.False(settings.ReduceMotion);
+        Assert.Equal(!OperatingSystem.IsLinux(), settings.KeepRunningInTray); // no tray to rely on by default on Linux
         Assert.True(settings.DiscordPresenceEnabled);
         Assert.True(settings.CoverLookupEnabled);
         Assert.True(settings.DownloadArtworkEnabled);
-        Assert.Equal((17, true, true, 0), (settings.LyricsTextSize, settings.ShowBackgroundVocals, settings.ShowPauseMarkers, settings.LyricsDelayMs));
+        Assert.Equal((17, true, true, 0),
+            (settings.LyricsTextSize, settings.ShowBackgroundVocals, settings.ShowPauseMarkers,
+                settings.LyricsDelayMs));
         Assert.True(settings.FollowCoverAccent);
         Assert.Equal("Dark", settings.ThemeName);
         Assert.False(File.Exists(SettingsFile));
@@ -36,8 +40,10 @@ public sealed class AppSettingsTests : IDisposable
 
         settings.FollowCoverAccent = false;
         settings.ThemeName = "OLED";
+        settings.KeepRunningInTray = !settings.KeepRunningInTray;
 
         var again = AppSettings.Load(SettingsFile);
+        Assert.Equal(settings.KeepRunningInTray, again.KeepRunningInTray);
         Assert.False(again.FollowCoverAccent);
         Assert.Equal("OLED", again.ThemeName);
         Assert.True(again.DiscordPresenceEnabled); // untouched

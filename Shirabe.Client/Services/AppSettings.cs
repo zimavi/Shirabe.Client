@@ -19,6 +19,13 @@ public partial class AppSettings : ObservableObject
     [ObservableProperty]
     public partial bool ResumeLastSession { get; set; } = true;
 
+    /// <summary>
+    /// Closing the window hides it and the music plays on from the tray; off, closing the window quits. Off by default on
+    /// Linux, where many desktops (GNOME, some tiling setups) have no working tray to bring a hidden window back from.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool KeepRunningInTray { get; set; } = !OperatingSystem.IsLinux();
+
     /// <summary>Show the song that is playing on the user's Discord profile.</summary>
     [ObservableProperty]
     public partial bool DiscordPresenceEnabled { get; set; } = true;
