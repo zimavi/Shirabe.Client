@@ -17,27 +17,20 @@
         </value>
   </resheader>
   <!-- Sidebar -->
-  <data name="Nav_Home" xml:space="preserve">
-    <value>Домівка</value>
-  </data>
-  <data name="Nav_Songs" xml:space="preserve">
-    <value>Пісні</value>
-  </data>
-  <data name="Nav_Albums" xml:space="preserve">
-    <value>Альбоми</value>
-  </data>
-  <data name="Nav_Artists" xml:space="preserve">
-    <value>Виконавці</value>
-  </data>
-  <data name="Nav_Playlists" xml:space="preserve">
-    <value>Плейлисти</value>
-  </data>
-  <data name="Nav_Studio" xml:space="preserve">
-    <value>Студія</value>
-  </data>
-  <data name="Nav_Settings" xml:space="preserve">
-    <value>Налаштування</value>
-  </data>
+  <data name="Nav_Home" xml:space="preserve"><value>Домівка</value>
+        <comment>Sidebar entry for the start page. Short: it has to fit the sidebar.</comment></data>
+  <data name="Nav_Songs" xml:space="preserve"><value>Пісні</value>
+        <comment>Sidebar entry and heading of the page that lists every song (track) in the user's music library.</comment></data>
+  <data name="Nav_Albums" xml:space="preserve"><value>Альбоми</value>
+        <comment>Sidebar entry for the page that will list albums. Shown greyed out for now.</comment></data>
+  <data name="Nav_Artists" xml:space="preserve"><value>Виконавці</value>
+        <comment>Sidebar entry for the page that will list artists (singers, bands, musicians). Shown greyed out for now.</comment></data>
+  <data name="Nav_Playlists" xml:space="preserve"><value>Плейлисти</value>
+        <comment>Sidebar entry for the page that will list the user's own playlists. Shown greyed out for now.</comment></data>
+  <data name="Nav_Studio" xml:space="preserve"><value>Студія</value>
+        <comment>Sidebar entry for the editor where music metadata (credits, covers, custom fields) is created. "Studio" means a creative workspace; a feature name, so a commonly used loanword is fine.</comment></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>Налаштування</value>
+        <comment>Sidebar entry, title of the settings page and accessible name of the sidebar button.</comment></data>
   <data name="Nav_SectionLibrary" xml:space="preserve"><value>БІБЛІОТЕКА</value>
         <comment>Small heading above the library entries in the sidebar.</comment></data>
   <data name="Nav_SectionCreate" xml:space="preserve"><value>СТВОРИТИ</value>
@@ -45,219 +38,316 @@
   <data name="Nav_NotAvailable" xml:space="preserve"><value>Ще недоступно</value>
         <comment>Tooltip of a sidebar entry whose page does not exist yet.</comment></data>
   <!-- Window buttons -->
-  <data name="Window_Minimize" xml:space="preserve">
-    <value>Згорнути</value>
-  </data>
-  <data name="Window_Maximize" xml:space="preserve">
-    <value>Розгорнути</value>
-  </data>
-  <data name="Window_Restore" xml:space="preserve">
-    <value>Відновити</value>
-  </data>
-  <data name="Window_Close" xml:space="preserve">
-    <value>Закрити</value>
-  </data>
+  <data name="Window_Minimize" xml:space="preserve"><value>Згорнути</value>
+        <comment>Tooltip and accessible name of the title bar button that minimizes the window to the taskbar.</comment></data>
+  <data name="Window_Maximize" xml:space="preserve"><value>Розгорнути</value>
+        <comment>Accessible name (read by screen readers) of the title bar button that makes the window fill the screen. Not shown as text.</comment></data>
+  <data name="Window_Restore" xml:space="preserve"><value>Відновити</value>
+        <comment>Accessible name of the same button while the window is maximized: it returns the window to its previous size. Not shown as text.</comment></data>
+  <data name="Window_Close" xml:space="preserve"><value>Закрити</value>
+        <comment>Tooltip and accessible name of the title bar button that closes the window.</comment></data>
   <!-- Player bar and tray menu -->
-  <data name="Player_Shuffle" xml:space="preserve">
-    <value>Перемішати</value>
-  </data>
-  <data name="Player_Previous" xml:space="preserve">
-    <value>Попередня</value>
-  </data>
-  <data name="Player_Next" xml:space="preserve">
-    <value>Наступна</value>
-  </data>
-  <data name="Player_Play" xml:space="preserve">
-    <value>Грати</value>
-  </data>
-  <data name="Player_Pause" xml:space="preserve">
-    <value>Пауза</value>
-  </data>
-  <data name="Player_PlayPause" xml:space="preserve">
-    <value>Відтворити або призупинити</value>
-  </data>
-  <data name="Player_Repeat" xml:space="preserve">
-    <value>Повторення</value>
-  </data>
-  <data name="Player_RepeatOff" xml:space="preserve">
-    <value>Повтор: вимкнуто</value>
-  </data>
-  <data name="Player_RepeatAll" xml:space="preserve">
-    <value>Повтор: усі пісні</value>
-  </data>
-  <data name="Player_RepeatOne" xml:space="preserve">
-    <value>Повтор: ця пісня</value>
-  </data>
-  <data name="Player_Lyrics" xml:space="preserve">
-    <value>Текст</value>
-  </data>
-  <data name="Player_Queue" xml:space="preserve">
-    <value>Черга</value>
-  </data>
-  <data name="Player_Mute" xml:space="preserve">
-    <value>Вимкнути звук</value>
-  </data>
-  <data name="Player_Volume" xml:space="preserve">
-    <value>Гучність</value>
-  </data>
-  <data name="Tray_Open" xml:space="preserve">
-    <value>Відкрити Shirabe</value>
-  </data>
-  <data name="Tray_Quit" xml:space="preserve">
-    <value>Вийти</value>
-  </data>
+  <data name="Player_Shuffle" xml:space="preserve"><value>Перемішати</value>
+        <comment>Tooltip and accessible name of the button that plays the queue in random order (verb or noun, as is usual on music players).</comment></data>
+  <data name="Player_Previous" xml:space="preserve"><value>Попередня</value>
+        <comment>Tooltip of the button that goes to the previous song, and an item of the tray icon menu.</comment></data>
+  <data name="Player_Next" xml:space="preserve"><value>Наступна</value>
+        <comment>Tooltip of the button that goes to the next song, and an item of the tray icon menu.</comment></data>
+  <data name="Player_Play" xml:space="preserve"><value>Грати</value>
+        <comment>Verb. Tray icon menu item that starts playback (shown while the music is paused), item of the song context menu, and accessible name of the play button on a song's cover.</comment></data>
+  <data name="Player_Pause" xml:space="preserve"><value>Пауза</value>
+        <comment>Tray icon menu item that pauses playback. Verb. Shown while the music is playing.</comment></data>
+  <data name="Player_PlayPause" xml:space="preserve"><value>Відтворити або призупинити</value>
+        <comment>Accessible name (read by screen readers) of the one round button that switches between playing and pausing. Not shown as text.</comment></data>
+  <data name="Player_Repeat" xml:space="preserve"><value>Повторення</value>
+        <comment>Accessible name of the repeat button. Its tooltip shows one of the three "Repeat: ..." texts below.</comment></data>
+  <data name="Player_RepeatOff" xml:space="preserve"><value>Повтор: вимкнуто</value>
+        <comment>Tooltip of the repeat button when nothing repeats: the queue stops after the last song.</comment></data>
+  <data name="Player_RepeatAll" xml:space="preserve"><value>Повтор: усі пісні</value>
+        <comment>Tooltip of the repeat button when the whole queue starts over after the last song.</comment></data>
+  <data name="Player_RepeatOne" xml:space="preserve"><value>Повтор: ця пісня</value>
+        <comment>Tooltip of the repeat button when the current song plays again and again.</comment></data>
+  <data name="Player_Lyrics" xml:space="preserve"><value>Текст</value>
+        <comment>Tooltip and accessible name of the button that opens the panel with the words of the song (song lyrics, not poetry). Also the heading of that panel.</comment></data>
+  <data name="Player_Queue" xml:space="preserve"><value>Черга</value>
+        <comment>Tooltip and accessible name of the button that opens the list of songs that will play next (the play queue). Also the heading of that list.</comment></data>
+  <data name="Player_Mute" xml:space="preserve"><value>Вимкнути звук</value>
+        <comment>Accessible name of the speaker icon button that switches the sound off and on. Not shown as text.</comment></data>
+  <data name="Player_Volume" xml:space="preserve"><value>Гучність</value>
+        <comment>Accessible name of the volume slider (loudness). Not shown as text.</comment></data>
+  <data name="Tray_Open" xml:space="preserve"><value>Відкрити Shirabe</value>
+        <comment>Tray icon menu item that shows the main window again. "Shirabe" is the app's name: do not translate it.</comment></data>
+  <data name="Tray_Quit" xml:space="preserve"><value>Вийти</value>
+        <comment>Tray icon menu item that closes the app completely (closing the window only hides it to the tray).</comment></data>
   <!-- Settings: General -->
-  <data name="General_Title" xml:space="preserve">
-    <value>Загальне</value>
-  </data>
-  <data name="General_Description" xml:space="preserve">
-    <value>Запуск і мова</value>
-  </data>
-  <data name="General_SectionStartup" xml:space="preserve">
-    <value>ЗАПУСК</value>
-  </data>
-  <data name="General_Resume" xml:space="preserve">
-    <value>Відновити останню сесію</value>
-  </data>
-  <data name="General_ResumeDescription" xml:space="preserve">
-    <value>Відновлює попередню пісню (паузу, та де зупинилась), гучність, перемішування та повтор коли Shirabe запускається. Вимкнене забуває це.</value>
-  </data>
-  <data name="General_SectionLanguage" xml:space="preserve">
-    <value>МОВА</value>
-  </data>
-  <data name="General_Language" xml:space="preserve">
-    <value>Мова</value>
-  </data>
-  <data name="General_LanguageDescription" xml:space="preserve">
-    <value>Мова програми. Частини, які не перекладені, залишаються англійською мовою.</value>
-  </data>
-  <data name="Language_System" xml:space="preserve">
-    <value>За замовчуванням</value>
-  </data>
+  <data name="General_Title" xml:space="preserve"><value>Загальне</value>
+        <comment>Name of a settings page, in the list of pages. Holds the everyday options.</comment></data>
+  <data name="General_Description" xml:space="preserve"><value>Запуск і мова</value>
+        <comment>One short line under the page name "General" in the list of settings pages. Lists what is on the page.</comment></data>
+  <data name="General_SectionStartup" xml:space="preserve"><value>ЗАПУСК</value>
+        <comment>Small heading above the settings about what happens when the app starts. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="General_Resume" xml:space="preserve"><value>Відновити останню сесію</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="General_ResumeDescription" xml:space="preserve"><value>Відновлює попередню пісню (паузу, та де зупинилась), гучність, перемішування та повтор коли Shirabe запускається. Вимкнене забуває це.</value>
+        <comment>Explanation under the "Resume last session" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="General_SectionLanguage" xml:space="preserve"><value>МОВА</value>
+        <comment>Small heading above the language setting. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="General_Language" xml:space="preserve"><value>Мова</value>
+        <comment>Name of the setting where the user picks the app's language. Also the accessible name of the drop-down list.</comment></data>
+  <data name="General_LanguageDescription" xml:space="preserve"><value>Мова програми. Частини, які не перекладені, залишаються англійською мовою.</value>
+        <comment>Explanation under the language drop-down. "Parts" means screens and texts that still have no translation.</comment></data>
+  <data name="Language_System" xml:space="preserve"><value>За замовчуванням</value>
+        <comment>First entry of the language drop-down: use the language of the operating system.</comment></data>
   <!-- Settings: Appearance -->
-  <data name="Appearance_Title" xml:space="preserve">
-    <value>Вигляд</value>
-  </data>
-  <data name="Appearance_Description" xml:space="preserve">
-    <value>Тема та колір акцентів</value>
-  </data>
-  <data name="Appearance_SectionTheme" xml:space="preserve">
-    <value>ТЕМА</value>
-  </data>
-  <data name="Appearance_Theme" xml:space="preserve">
-    <value>Тема</value>
-  </data>
-  <data name="Appearance_ThemeDescription" xml:space="preserve">
-    <value>Кольори всього додатку.</value>
-  </data>
+  <data name="Appearance_Title" xml:space="preserve"><value>Вигляд</value>
+        <comment>Name of a settings page, in the list of pages. Holds the look of the app: colours and animations.</comment></data>
+  <data name="Appearance_Description" xml:space="preserve"><value>Тема та колір акцентів</value>
+        <comment>One short line under the page name "Appearance" in the list of settings pages. The source uses British spelling.</comment></data>
+  <data name="Appearance_SectionTheme" xml:space="preserve"><value>ТЕМА</value>
+        <comment>Small heading above the theme setting. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Appearance_Theme" xml:space="preserve"><value>Тема</value>
+        <comment>Name of the setting where the user picks a theme: a named colour scheme such as "Dark". Also the accessible name of the drop-down list.</comment></data>
+  <data name="Appearance_ThemeDescription" xml:space="preserve"><value>Кольори всього додатку.</value>
+        <comment>Explanation under the theme drop-down.</comment></data>
   <data name="Appearance_CustomThemesHint" xml:space="preserve"><value>Додайте власне: створіть .json файл з "name" і будь-яким з цих кольорів, як #RRGBB (accent, background, sidebar, surface, surfaceHover, divider, textPrimary, textSecondary, track) в {0}, потім перезавантажте додаток. Викинуті кольори беруться з Dark.</value>
         <comment>{0} is a folder path, or the text of Appearance_ThemesFolder. Keep the colour names (accent, background...) and "name" as they are: they are keys in the file.</comment></data>
-  <data name="Appearance_ThemesFolder" xml:space="preserve">
-    <value>тека з темами</value>
-  </data>
-  <data name="Appearance_SectionAccent" xml:space="preserve">
-    <value>АКЦЕНТ</value>
-  </data>
-  <data name="Appearance_Follow" xml:space="preserve">
-    <value>Брати з обкладинки</value>
-  </data>
-  <data name="Appearance_FollowDescription" xml:space="preserve">
-    <value>Змінює колір акценту з обкладинки композиції, яка грає. Якщо вимкнуто, залишається тільки акцент теми.</value>
-  </data>
-  <data name="Appearance_SectionMotion" xml:space="preserve">
-    <value>АНІМАЦІЇ</value>
-  </data>
-  <data name="Appearance_ReduceMotion" xml:space="preserve">
-    <value>Обмеження анімацій</value>
-  </data>
-  <data name="Appearance_ReduceMotionDescription" xml:space="preserve">
-    <value>Вимикає більшість анімацій.</value>
-  </data>
+  <data name="Appearance_ThemesFolder" xml:space="preserve"><value>тека з темами</value>
+        <comment>Inserted as {0} into Appearance_CustomThemesHint when the folder path is not known. It must read naturally right after "in" in that sentence.</comment></data>
+  <data name="Theme_NeedsName" xml:space="preserve"><value>потребує "name"</value>
+        <comment>Problem listed under the theme setting for a theme file without a name. It follows the file name and a colon, e.g. "mytheme.json: needs a "name"". Keep "name" as it is: it is a key in the file.</comment></data>
+  <data name="Theme_BadColour" xml:space="preserve"><value>"{0}" не є кольором "#RRGGBB"</value>
+        <comment>Problem listed under the theme setting. {0} is a key of the theme file (accent, background...): do not translate it. "#RRGGBB" is the colour format: keep it.</comment></data>
+  <data name="Theme_NameTaken" xml:space="preserve"><value>тема під назвою "{0}" вже існує</value>
+        <comment>Problem listed under the theme setting. It follows the file name and a colon. {0} is the theme's name.</comment></data>
+  <data name="Appearance_SectionAccent" xml:space="preserve"><value>АКЦЕНТ</value>
+        <comment>Small heading above the accent colour setting (the highlight colour of buttons and sliders). Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Appearance_Follow" xml:space="preserve"><value>Брати з обкладинки</value>
+        <comment>Name of an on/off switch. "Cover" is the album artwork of the song that is playing. Also the accessible name.</comment></data>
+  <data name="Appearance_FollowDescription" xml:space="preserve"><value>Змінює колір акценту з обкладинки композиції, яка грає. Якщо вимкнуто, залишається тільки акцент теми.</value>
+        <comment>Explanation under the "Follow the cover" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="Appearance_SectionMotion" xml:space="preserve"><value>АНІМАЦІЇ</value>
+        <comment>Small heading above the animation setting. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Appearance_ReduceMotion" xml:space="preserve"><value>Обмеження анімацій</value>
+        <comment>Name of an on/off switch that turns animations off (an accessibility option, like the one in the operating system). Also its accessible name.</comment></data>
+  <data name="Appearance_ReduceMotionDescription" xml:space="preserve"><value>Вимикає більшість анімацій.</value>
+        <comment>Explanation under the "Reduce motion" switch.</comment></data>
   <!-- Settings: Lyrics -->
-  <data name="Lyrics_Title" xml:space="preserve">
-    <value>Текст</value>
-  </data>
-  <data name="Lyrics_Description" xml:space="preserve">
-    <value>Розмір тексту, вокал та таймінг</value>
-  </data>
-  <data name="Lyrics_SectionText" xml:space="preserve">
-    <value>ТЕКСТ</value>
-  </data>
-  <data name="Lyrics_TextSize" xml:space="preserve">
-    <value>Розмір тексту</value>
-  </data>
-  <data name="Lyrics_TextSizeDescription" xml:space="preserve">
-    <value>Наскільки текст пісні великий.</value>
-  </data>
+  <data name="Lyrics_Title" xml:space="preserve"><value>Текст</value>
+        <comment>Name of a settings page, in the list of pages. "Lyrics" means the words of a song.</comment></data>
+  <data name="Lyrics_Description" xml:space="preserve"><value>Розмір тексту, вокал та таймінг</value>
+        <comment>One short line under the page name "Lyrics" in the list of settings pages. Lists what is on the page.</comment></data>
+  <data name="Lyrics_SectionText" xml:space="preserve"><value>ТЕКСТ</value>
+        <comment>Small heading above the settings about how the lyrics text looks. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Lyrics_TextSize" xml:space="preserve"><value>Розмір тексту</value>
+        <comment>Name of the setting (a slider) for how large the lyrics are.</comment></data>
+  <data name="Lyrics_TextSizeDescription" xml:space="preserve"><value>Наскільки текст пісні великий.</value>
+        <comment>Explanation under the "Text size" setting.</comment></data>
   <data name="Lyrics_TextSizeName" xml:space="preserve"><value>Розмір тексту пісні</value>
         <comment>Accessible name of the slider.</comment></data>
-  <data name="Lyrics_TextSizeValue" xml:space="preserve">
-    <value>{0} пт</value>
-  </data>
-  <data name="Lyrics_SectionShown" xml:space="preserve">
-    <value>ЩО ПОКАЗУЄТЬСЯ</value>
-  </data>
-  <data name="Lyrics_BackgroundVocals" xml:space="preserve">
-    <value>Фоновий вокал</value>
-  </data>
-  <data name="Lyrics_BackgroundVocalsDescription" xml:space="preserve">
-    <value>Показує фонові вокали (частини в дужках), які є в деяких текстах.</value>
-  </data>
-  <data name="Lyrics_BreakMarkers" xml:space="preserve">
-    <value>Маркери паузи у тексті</value>
-  </data>
-  <data name="Lyrics_BreakMarkersDescription" xml:space="preserve">
-    <value>Показує три точки, які заповнюються під час інструментальної перерви.</value>
-  </data>
-  <data name="Lyrics_SectionTiming" xml:space="preserve">
-    <value>ТАЙМІНГ</value>
-  </data>
-  <data name="Lyrics_Delay" xml:space="preserve">
-    <value>Затримка підсвічування</value>
-  </data>
-  <data name="Lyrics_DelayDescription" xml:space="preserve">
-    <value>Якщо підсвічування біжить попереду звуку, підніміть це; якщо він забігає, то нижчий його. Звук залишає динаміками після позиції звітів програвача.</value>
-  </data>
+  <data name="Lyrics_TextSizeValue" xml:space="preserve"><value>{0} пт</value>
+        <comment>Value shown next to the text size slider. {0} is a whole number; "pt" is the abbreviation of typographic points.</comment></data>
+  <data name="Lyrics_SectionShown" xml:space="preserve"><value>ЩО ПОКАЗУЄТЬСЯ</value>
+        <comment>Small heading above the switches that choose which parts of the lyrics are displayed. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Lyrics_BackgroundVocals" xml:space="preserve"><value>Фоновий вокал</value>
+        <comment>Name of an on/off switch. Background vocals are the secondary voices of a song (backing vocals, echoes, ad-libs). Also its accessible name.</comment></data>
+  <data name="Lyrics_BackgroundVocalsDescription" xml:space="preserve"><value>Показує фонові вокали (частини в дужках), які є в деяких текстах.</value>
+        <comment>Explanation under the "Background vocals" switch. Such parts appear in brackets in the lyrics text.</comment></data>
+  <data name="Lyrics_BreakMarkers" xml:space="preserve"><value>Маркери паузи у тексті</value>
+        <comment>Name of an on/off switch. The markers are three dots shown in the lyrics while the song has no singing. Also its accessible name.</comment></data>
+  <data name="Lyrics_BreakMarkersDescription" xml:space="preserve"><value>Показує три точки, які заповнюються під час інструментальної перерви.</value>
+        <comment>Explanation under the "Break markers" switch. An instrumental break is a part of the song without singing.</comment></data>
+  <data name="Lyrics_SectionTiming" xml:space="preserve"><value>ТАЙМІНГ</value>
+        <comment>Small heading above the setting that fine-tunes when lyrics light up. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Lyrics_Delay" xml:space="preserve"><value>Затримка підсвічування</value>
+        <comment>Name of the setting (a slider) that shifts the moment a lyric line is highlighted, in milliseconds. "Highlight" means the line being sung is made bright.</comment></data>
+  <data name="Lyrics_DelayDescription" xml:space="preserve"><value>Якщо підсвічування біжить попереду звуку, підніміть це; якщо він забігає, то нижчий його. Звук залишає динаміками після позиції звітів програвача.</value>
+        <comment>Explanation under the "Highlight delay" slider. "Raise" and "lower" refer to moving the slider.</comment></data>
   <data name="Lyrics_DelayName" xml:space="preserve"><value>Затримка підсвічування текстів</value>
         <comment>Accessible name of the slider.</comment></data>
-  <data name="Lyrics_NoDelay" xml:space="preserve">
-    <value>Без затримки</value>
-  </data>
+  <data name="Lyrics_NoDelay" xml:space="preserve"><value>Без затримки</value>
+        <comment>Value shown next to the highlight delay slider when it is at zero, instead of "0 ms".</comment></data>
   <data name="Lyrics_DelayValue" xml:space="preserve"><value>{0} мс</value>
-        <comment>{0} is a number with a sign, such as +120 or -50.</comment></data>
+        <comment>{0} is a number with a sign, such as +120 or -50. "ms" is the abbreviation of milliseconds.</comment></data>
   <!-- Settings: Connections -->
-  <data name="Connections_Title" xml:space="preserve">
-    <value>З'єднання</value>
-  </data>
-  <data name="Connections_Description" xml:space="preserve">
-    <value>Discord та онлайн пошуки</value>
-  </data>
-  <data name="Connections_SectionDiscord" xml:space="preserve">
-    <value>DISCORD</value>
-  </data>
-  <data name="Connections_Presence" xml:space="preserve">
-    <value>Покажіть те, що я слухаю</value>
-  </data>
-  <data name="Connections_PresenceDescription" xml:space="preserve">
-    <value>Показує пісню як картку "Слухаю" у вашому профілі Discord, поки вона грає. Потрібен запущений клієнт Discord.</value>
-  </data>
+  <data name="Connections_Title" xml:space="preserve"><value>З'єднання</value>
+        <comment>Name of a settings page, in the list of pages. Holds the options that talk to outside services.</comment></data>
+  <data name="Connections_Description" xml:space="preserve"><value>Discord та онлайн пошуки</value>
+        <comment>One short line under the page name "Connections" in the list of settings pages. "Discord" is a product name: do not translate it.</comment></data>
+  <data name="Connections_SectionDiscord" xml:space="preserve"><value>DISCORD</value>
+        <comment>Small heading above the Discord settings. "Discord" is a product name: do not translate it.</comment></data>
+  <data name="Connections_Presence" xml:space="preserve"><value>Покажіть те, що я слухаю</value>
+        <comment>Name of an on/off switch that shows the current song on the user's Discord profile.</comment></data>
+  <data name="Connections_PresenceDescription" xml:space="preserve"><value>Показує пісню як картку "Слухаю" у вашому профілі Discord, поки вона грає. Потрібен запущений клієнт Discord.</value>
+        <comment>Explanation under the switch. "Listening to" is the label Discord itself shows on the card; use Discord's wording in your language if you know it.</comment></data>
   <data name="Connections_PresenceName" xml:space="preserve"><value>Discord presence</value>
         <comment>Accessible name of the switch.</comment></data>
-  <data name="Connections_CoverLookup" xml:space="preserve">
-    <value>Шукати обкладинки альбому в мережі</value>
-  </data>
-  <data name="Connections_CoverLookupDescription" xml:space="preserve">
-    <value>Відправляє виконавця та назву альбому до iTunes Search від Apple, щоб знайти обкладинку для картки Discord. Нічого більше не залишає ваш комп'ютер.</value>
-  </data>
+  <data name="Connections_CoverLookup" xml:space="preserve"><value>Шукати обкладинки альбому в мережі</value>
+        <comment>Name of an on/off switch. A cover is the album artwork.</comment></data>
+  <data name="Connections_CoverLookupDescription" xml:space="preserve"><value>Відправляє виконавця та назву альбому до iTunes Search від Apple, щоб знайти обкладинку для картки Discord. Нічого більше не залишає ваш комп'ютер.</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "iTunes Search" is Apple's service name: do not translate it.</comment></data>
   <data name="Connections_CoverLookupName" xml:space="preserve"><value>Пошук обкладинки</value>
         <comment>Accessible name of the switch.</comment></data>
-  <data name="Connections_SectionArtwork" xml:space="preserve">
-    <value>ОБКЛАДИНКИ</value>
-  </data>
-  <data name="Connections_DownloadArtwork" xml:space="preserve">
-    <value>Завантажувати пов'язані обкладинки</value>
-  </data>
-  <data name="Connections_DownloadArtworkDescription" xml:space="preserve">
-    <value>Коли метадані пісні посилаються на обкладинку, вона завантажується, як пісня показується і зберігається на цьому комп'ютері. Вебсайт, з якого він надходить, може бачити вашу IP-адресу і що ви грали в цю пісню.</value>
-  </data>
+  <data name="Connections_SectionArtwork" xml:space="preserve"><value>ОБКЛАДИНКИ</value>
+        <comment>Small heading above the setting about downloading cover images. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Connections_DownloadArtwork" xml:space="preserve"><value>Завантажувати пов'язані обкладинки</value>
+        <comment>Name of an on/off switch. "Linked" means a song's metadata contains a web link to its cover image. Also its accessible name.</comment></data>
+  <data name="Connections_DownloadArtworkDescription" xml:space="preserve"><value>Коли метадані пісні посилаються на обкладинку, вона завантажується, як пісня показується і зберігається на цьому комп'ютері. Вебсайт, з якого він надходить, може бачити вашу IP-адресу і що ви грали в цю пісню.</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "Your address" means the user's internet (IP) address.</comment></data>
+  <!-- Settings: About -->
+  <data name="About_Title" xml:space="preserve"><value>Про додаток</value>
+        <comment>Name of a settings page, in the list of pages. It shows the app's version, license and credits.</comment></data>
+  <data name="About_Description" xml:space="preserve"><value>Версія, ліцензія та подяки</value>
+        <comment>One short line under the page name "About" in the list of settings pages.</comment></data>
+  <data name="About_SectionApp" xml:space="preserve"><value>SHIRABE</value>
+        <comment>Small heading above the version and links. "Shirabe" is the product name: do not translate it. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_Tagline" xml:space="preserve"><value>Музика заслуговує на більше, ніж просто кнопку «Play».</value>
+        <comment>The project's motto, shown at the top of the About page. Translate the idea, not word for word. "Play button" is the button that starts a song.</comment></data>
+  <data name="About_Version" xml:space="preserve"><value>Версія</value>
+        <comment>Name of the row that shows the app's version number, for example 0.1.0.</comment></data>
+  <data name="About_VersionDescription" xml:space="preserve"><value>Додайте це, коли повідомляєте про проблему.</value>
+        <comment>Short hint under "Version".</comment></data>
+  <data name="About_Commit" xml:space="preserve"><value>Збірка</value>
+        <comment>Name of the row that shows the short code (a git commit hash such as ce863a5e7) identifying the exact source code this build was made from.</comment></data>
+  <data name="About_CommitDescription" xml:space="preserve"><value>Вихідний код цієї збірки.</value>
+        <comment>Short hint under "Build".</comment></data>
+  <data name="About_License" xml:space="preserve"><value>Ліцензія</value>
+        <comment>Name of the row that tells under which license the app is released.</comment></data>
+  <data name="About_LicenseDescription" xml:space="preserve"><value>Shirabe є вільним застосунком з відкритим вихідним кодом, під ліцензією Apache 2.0.</value>
+        <comment>Hint under "License". "Apache License 2.0" is the official license name: do not translate it.</comment></data>
+  <data name="About_Source" xml:space="preserve"><value>Вихідний код</value>
+        <comment>Name of a row with a button that opens the project's page on GitHub.</comment></data>
+  <data name="About_SourceDescription" xml:space="preserve"><value>Shirabe розробляється на GitHub.</value>
+        <comment>Hint under "Source code". "GitHub" is a product name.</comment></data>
+  <data name="About_ReportProblem" xml:space="preserve"><value>Повідомити про проблему</value>
+        <comment>Name of a row with a button that opens the project's issue tracker on GitHub.</comment></data>
+  <data name="About_ReportProblemDescription" xml:space="preserve"><value>Знайшли баг? Відкрийте issue на GitHub.</value>
+        <comment>Hint under "Report a problem". An "issue" is a report on GitHub's issue tracker.</comment></data>
+  <data name="About_Open" xml:space="preserve"><value>Відкрити</value>
+        <comment>Button that opens a web page in the browser. Short: it sits at the right end of a row.</comment></data>
+  <data name="About_SectionCredits" xml:space="preserve"><value>АВТОРИ</value>
+        <comment>Small heading above the list of people. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_Author" xml:space="preserve"><value>Автор та супровідник проєкту</value>
+        <comment>Role of the person named in the row's description. The name itself is not translated.</comment></data>
+  <data name="About_SectionAudio" xml:space="preserve"><value>ЗВУКОВА ПІДСИСТЕМА</value>
+        <comment>Small heading above the notice about the audio library used to play music. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_AudioNotice" xml:space="preserve"><value>Для відтворення звуку використовується бібліотека BASS, Copyright © 1999-2026 Un4seen Developments Ltd. BASS є пропрієтарним програмним забезпеченням. Вона не підпадає під дію ліцензії Shirabe та використовується на умовах Un4seen для безкоштовного некомерційного використання.</value>
+        <comment>Legal notice: keep the meaning exact. "BASS" and "Un4seen Developments Ltd." are names: do not translate them. "Proprietary" means not open source.</comment></data>
+  <data name="About_AudioWebsite" xml:space="preserve"><value>Вебсайт BASS</value>
+        <comment>Name of a row with a button that opens the BASS audio library's website. "BASS" is a product name.</comment></data>
+  <data name="About_AudioWebsiteDescription" xml:space="preserve"><value>Un4seen Developments</value>
+        <comment>Hint under "BASS website": the company that makes BASS. A company name: do not translate it.</comment></data>
+  <data name="About_SectionThirdParty" xml:space="preserve"><value>СТОРОННІ КОМПОНЕНТИ</value>
+        <comment>Small heading above the list of open-source libraries and resources the app is built with. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_ThirdPartyIntro" xml:space="preserve"><value>Shirabe побудований на цих відкритих компонентах. Кожен із них використовує власну ліцензію.</value>
+        <comment>Sentence above the list of components. "Open-source" means the source code is public and free to use.</comment></data>
+  <data name="About_CopyHint" xml:space="preserve"><value>Натисніть, щоб скопіювати</value>
+        <comment>Tooltip of the version and build buttons: clicking one copies its text to the clipboard.</comment></data>
+  <data name="About_Copied" xml:space="preserve"><value>Скопійовано</value>
+        <comment>Shown for a moment on the version or build button after its text was copied to the clipboard. Short: it replaces the button's text.</comment></data>
+  <!-- Songs page -->
+  <data name="Common_UnknownArtist" xml:space="preserve"><value>Невідомий виконавець</value>
+        <comment>Shown in place of the artist's name when a song has none (song list, queue, player bar).</comment></data>
+  <data name="Songs_Cancel" xml:space="preserve"><value>Скасувати</value>
+        <comment>Button that stops the scan of a music folder that is in progress.</comment></data>
+  <data name="Songs_AddFolder" xml:space="preserve"><value>Додати теку</value>
+        <comment>Button that opens a dialog to choose a folder with music; the app then scans it and adds the songs to the library.</comment></data>
+  <data name="Songs_Summary" xml:space="preserve"><value>В бібліотеці: {0:N0}</value>
+        <comment>Line under the page heading "Songs". {0:N0} is the number of songs, formatted with thousands separators: keep {0:N0} as it is. Worded without a counted noun on purpose, so it needs no plural forms.</comment></data>
+  <data name="Songs_ColTitle" xml:space="preserve"><value>НАЗВА</value>
+        <comment>Column heading of the song list: the song's title. Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_ColArtist" xml:space="preserve"><value>АРТИСТ</value>
+        <comment>Column heading of the song list: the performer. Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_ColAlbum" xml:space="preserve"><value>АЛЬБОМ</value>
+        <comment>Column heading of the song list: the album the song is on. Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_ColTime" xml:space="preserve"><value>ЧАС</value>
+        <comment>Column heading of the song list: the song's length (duration). Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_PlayNext" xml:space="preserve"><value>Відтворити наступною</value>
+        <comment>Item of the song context menu: puts the song right after the one that is playing.</comment></data>
+  <data name="Songs_AddToQueue" xml:space="preserve"><value>Додати до черги</value>
+        <comment>Item of the song context menu: puts the song at the end of the play queue.</comment></data>
+  <data name="Songs_Properties" xml:space="preserve"><value>Властивості</value>
+        <comment>Item of the song context menu: opens a dialog with the song's details, tags and custom fields.</comment></data>
+  <data name="Songs_EmptyTitle" xml:space="preserve"><value>Пісень поки немає</value>
+        <comment>Heading shown on the Songs page while the library is empty.</comment></data>
+  <data name="Songs_EmptyHint" xml:space="preserve"><value>Додайте теку, і Shirabe знайде музику в ній.</value>
+        <comment>Hint under "No songs yet". "Shirabe" is the app's name: do not translate it.</comment></data>
+  <data name="Songs_ChooseFolder" xml:space="preserve"><value>Виберіть теку з музикою</value>
+        <comment>Title of the operating system's folder dialog opened by "Add folder".</comment></data>
+  <data name="Songs_LoadFailed" xml:space="preserve"><value>Не вдалося завантажити бібліотеку: {0}</value>
+        <comment>Error line on the Songs page. {0} is the technical reason, often in English.</comment></data>
+  <data name="Songs_ScanLooking" xml:space="preserve"><value>Пошук музики...</value>
+        <comment>Status while a folder scan starts, before the number of files is known.</comment></data>
+  <data name="Songs_ScanProgress" xml:space="preserve"><value>Сканування {0:N0} з {1:N0}</value>
+        <comment>Status during a folder scan: {0} files done, {1} files in total. Keep {0:N0} and {1:N0} as they are.</comment></data>
+  <data name="Songs_ScanCancelled" xml:space="preserve"><value>Сканування скасовано</value>
+        <comment>Status after the user stopped a folder scan.</comment></data>
+  <data name="Songs_ScanFailed" xml:space="preserve"><value>Не вдалося просканувати {0}: {1}</value>
+        <comment>Error line on the Songs page. {0} is a folder path, {1} the technical reason, often in English.</comment></data>
+  <data name="Songs_ScanFinished" xml:space="preserve"><value>Сканування завершено: {0}</value>
+        <comment>Summary after a folder scan. {0} is a list of results separated by commas, made from the "Songs_Scan..." texts, e.g. "3 added, 1 updated, 10 unchanged".</comment></data>
+  <data name="Songs_ScanAdded" xml:space="preserve"><value>{0:N0} додано</value>
+        <comment>Part of the scan summary: how many new songs were found. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanUpdated" xml:space="preserve"><value>{0:N0} оновлено</value>
+        <comment>Part of the scan summary: how many songs were already known but changed (for example retagged). Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanUnchanged" xml:space="preserve"><value>{0:N0} не змінено</value>
+        <comment>Part of the scan summary: how many songs were already known and had not changed. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanMissing" xml:space="preserve"><value>{0:N0} більше не знайдено</value>
+        <comment>Part of the scan summary: how many known songs have disappeared from the folder. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanFailedFiles" xml:space="preserve"><value>{0:N0} не вдалося прочитати</value>
+        <comment>Part of the scan summary: how many files were skipped because they are damaged or not audio. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanDocumentProblems" xml:space="preserve"><value>Проблеми з документами метаданих: {0:N0}</value>
+        <comment>Part of the scan summary: how many metadata documents (small .shirabe.json files or tags that describe a song) were damaged or broke the format's rules. Keep {0:N0} as it is.</comment></data>
+  <!-- Queue panel -->
+  <data name="Queue_Clear" xml:space="preserve"><value>Очистити</value>
+        <comment>Small button in the queue panel that empties the queue.</comment></data>
+  <data name="Queue_ClearTip" xml:space="preserve"><value>Видалити все, окрім пісні, що грає</value>
+        <comment>Tooltip of the "Clear" button of the queue panel.</comment></data>
+  <data name="Queue_Remove" xml:space="preserve"><value>Видалити з черги</value>
+        <comment>Tooltip and accessible name of the small X button on a queue row.</comment></data>
+  <data name="Queue_EmptyTitle" xml:space="preserve"><value>Черга порожня</value>
+        <comment>Heading shown in the queue panel when no songs are queued.</comment></data>
+  <data name="Queue_EmptyHint" xml:space="preserve"><value>Відтворіть пісню в списку, щоб розпочати чергу.</value>
+        <comment>Hint under "The queue is empty". "One" means a queue.</comment></data>
+  <!-- Lyrics panel -->
+  <data name="LyricsPanel_NothingPlaying" xml:space="preserve"><value>Нічого не відтворюється</value>
+        <comment>Heading shown in the lyrics panel while no song is loaded.</comment></data>
+  <data name="LyricsPanel_NoLyrics" xml:space="preserve"><value>Немає тексту для цієї пісні</value>
+        <comment>Heading shown in the lyrics panel when the loaded song has no lyrics.</comment></data>
+  <data name="LyricsPanel_PlayHint" xml:space="preserve"><value>Play a song to see its lyrics here.</value>
+        <comment>Hint under "Nothing is playing".</comment></data>
+  <data name="LyricsPanel_AddHint" xml:space="preserve"><value>Put a .lrc or .ttml file with the same name beside the song, or add lyrics to the file's tags.</value>
+        <comment>Hint under "No lyrics for this song". ".lrc" and ".ttml" are file extensions: keep them. "Tags" are the information stored inside the audio file (title, artist, lyrics...).</comment></data>
+  <!-- Home page -->
+  <data name="Home_DropTitle" xml:space="preserve"><value>Drop an audio file here</value>
+        <comment>Large text on the start page's drop area. Read together with Home_DropHint: "Drop an audio file here" + "to start listening".</comment></data>
+  <data name="Home_DropHint" xml:space="preserve"><value>to start listening</value>
+        <comment>Second line under Home_DropTitle. It continues the sentence of the line above it.</comment></data>
+  <!-- Player messages and startup problems -->
+  <data name="Player_NothingPlaying" xml:space="preserve"><value>Nothing playing</value>
+        <comment>Title in the player bar while no song is loaded.</comment></data>
+  <data name="Player_CannotPlay" xml:space="preserve"><value>Cannot play {0}: {1}</value>
+        <comment>Error in the player bar. {0} is a song title, {1} the technical reason, often in English.</comment></data>
+  <data name="Player_CannotPlayAgain" xml:space="preserve"><value>Cannot play {0} again: {1}</value>
+        <comment>Error in the player bar when a song could not be loaded again after the app released its file for a moment. {0} is a song title, {1} the technical reason, often in English.</comment></data>
+  <data name="Player_FileGone" xml:space="preserve"><value>Cannot play {0}: the file was moved or deleted. Add its folder again to update the library.</value>
+        <comment>Error in the player bar. {0} is a song title.</comment></data>
+  <data name="Startup_AudioEngine" xml:space="preserve"><value>Could not start the audio engine: {0}&#10;&#10;See native/README.md.</value>
+        <comment>Error shown on the start page when the sound library (BASS) is missing. {0} is the technical reason, often in English. Keep the line breaks and "native/README.md" (a file name).</comment></data>
+  <data name="Startup_LibraryOpen" xml:space="preserve"><value>The music library could not be opened ({0}): {1}</value>
+        <comment>Error shown on the start page. {0} is the path of the library's database file, {1} the technical reason, often in English.</comment></data>
+  <!-- Notifications and updates -->
+  <data name="Connections_SectionUpdates" xml:space="preserve"><value>ОНОВЛЕННЯ</value>
+        <comment>Small heading above the setting about checking for new versions. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Connections_CheckForUpdates" xml:space="preserve"><value>Перевірити наявність оновлень</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Connections_CheckForUpdatesDescription" xml:space="preserve"><value>Під час запуску Shirabe запитує GitHub, чи вийшла новіша версія, і повідомляє вас, якщо вона доступна. GitHub бачить лише вашу IP-адресу; жодні інші дані не надсилаються. Зміни набудуть чинності під час наступного запуску Shirabe.</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "GitHub" is a product name. "Your address" means the user's internet (IP) address.</comment></data>
+  <data name="Update_Title" xml:space="preserve"><value>Доступний Shirabe {0}</value>
+        <comment>Title of a notification. {0} is the new version number, for example 0.2.0: keep it as it is.</comment></data>
+  <data name="Update_Message" xml:space="preserve"><value>Завантажте нову версію з GitHub, або оновлення через менеджер пакетів, з яким ви встановили Shirabe.</value>
+        <comment>Body of the notification about a new version. A package manager is a tool such as winget, Scoop, Homebrew or apt that installs and updates programs. "GitHub" is a product name.</comment></data>
+  <data name="Update_ViewRelease" xml:space="preserve"><value>Перейти до релізу</value>
+        <comment>Button of the new-version notification: opens the page where the new version can be downloaded. Short.</comment></data>
+  <data name="Notification_Dismiss" xml:space="preserve"><value>Закрити</value>
+        <comment>Tooltip and accessible name of the close (X) button of a notification: it removes the notification.</comment></data>
 </root>
