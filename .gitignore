@@ -14,3 +14,4 @@ native/**/*.dylib
 .idea/
 publish/
 Releases/
+Shirabe.Client.sln.DotSettings.user
