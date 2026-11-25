@@ -27,8 +27,7 @@ If the download fails (offline, blocked) the build only warns; put the file ther
 version.
 Only the platform you build on is downloaded; to fetch another one, build with `-p:BassNativeRid=linux-x64` (or
 `linux-arm64`, `osx`, `win-x64`).
-Only the Windows build has been run with the app; the Linux and macOS files are fetched and unpacked correctly (checked)
-but not played.
+Playback works with these on Windows, Linux and macOS.
 
 BASS is free for non-commercial use and requires a licence otherwise. Read the licensing section on
 the BASS page before distributing builds. Use of BASS in this project is subject to those terms.

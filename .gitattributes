@@ -1,0 +1,2 @@
+# Shell scripts run by bash, also on the Windows build machine, which would otherwise check them out with CRLF.
+*.sh text eol=lf

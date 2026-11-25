@@ -107,7 +107,7 @@ public class ScrobblerTests
     }
 
     private static TrackSummary Track(string? artist = "Artist", string title = "Song", string file = "01.flac") =>
-        new(Guid.NewGuid(), title, artist, "Album", TimeSpan.FromSeconds(120), "file:///C:/Music/" + file);
+        new(Guid.NewGuid(), title, artist, "Album", TimeSpan.FromSeconds(120), "file:///Music/" + file);
 
     [Fact]
     public async Task A_song_is_announced_when_it_starts_and_scrobbled_once_half_was_heard()

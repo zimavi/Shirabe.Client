@@ -533,6 +533,20 @@
         <comment>Body of the notification about a new version. A package manager is a tool such as winget, Scoop, Homebrew or apt that installs and updates programs. "GitHub" is a product name.</comment></data>
     <data name="Update_ViewRelease" xml:space="preserve"><value>View release</value>
         <comment>Button of the new-version notification: opens the page where the new version can be downloaded. Short.</comment></data>
+    <data name="Update_SelfMessage" xml:space="preserve"><value>Shirabe can download and install it for you.</value>
+        <comment>Body of the notification about a new version, shown when the app can update itself.</comment></data>
+    <data name="Update_Install" xml:space="preserve"><value>Update</value>
+        <comment>Button of the new-version notification: downloads the new version. A verb. Short.</comment></data>
+    <data name="Update_Downloading" xml:space="preserve"><value>Downloading… {0}%</value>
+        <comment>Body of the update notification while the new version downloads. {0} is a number from 0 to 100: keep it as it is.</comment></data>
+    <data name="Update_Ready" xml:space="preserve"><value>Downloaded. Restart Shirabe to install it now, or it will be installed the next time Shirabe starts.</value>
+        <comment>Body of the update notification after the download has finished. "Shirabe" is the app's name.</comment></data>
+    <data name="Update_Restart" xml:space="preserve"><value>Restart now</value>
+        <comment>Button of the update notification: closes the app, installs the new version and opens it again. Short.</comment></data>
+    <data name="Update_Failed" xml:space="preserve"><value>The update did not work. Try again, or download it from the release page.</value>
+        <comment>Body of the update notification when downloading or installing the new version failed.</comment></data>
+    <data name="Update_TryAgain" xml:space="preserve"><value>Try again</value>
+        <comment>Button of the update notification after a failed download: starts the download again. Short.</comment></data>
     <data name="Notification_Dismiss" xml:space="preserve"><value>Dismiss</value>
         <comment>Tooltip and accessible name of the close (X) button of a notification: it removes the notification.</comment></data>
 </root>

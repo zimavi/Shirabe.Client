@@ -64,6 +64,81 @@ public class UpdateNotifierTests
     public void A_failed_check_shows_nothing_and_does_not_throw() =>
         Assert.Empty(Check(() => throw new HttpRequestException("offline")).Items);
 
+    private sealed class FakeUpdater : ISelfUpdater
+    {
+        public TaskCompletionSource Download { get; set; } = new();
+
+        public int Downloads { get; private set; }
+
+        public int Restarts { get; private set; }
+
+        public Task<string?> GetLatestVersionAsync(CancellationToken cancellationToken = default) =>
+            Task.FromResult<string?>("0.2.0");
+
+        public Task DownloadAsync(IProgress<int> progress, CancellationToken cancellationToken = default)
+        {
+            Downloads++;
+            return Download.Task;
+        }
+
+        public void RestartAndInstall() => Restarts++;
+    }
+
+    private static async Task<NotificationViewModel> Offer(FakeUpdater updater)
+    {
+        var center = new NotificationCenter();
+        await new UpdateNotifier(updater, center, new AppVersion("0.1.0", null)).CheckAsync(Ct);
+        return Assert.Single(center.Items);
+    }
+
+    [Fact]
+    public void A_source_that_cannot_install_offers_no_action() =>
+        Assert.False(Assert.Single(Check(() => "0.2.0").Items).HasAction);
+
+    [Fact]
+    public async Task An_update_is_downloaded_when_asked_and_installed_when_asked_again()
+    {
+        var updater = new FakeUpdater();
+        var notification = await Offer(updater);
+        Assert.True(notification.HasAction);
+        Assert.True(notification.HasLink); // the release notes stay reachable
+        Assert.Equal(0, updater.Downloads);
+        var install = notification.ActionLabel;
+
+        var download = notification.Action!.ExecuteAsync(null);
+        Assert.False(notification.Action.CanExecute(null)); // no second download meanwhile
+        updater.Download.SetResult();
+        await download;
+
+        Assert.Equal(1, updater.Downloads);
+        Assert.Equal(0, updater.Restarts);
+        Assert.NotEqual(install, notification.ActionLabel);
+
+        await notification.Action.ExecuteAsync(null);
+
+        Assert.Equal(1, updater.Restarts);
+        Assert.Equal(1, updater.Downloads);
+    }
+
+    [Fact]
+    public async Task A_failed_download_can_be_tried_again()
+    {
+        var updater = new FakeUpdater();
+        var notification = await Offer(updater);
+        updater.Download.SetException(new HttpRequestException("offline"));
+
+        await notification.Action!.ExecuteAsync(null);
+        var afterFailure = notification.Message;
+
+        updater.Download = new TaskCompletionSource();
+        updater.Download.SetResult();
+        await notification.Action.ExecuteAsync(null);
+
+        Assert.Equal(2, updater.Downloads);
+        Assert.Equal(0, updater.Restarts);
+        Assert.NotEqual(afterFailure, notification.Message);
+    }
+
     [Fact]
     public void A_notification_goes_away_when_dismissed()
     {

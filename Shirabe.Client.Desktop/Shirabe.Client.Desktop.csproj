@@ -10,9 +10,17 @@
 
     <PropertyGroup>
         <ApplicationManifest>app.manifest</ApplicationManifest>
+      <!-- The icon of Shirabe.exe itself (Explorer, taskbar pins, shortcuts). -->
+      <ApplicationIcon>..\Shirabe.Client\Assets\app.ico</ApplicationIcon>
     </PropertyGroup>
 
-    <ItemGroup>
+  <!-- For packagers whose package manager owns the updates, even of a Velopack-packed build: -p:SelfUpdate=false
+       builds an app that only says a new release exists. -->
+  <PropertyGroup Condition="'$(SelfUpdate)' == 'false'">
+    <DefineConstants>$(DefineConstants);NO_SELF_UPDATE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
         <PackageReference Include="Avalonia.Desktop"/>
         <PackageReference Include="Velopack" />
     </ItemGroup>
