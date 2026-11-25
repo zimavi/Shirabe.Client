@@ -14,13 +14,19 @@ public sealed partial class LastFmViewModel : ViewModelBase
 
     /// <param name="account">Null in a build made without a Last.fm API key.</param>
     /// <param name="openPage">Opens a web address in the browser.</param>
-    public LastFmViewModel(LastFmAccount? account = null, Action<string>? openPage = null)
+    /// <param name="settings">Null in tests: defaults that are not saved.</param>
+    public LastFmViewModel(LastFmAccount? account = null, Action<string>? openPage = null,
+        AppSettings? settings = null)
     {
+        Settings = settings ?? new AppSettings();
         _account = account;
         _openPage = openPage ?? (_ => { });
         if (account is not null) account.PropertyChanged += (_, _) => Refresh();
         RefreshOnLanguageChange(nameof(Status));
     }
+
+    /// <summary>Holds the scrobbling switch.</summary>
+    public AppSettings Settings { get; }
 
     public bool IsSignedIn => _account?.Session is not null;
 

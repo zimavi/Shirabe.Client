@@ -22,6 +22,11 @@
                         IsVisible="{Binding IsWaiting}" />
             </StackPanel>
         </views:SettingRow>
+        <views:SettingRow Title="{loc:T LastFm_Scrobble}" Description="{loc:T LastFm_ScrobbleDescription}"
+                          IsEnabled="{Binding IsSignedIn}">
+            <ToggleSwitch IsChecked="{Binding Settings.ScrobblingEnabled}"
+                          AutomationProperties.Name="{loc:T LastFm_Scrobble}" />
+        </views:SettingRow>
         <TextBlock Text="{loc:T LastFm_NoStorage}" TextWrapping="Wrap" IsVisible="{Binding ShowStorageWarning}"
                    FontSize="12" Margin="16,2" Foreground="{DynamicResource TextSecondaryBrush}" />
         <TextBlock Text="{Binding Error}" TextWrapping="Wrap" FontSize="12" Margin="16,2"

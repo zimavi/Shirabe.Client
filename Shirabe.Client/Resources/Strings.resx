@@ -342,6 +342,10 @@
         <comment>Button: signs out of Last.fm in this app. Short.</comment></data>
     <data name="LastFm_ViewProfile" xml:space="preserve"><value>View profile</value>
         <comment>Button: opens the user's page on the Last.fm website. Short.</comment></data>
+    <data name="LastFm_Scrobble" xml:space="preserve"><value>Scrobble what I play</value>
+        <comment>Name of an on/off switch, also its accessible name. To "scrobble" is Last.fm's word for adding a played song to the user's listening history; use Last.fm's wording in your language if you know it.</comment></data>
+    <data name="LastFm_ScrobbleDescription" xml:space="preserve"><value>While connected, sends Last.fm the artist, title, album, length and start time of the songs you play.</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "Last.fm" is a product name.</comment></data>
     <data name="LastFm_NoStorage" xml:space="preserve"><value>Shirabe has no secure storage it can use on this computer, so you will need to sign in to Last.fm again every time it starts.</value>
         <comment>Warning. "Secure storage" is the system's protected place for passwords and keys (Windows Credential Manager, a Linux keyring).</comment></data>
     <data name="LastFm_NotAllowed" xml:space="preserve"><value>Access was not allowed in time. Try again.</value>
