@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -29,6 +30,20 @@ public sealed class LastFmClient(string apiKey, string secret, HttpClient? http 
     private static readonly HttpClient Shared = new() { Timeout = TimeSpan.FromSeconds(10) };
 
     private readonly HttpClient _http = http ?? Shared;
+
+    /// <summary>
+    /// A client with the key and secret the build put into the assembly (see Shirabe.Client.csproj), or null for a build
+    /// made without them.
+    /// </summary>
+    public static LastFmClient? FromBuild(Assembly? assembly = null)
+    {
+        var metadata = (assembly ?? typeof(LastFmClient).Assembly).GetCustomAttributes<AssemblyMetadataAttribute>()
+            .ToDictionary(a => a.Key, a => a.Value);
+        return metadata.GetValueOrDefault("LastFmApiKey") is { Length: > 0 } key
+               && metadata.GetValueOrDefault("LastFmApiSecret") is { Length: > 0 } buildSecret
+            ? new LastFmClient(key, buildSecret)
+            : null;
+    }
 
     public async Task<string> GetTokenAsync(CancellationToken cancellationToken = default)
     {

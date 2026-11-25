@@ -86,6 +86,10 @@ public class LastFmClientTests
             Client(new FakeWeb(HttpStatusCode.BadGateway, body)).GetTokenAsync(Ct));
 
     [Fact]
+    public void An_assembly_built_without_a_key_gives_no_client() =>
+        Assert.Null(LastFmClient.FromBuild(typeof(LastFmClientTests).Assembly));
+
+    [Fact]
     public void The_authorization_page_names_the_key_and_the_token() =>
         Assert.Equal("https://www.last.fm/api/auth/?api_key=KEY&token=a%26b",
             Client(new FakeWeb(HttpStatusCode.OK, "")).AuthorizationPage("a&b"));

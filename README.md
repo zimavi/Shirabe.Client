@@ -41,6 +41,10 @@ dotnet run --project Shirabe.Client.Desktop
 The first build downloads the audio library (BASS) for your platform from its website, so it needs a connection once.
 If that fails, see [native/README.md](native/README.md).
 
+Last.fm needs an API key and is left out of builds without one. To have it, copy `build/Secrets.local.props.example`
+to `build/Secrets.local.props` (git-ignored) and fill in your own
+[key and shared secret](https://www.last.fm/api/account/create).
+
 Run the tests with:
 
 ```
