@@ -363,6 +363,16 @@
     <data name="LastFm_Open" xml:space="preserve"><value>Open Last.fm</value>
         <comment>Button: opens the Last.fm website. "Last.fm" is a product name.</comment></data>
 
+    <!-- Title bar: the message about the last scrobble -->
+    <data name="Scrobbler_Title" xml:space="preserve"><value>Scrobbler</value>
+        <comment>Heading of a small message in the title bar. A scrobbler is the part of an app that adds played songs to the user's Last.fm listening history; use Last.fm's wording in your language if you know it.</comment></data>
+    <data name="Scrobbler_Done" xml:space="preserve"><value>Scrobbled {0} by {1}</value>
+        <comment>Message after a song was added to the Last.fm history. {0} is the song title, {1} the artist: keep both. It is cut off when long.</comment></data>
+    <data name="Scrobbler_Ignored" xml:space="preserve"><value>Last.fm ignored {0} by {1}</value>
+        <comment>Message when Last.fm received a song but did not add it to the history. {0} is the song title, {1} the artist.</comment></data>
+    <data name="Scrobbler_Failed" xml:space="preserve"><value>Could not scrobble {0} by {1}</value>
+        <comment>Message when a song could not be sent to Last.fm. {0} is the song title, {1} the artist.</comment></data>
+
     <!-- Settings: About -->
     <data name="About_Title" xml:space="preserve"><value>About</value>
         <comment>Name of a settings page, in the list of pages. It shows the app's version, license and credits.</comment></data>

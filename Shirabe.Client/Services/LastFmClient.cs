@@ -79,17 +79,23 @@ public sealed class LastFmClient(string apiKey, string secret, HttpClient? http 
     }
 
     /// <summary>
-    /// Adds a listen to the user's history. A listen Last.fm chooses to ignore (a timestamp too old, say) is not an
-    /// error: sending it again would not help.
+    /// Adds a listen to the user's history. False when Last.fm chose to ignore it (a timestamp too old, say): that is
+    /// not an error, sending it again would not help.
     /// </summary>
     /// <param name="startedAt">When the song started playing.</param>
-    public async Task ScrobbleAsync(LastFmSession session, LastFmTrack track, DateTimeOffset startedAt,
+    public async Task<bool> ScrobbleAsync(LastFmSession session, LastFmTrack track, DateTimeOffset startedAt,
         CancellationToken cancellationToken = default)
     {
         var parameters = TrackParameters(session, track, "[0]"); // names are numbered: one request can hold 50
         parameters["timestamp[0]"] = startedAt.ToUnixTimeSeconds().ToString(CultureInfo.InvariantCulture);
         var response = await CallAsync("track.scrobble", parameters, cancellationToken).ConfigureAwait(false);
-        Member(response, "scrobbles"); // anything else is not a confirmation
+        var result = Member(response, "scrobbles"); // anything else is not a confirmation
+
+        // {"@attr":{"accepted":1,"ignored":0}}
+        return !(result.ValueKind == JsonValueKind.Object && result.TryGetProperty("@attr", out var counts)
+                                                          && counts.ValueKind == JsonValueKind.Object
+                                                          && counts.TryGetProperty("ignored", out var ignored)
+                                                          && ignored.ToString() != "0");
     }
 
     private static Dictionary<string, string> TrackParameters(LastFmSession session, LastFmTrack track, string index)

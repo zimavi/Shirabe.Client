@@ -58,8 +58,8 @@ public class LastFmClientTests
         var web = new FakeWeb(HttpStatusCode.OK, """{"scrobbles":{"@attr":{"accepted":1,"ignored":0}}}""");
         var track = new LastFmTrack("Artist & Co.", "Song", "Альбом", TimeSpan.FromSeconds(200.7));
 
-        await Client(web).ScrobbleAsync(new LastFmSession("u", "SK"), track,
-            DateTimeOffset.FromUnixTimeSeconds(1_700_000_000).ToOffset(TimeSpan.FromHours(3)), Ct);
+        Assert.True(await Client(web).ScrobbleAsync(new LastFmSession("u", "SK"), track,
+            DateTimeOffset.FromUnixTimeSeconds(1_700_000_000).ToOffset(TimeSpan.FromHours(3)), Ct));
 
         var sent = Uri.UnescapeDataString(web.Sent.Replace('+', ' '));
         Assert.StartsWith("sk=SK&artist[0]=Artist & Co.&track[0]=Song&album[0]=Альбом&duration[0]=200&" +
@@ -67,6 +67,15 @@ public class LastFmClientTests
         // md5 of the sorted names and values, then the secret
         Assert.Contains("api_sig=b19085f2ac28124278672f7d71c27656", sent);
     }
+
+    [Theory]
+    [InlineData("""{"scrobbles":{"@attr":{"accepted":0,"ignored":1}}}""", false)]
+    [InlineData("""{"scrobbles":{"@attr":{"accepted":"0","ignored":"1"}}}""", false)]
+    [InlineData("""{"scrobbles":{"@attr":{"accepted":"1","ignored":"0"}}}""", true)]
+    [InlineData("""{"scrobbles":{}}""", true)]
+    public async Task A_scrobble_says_whether_Last_fm_kept_it(string answer, bool kept) =>
+        Assert.Equal(kept, await Client(new FakeWeb(HttpStatusCode.OK, answer))
+            .ScrobbleAsync(new LastFmSession("u", "SK"), new LastFmTrack("Artist", "Song"), DateTimeOffset.Now, Ct));
 
     [Theory]
     [InlineData(null, null)]

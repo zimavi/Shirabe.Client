@@ -4,8 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:chrome="using:Avalonia.Controls.Chrome"
              xmlns:loc="using:Shirabe.Client.Localization"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:views="using:Shirabe.Client.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="40"
              x:Class="Shirabe.Client.Views.TitleBarView"
+             x:DataType="vm:MainViewModel"
              Height="40">
     <!-- The window has no system title bar (WindowDecorations="BorderOnly" in MainWindow), so this view is it.
          The TitleBar role makes the empty strip drag the window and maximise it on double-click natively.
@@ -14,6 +17,7 @@
         <Border Background="Transparent" chrome:WindowDecorationProperties.ElementRole="TitleBar" />
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <views:ScrobbleStatusView DataContext="{Binding ScrobbleStatus}" />
             <Button Classes="caption" Click="OnMinimize" ToolTip.Tip="{loc:T Window_Minimize}"
                     AutomationProperties.Name="{loc:T Window_Minimize}">
                 <PathIcon Data="{DynamicResource Icon.Minimize}" />

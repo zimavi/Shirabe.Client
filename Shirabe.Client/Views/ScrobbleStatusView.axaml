@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:loc="using:Shirabe.Client.Localization"
+             mc:Ignorable="d" d:DesignWidth="320" d:DesignHeight="40"
+             x:Class="Shirabe.Client.Views.ScrobbleStatusView"
+             x:DataType="vm:ScrobbleStatusViewModel"
+             IsHitTestVisible="False">
+    <!-- Clicks pass through, so the window can still be dragged here. -->
+    <Panel Classes="scrobble-status" Classes.open="{Binding IsOpen}" Height="40" Margin="0,0,16,0"
+           IsVisible="{Binding Message, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <Panel VerticalAlignment="Center">
+                <PathIcon Data="{DynamicResource Icon.Done}" Width="16" Height="16" IsVisible="{Binding !IsProblem}" />
+                <PathIcon Data="{DynamicResource Icon.Problem}" Width="16" Height="16" IsVisible="{Binding IsProblem}" />
+            </Panel>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="{loc:T Scrobbler_Title}" FontSize="11" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Message}" FontSize="11" MaxWidth="300" TextTrimming="CharacterEllipsis"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           AutomationProperties.LiveSetting="Polite" />
+            </StackPanel>
+        </StackPanel>
+    </Panel>
+</UserControl>

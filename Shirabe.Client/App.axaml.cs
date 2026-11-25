@@ -226,20 +226,24 @@ public partial class App : Application
         {
             var library = LocalLibrary.Open(libraryPath);
             _ = new LinkedCovers(playerViewModel, appSettings, library); // subscribes itself
-            if (account is not null) StartScrobbling(new Scrobbler(playerViewModel, appSettings, account, lastFm!, library));
             var songs = new SongsViewModel(library, library, new FolderPicker(GetMainWindow), playerViewModel,
                 track => new PropertiesViewModel(library, library, track, new FilePicker(GetMainWindow), library));
             // Studio writes through the player-aware store: the song that is playing is open, and a file that is open cannot be written to.
-            return new MainViewModel(playerViewModel, songs, null, settings: settings,
+            var shell = new MainViewModel(playerViewModel, songs, null, settings: settings,
                 studioFactory: () => studio(library, new PlayerAwareDocumentStore(library, playerViewModel)),
                 lyricsSource: new LocalLyricsSource());
+            if (account is not null)
+                StartScrobbling(new Scrobbler(playerViewModel, appSettings, account, lastFm!, library), shell);
+            return shell;
         }
         catch (Exception ex)
         {
-            if (account is not null) StartScrobbling(new Scrobbler(playerViewModel, appSettings, account, lastFm!));
-            return new MainViewModel(playerViewModel, null, null,
+            var shell = new MainViewModel(playerViewModel, null, null,
                 Loc.Get("Startup_LibraryOpen", libraryPath, ex.Message), settings,
                 () => studio(null, null));
+            if (account is not null)
+                StartScrobbling(new Scrobbler(playerViewModel, appSettings, account, lastFm!), shell);
+            return shell;
         }
     }
 
@@ -250,11 +254,15 @@ public partial class App : Application
         return account;
     }
 
-    private static void StartScrobbling(Scrobbler scrobbler) => DispatcherTimer.Run(() =>
+    private static void StartScrobbling(Scrobbler scrobbler, MainViewModel shell)
     {
-        _ = scrobbler.TickAsync();
-        return true; // for as long as the app runs
-    }, TimeSpan.FromSeconds(1));
+        scrobbler.Reported += (_, report) => _ = shell.ScrobbleStatus.ShowAsync(report);
+        DispatcherTimer.Run(() =>
+        {
+            _ = scrobbler.TickAsync();
+            return true; // for as long as the app runs
+        }, TimeSpan.FromSeconds(1));
+    }
 
     private static void OpenInBrowser(string address)
     {

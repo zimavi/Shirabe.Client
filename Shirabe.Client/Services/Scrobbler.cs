@@ -5,6 +5,19 @@ using Shirabe.Core.Playback;
 
 namespace Shirabe.Client.Services;
 
+public enum ScrobbleResult
+{
+    Scrobbled,
+
+    /// <summary>Last.fm received it and chose not to keep it.</summary>
+    Ignored,
+
+    Failed,
+}
+
+/// <summary>What became of one scrobble.</summary>
+public sealed record ScrobbleReport(ScrobbleResult Result, LastFmTrack Song);
+
 /// <summary>
 /// Tells Last.fm what the player plays: "now playing" when a song starts and a scrobble once enough of it was heard
 /// (see <see cref="ScrobbleTracker"/>), while the user is signed in and scrobbling is on. Sends the artist, title,
@@ -44,6 +57,9 @@ public sealed class Scrobbler
             : null);
     }
 
+    /// <summary>Raised on the UI thread after each scrobble was tried. "Now playing" is not reported.</summary>
+    public event EventHandler<ScrobbleReport>? Reported;
+
     /// <summary>The returned task ends when what this moment calls for has been sent (usually nothing).</summary>
     public Task TickAsync()
     {
@@ -63,15 +79,27 @@ public sealed class Scrobbler
     {
         if (await DescribeAsync(track, duration) is not { } song) return;
 
+        ScrobbleResult result;
         try
         {
-            if (step == ScrobbleStep.Started) await _client.UpdateNowPlayingAsync(session, song);
-            else await _client.ScrobbleAsync(session, song, startedAt);
+            if (step == ScrobbleStep.Started)
+            {
+                await _client.UpdateNowPlayingAsync(session, song);
+                return;
+            }
+
+            result = await _client.ScrobbleAsync(session, song, startedAt)
+                ? ScrobbleResult.Scrobbled
+                : ScrobbleResult.Ignored;
         }
         catch (Exception ex) when (ex is LastFmException or HttpRequestException or TaskCanceledException)
         {
-            // Playing goes on; "now playing" is not worth retrying.
+            // Playing goes on; "now playing" is not worth retrying, nor worth a message.
+            if (step == ScrobbleStep.Started) return;
+            result = ScrobbleResult.Failed;
         }
+
+        Reported?.Invoke(this, new ScrobbleReport(result, song));
     }
 
     /// <summary>

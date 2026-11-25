@@ -20,6 +20,8 @@ public class ScrobblerTests
 
         public bool Offline { get; set; }
 
+        public string ScrobbleAnswer { get; set; } = """{"scrobbles":{}}""";
+
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
@@ -37,7 +39,7 @@ public class ScrobblerTests
                     "auth.getToken" => LastFmAccountTests.Token,
                     "auth.getSession" => LastFmAccountTests.Granted,
                     "track.updateNowPlaying" => """{"nowplaying":{}}""",
-                    _ => """{"scrobbles":{}}""",
+                    _ => ScrobbleAnswer,
                 }),
             };
         }
@@ -75,6 +77,7 @@ public class ScrobblerTests
         public PlayerViewModel Player { get; }
         public LastFmAccount Account { get; }
         public Scrobbler Scrobbler { get; }
+        public List<ScrobbleReport> Reports { get; } = [];
 
         public Rig(IFileTags? tags = null)
         {
@@ -82,6 +85,7 @@ public class ScrobblerTests
             var client = new LastFmClient("KEY", "SECRET", new HttpClient(Web));
             Account = new LastFmAccount(client, null, TimeSpan.Zero);
             Scrobbler = new Scrobbler(Player, Settings, Account, client, tags, Clock);
+            Scrobbler.Reported += (_, report) => Reports.Add(report);
         }
 
         public async Task SignInAsync()
@@ -177,6 +181,26 @@ public class ScrobblerTests
 
         Assert.Empty(rig.Web.Sent);
         Assert.True(rig.Player.IsPlaying);
+        Assert.Equal(ScrobbleResult.Failed, Assert.Single(rig.Reports).Result); // not for "now playing"
+    }
+
+    [Theory]
+    [InlineData("""{"scrobbles":{"@attr":{"accepted":1,"ignored":0}}}""", ScrobbleResult.Scrobbled)]
+    [InlineData("""{"scrobbles":{"@attr":{"accepted":0,"ignored":1}}}""", ScrobbleResult.Ignored)]
+    [InlineData("""{"error":16,"message":"try again"}""", ScrobbleResult.Failed)]
+    public async Task Each_scrobble_is_reported_once_with_what_became_of_it(string answer, ScrobbleResult result)
+    {
+        var rig = new Rig();
+        await rig.SignInAsync();
+        rig.Web.ScrobbleAnswer = answer;
+        await rig.Player.PlayAsync(Track());
+
+        await rig.PlayToAsync(59);
+        Assert.Empty(rig.Reports);
+
+        await rig.PlayToAsync(120);
+        Assert.Equal(new ScrobbleReport(result, new LastFmTrack("Artist", "Song", "Album", TimeSpan.FromSeconds(120))),
+            Assert.Single(rig.Reports));
     }
 
     [Theory]

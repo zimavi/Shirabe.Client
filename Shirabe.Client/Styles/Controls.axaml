@@ -298,6 +298,14 @@
         <Setter Property="RenderTransform" Value="none" />
     </Style>
 
+    <!-- The scrobble message in the title bar: there, and seen only while "open". -->
+    <Style Selector="Panel.scrobble-status">
+        <Setter Property="Opacity" Value="0" />
+    </Style>
+    <Style Selector="Panel.scrobble-status.open">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+
     <!-- Lyrics: every line is a flat button (a click seeks). Plain lyrics are all readable; in timed lyrics (ItemsControl.timed)
          only the current line is bright, and in it the words that have started (when the file times words). -->
     <Style Selector="Button.lyric-line">
@@ -373,6 +381,13 @@
     <Style Selector=".motion TransitioningContentControl.pages">
         <Setter Property="PageTransition">
             <CrossFade Duration="0:0:0.15" />
+        </Setter>
+    </Style>
+    <Style Selector=".motion Panel.scrobble-status">
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+            </Transitions>
         </Setter>
     </Style>
     <Style Selector=".motion Panel.queue-panel">
