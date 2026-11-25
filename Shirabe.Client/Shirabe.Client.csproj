@@ -79,5 +79,8 @@
       <Compile Update="Views\SpeedMenuView.axaml.cs">
         <DependentUpon>SpeedMenuView.axaml</DependentUpon>
       </Compile>
+      <Compile Update="Views\LastFmView.axaml.cs">
+        <DependentUpon>LastFmView.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

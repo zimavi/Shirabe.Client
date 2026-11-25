@@ -212,7 +212,8 @@ public partial class App : Application
 
         var playerViewModel = new PlayerViewModel(player, appSettings, new ReplayGainReader());
         // Made now, not when first shown: it moves the player to the saved output device.
-        var settings = new SettingsViewModel(appSettings, themes, player as IAudioOutput, playerViewModel);
+        var settings = new SettingsViewModel(appSettings, themes, player as IAudioOutput, playerViewModel,
+            CreateLastFm());
 
         var libraryPath = GetLibraryPath();
 
@@ -234,6 +235,19 @@ public partial class App : Application
                 Loc.Get("Startup_LibraryOpen", libraryPath, ex.Message), settings,
                 () => studio(null, null));
         }
+    }
+
+    // A build made without a Last.fm API key has no account to sign in to.
+    private static LastFmViewModel CreateLastFm()
+    {
+        if (LastFmClient.FromBuild() is not { } client) return new LastFmViewModel();
+
+        var account = new LastFmAccount(client, ISecretStore.ForThisPlatform());
+        Dispatcher.UIThread.Post(() => _ = account.LoadAsync()); // the saved session, without holding up the start
+        return new LastFmViewModel(account, address =>
+        {
+            if (GetMainWindow() is { } window) LinkLauncher.Open(window, address);
+        });
     }
 
     // SHIRABE_LIBRARY_DB points the app at another database file (testing, portable setups); settings and themes follow it.

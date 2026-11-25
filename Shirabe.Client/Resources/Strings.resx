@@ -298,8 +298,8 @@
     <!-- Settings: Connections -->
     <data name="Connections_Title" xml:space="preserve"><value>Connections</value>
         <comment>Name of a settings page, in the list of pages. Holds the options that talk to outside services.</comment></data>
-    <data name="Connections_Description" xml:space="preserve"><value>Discord and online lookups</value>
-        <comment>One short line under the page name "Connections" in the list of settings pages. "Discord" is a product name: do not translate it.</comment></data>
+    <data name="Connections_Description" xml:space="preserve"><value>Discord, Last.fm and online lookups</value>
+        <comment>One short line under the page name "Connections" in the list of settings pages. "Discord" and "Last.fm" are product names: do not translate them.</comment></data>
     <data name="Connections_SectionDiscord" xml:space="preserve"><value>DISCORD</value>
         <comment>Small heading above the Discord settings. "Discord" is a product name: do not translate it.</comment></data>
     <data name="Connections_Presence" xml:space="preserve"><value>Show what I'm listening to</value>
@@ -320,6 +320,44 @@
         <comment>Name of an on/off switch. "Linked" means a song's metadata contains a web link to its cover image. Also its accessible name.</comment></data>
     <data name="Connections_DownloadArtworkDescription" xml:space="preserve"><value>When a song's metadata links to a cover, it is downloaded as the song is shown and kept on this computer. The website it comes from can see your address and that you played this song.</value>
         <comment>Privacy explanation under the switch: keep the meaning exact. "Your address" means the user's internet (IP) address.</comment></data>
+
+    <!-- Settings: Connections, Last.fm -->
+    <data name="LastFm_Section" xml:space="preserve"><value>LAST.FM</value>
+        <comment>Small heading above the Last.fm settings. "Last.fm" is a product name: do not translate it.</comment></data>
+    <data name="LastFm_Account" xml:space="preserve"><value>Account</value>
+        <comment>Name of the settings row about the user's Last.fm account.</comment></data>
+    <data name="LastFm_SignedOut" xml:space="preserve"><value>Sign in on Last.fm's website. Shirabe never sees your password.</value>
+        <comment>Under "Account" when the user is not signed in. "Last.fm" and "Shirabe" are product names.</comment></data>
+    <data name="LastFm_Waiting" xml:space="preserve"><value>Allow access in your browser, then come back here.</value>
+        <comment>Under "Account" while the app waits for the user to approve it on the website that was just opened.</comment></data>
+    <data name="LastFm_SignedInAs" xml:space="preserve"><value>Signed in as {0}</value>
+        <comment>Under "Account". {0} is the user's Last.fm user name: keep it as it is.</comment></data>
+    <data name="LastFm_Unavailable" xml:space="preserve"><value>This build of Shirabe was made without a Last.fm API key.</value>
+        <comment>Under "Account" in a copy of the app that cannot use Last.fm. An API key is a code that identifies an app to a web service; a build is one compiled copy of the app.</comment></data>
+    <data name="LastFm_Connect" xml:space="preserve"><value>Connect</value>
+        <comment>Button: starts signing in to Last.fm. Short.</comment></data>
+    <data name="LastFm_Cancel" xml:space="preserve"><value>Cancel</value>
+        <comment>Button: stops waiting for the sign-in. Short.</comment></data>
+    <data name="LastFm_Disconnect" xml:space="preserve"><value>Disconnect</value>
+        <comment>Button: signs out of Last.fm in this app. Short.</comment></data>
+    <data name="LastFm_ViewProfile" xml:space="preserve"><value>View profile</value>
+        <comment>Button: opens the user's page on the Last.fm website. Short.</comment></data>
+    <data name="LastFm_NoStorage" xml:space="preserve"><value>Shirabe has no secure storage it can use on this computer, so you will need to sign in to Last.fm again every time it starts.</value>
+        <comment>Warning. "Secure storage" is the system's protected place for passwords and keys (Windows Credential Manager, a Linux keyring).</comment></data>
+    <data name="LastFm_NotAllowed" xml:space="preserve"><value>Access was not allowed in time. Try again.</value>
+        <comment>Error after the user did not approve the app on the Last.fm website within a few minutes.</comment></data>
+    <data name="LastFm_Unreachable" xml:space="preserve"><value>Last.fm could not be reached. Check your connection and try again.</value>
+        <comment>Error after a failed sign-in: no internet connection, or the website does not answer.</comment></data>
+    <data name="LastFm_Failed" xml:space="preserve"><value>Signing in to Last.fm failed: {0}</value>
+        <comment>Error. {0} is the reason given by Last.fm, in English.</comment></data>
+    <data name="LastFm_NotRemoved" xml:space="preserve"><value>The saved sign-in could not be removed, so it may come back after a restart. You can revoke Shirabe's access in your Last.fm settings, under Applications.</value>
+        <comment>Error after signing out. "Applications" is the name of a page in the settings of the Last.fm website; to revoke access means to take the permission away.</comment></data>
+    <data name="LastFm_Credit" xml:space="preserve"><value>Powered by AudioScrobbler</value>
+        <comment>Credit that Last.fm asks for. "AudioScrobbler" is a product name: do not translate it.</comment></data>
+    <data name="LastFm_CreditDescription" xml:space="preserve"><value>Account features are provided by Last.fm.</value>
+        <comment>Under the credit "Powered by AudioScrobbler". "Last.fm" is a product name.</comment></data>
+    <data name="LastFm_Open" xml:space="preserve"><value>Open Last.fm</value>
+        <comment>Button: opens the Last.fm website. "Last.fm" is a product name.</comment></data>
 
     <!-- Settings: About -->
     <data name="About_Title" xml:space="preserve"><value>About</value>

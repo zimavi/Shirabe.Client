@@ -10,15 +10,15 @@ public class LastFmAccountTests
 {
     private static CancellationToken Ct => TestContext.Current.CancellationToken;
 
-    private const string Token = """{"token":"tok"}""";
-    private const string Granted = """{"session":{"name":"listener","key":"sk"}}""";
-    private const string NotYet = """{"error":14,"message":"not authorized"}""";
-    private const string Saved = """{"User":"listener","Key":"sk"}""";
+    internal const string Token = """{"token":"tok"}""";
+    internal const string Granted = """{"session":{"name":"listener","key":"sk"}}""";
+    internal const string NotYet = """{"error":14,"message":"not authorized"}""";
+    internal const string Saved = """{"User":"listener","Key":"sk"}""";
 
     private static readonly LastFmSession Listener = new("listener", "sk");
 
     /// <summary>Gives the answers in order, then repeats the last one. A null answer is a network failure.</summary>
-    private sealed class FakeWeb(params string?[] answers) : HttpMessageHandler
+    internal sealed class FakeWeb(params string?[] answers) : HttpMessageHandler
     {
         public int Requests { get; private set; }
 
@@ -32,7 +32,7 @@ public class LastFmAccountTests
         }
     }
 
-    private sealed class FakeStore : ISecretStore
+    internal sealed class FakeStore : ISecretStore
     {
         public string? Secret { get; set; }
         public bool Broken { get; set; }
@@ -55,7 +55,7 @@ public class LastFmAccountTests
         }
     }
 
-    private static LastFmAccount Account(ISecretStore? store, FakeWeb? web = null) =>
+    internal static LastFmAccount Account(ISecretStore? store, FakeWeb? web = null) =>
         new(new LastFmClient("KEY", "SECRET", new HttpClient(web ?? new FakeWeb(Token, Granted))), store,
             TimeSpan.Zero);
 

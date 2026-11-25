@@ -10,7 +10,7 @@ public partial class SettingsViewModel : ViewModelBase
 {
     /// <param name="output">Where the sound goes, for the Audio page; null when there is no player that can tell.</param>
     public SettingsViewModel(AppSettings settings, ThemeCatalog themes, IAudioOutput? output = null,
-        PlayerViewModel? player = null)
+        PlayerViewModel? player = null, LastFmViewModel? lastFm = null)
     {
         Settings = settings;
         // To add a settings page: write its view model and view, then list it here.
@@ -21,7 +21,7 @@ public partial class SettingsViewModel : ViewModelBase
             new AppearanceSettingsViewModel(settings, themes),
             new LyricsSettingsViewModel(settings),
             new ShortcutsSettingsViewModel(settings),
-            new ConnectionsSettingsViewModel(settings),
+            new ConnectionsSettingsViewModel(settings, lastFm ?? new LastFmViewModel()),
             new AboutViewModel(),
         ];
         SelectedPage = Pages[0];
