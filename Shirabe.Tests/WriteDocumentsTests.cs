@@ -55,6 +55,28 @@ public sealed class WriteDocumentsTests : IDisposable
 
     private IEnumerable<string> LeftoverBackups() => Directory.GetFiles(Path.GetTempPath(), "shirabe-backup-*").Where(f => !_backupsBefore.Contains(f));
 
+    [Fact]
+    public async Task A_file_without_a_title_tag_does_not_get_its_file_name_as_one()
+    {
+        var path = Path.Combine(_music, "Untitled take.wav");
+        TestAudio.WriteWav(path, 1);
+        var (tagged, _) = await Song("cover-a1.flac", "Covered One"); // the scan picks up both files
+        var untitled = (await _library.GetTracksAsync(Ct)).Single(t => t.Title == "Untitled take").RecordingId;
+        async Task<bool> HasTitleTag(Guid id) => (await _library.ReadFileTagsAsync(id, Ct))
+            .Any(t => t is { Group: FileTag.TagsGroup, Name: "Title" });
+
+        Assert.False(await HasTitleTag(untitled));
+        Assert.True(await HasTitleTag(tagged));
+
+        await _library.WriteToFileAsync(untitled, Doc("canonical", "Document title"), DocumentOrigin.Embedded, Ct);
+
+        var bytes = await File.ReadAllBytesAsync(path, Ct);
+        Assert.True(bytes.AsSpan().IndexOf("SHIRABE_METADATA"u8) >= 0);
+        Assert.True(bytes.AsSpan().IndexOf("Untitled take"u8) < 0);
+        Assert.True(bytes.AsSpan().IndexOf(System.Text.Encoding.Unicode.GetBytes("Untitled take")) < 0);
+        Assert.False(await HasTitleTag(untitled));
+    }
+
     // ---- the sidecar ----
 
     [Fact]

@@ -22,6 +22,9 @@ public partial class PlayerViewModel : ViewModelBase
     /// <summary>"Previous" restarts the song instead of going back when it has been playing longer than this.</summary>
     private static readonly TimeSpan RestartThreshold = TimeSpan.FromSeconds(3);
 
+    /// <summary>What stands in for the artist of a dropped file, whose tags are not read.</summary>
+    public const string DroppedFileArtist = "Local file";
+
     private readonly IAudioPlayer _player;
     private readonly AppSettings _settings;
     private readonly IReplayGainSource? _replayGain;
@@ -165,7 +168,7 @@ public partial class PlayerViewModel : ViewModelBase
     public Task OpenAsync(string path)
     {
         var track = new TrackSummary(
-            Guid.NewGuid(), Path.GetFileNameWithoutExtension(path), "Local file", null, null,
+            Guid.NewGuid(), Path.GetFileNameWithoutExtension(path), DroppedFileArtist, null, null,
             new Uri(Path.GetFullPath(path)).AbsoluteUri);
         return PlayTracksAsync([track], 0);
     }

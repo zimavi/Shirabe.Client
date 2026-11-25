@@ -13,5 +13,7 @@ native/**/*.dylib
 /docs/STATUS.md
 .idea/
 publish/
+# API keys for local builds, see build/Secrets.local.props.example
+build/*.local.props
 Releases/
 Shirabe.Client.sln.DotSettings.user

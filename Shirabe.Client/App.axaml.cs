@@ -211,8 +211,13 @@ public partial class App : Application
         }
 
         var playerViewModel = new PlayerViewModel(player, appSettings, new ReplayGainReader());
+        // A build made without a Last.fm API key has no client, and so no account to sign in to.
+        var lastFm = LastFmClient.FromBuild();
+        var account = lastFm is null ? null : CreateLastFmAccount(lastFm);
+
         // Made now, not when first shown: it moves the player to the saved output device.
-        var settings = new SettingsViewModel(appSettings, themes, player as IAudioOutput, playerViewModel);
+        var settings = new SettingsViewModel(appSettings, themes, player as IAudioOutput, playerViewModel,
+            new LastFmViewModel(account, OpenInBrowser, appSettings));
 
         var libraryPath = GetLibraryPath();
 
@@ -224,16 +229,44 @@ public partial class App : Application
             var songs = new SongsViewModel(library, library, new FolderPicker(GetMainWindow), playerViewModel,
                 track => new PropertiesViewModel(library, library, track, new FilePicker(GetMainWindow), library));
             // Studio writes through the player-aware store: the song that is playing is open, and a file that is open cannot be written to.
-            return new MainViewModel(playerViewModel, songs, null, settings: settings,
+            var shell = new MainViewModel(playerViewModel, songs, null, settings: settings,
                 studioFactory: () => studio(library, new PlayerAwareDocumentStore(library, playerViewModel)),
                 lyricsSource: new LocalLyricsSource());
+            if (account is not null)
+                StartScrobbling(new Scrobbler(playerViewModel, appSettings, account, lastFm!, library), shell);
+            return shell;
         }
         catch (Exception ex)
         {
-            return new MainViewModel(playerViewModel, null, null,
+            var shell = new MainViewModel(playerViewModel, null, null,
                 Loc.Get("Startup_LibraryOpen", libraryPath, ex.Message), settings,
                 () => studio(null, null));
+            if (account is not null)
+                StartScrobbling(new Scrobbler(playerViewModel, appSettings, account, lastFm!), shell);
+            return shell;
         }
+    }
+
+    private static LastFmAccount CreateLastFmAccount(LastFmClient client)
+    {
+        var account = new LastFmAccount(client, ISecretStore.ForThisPlatform());
+        Dispatcher.UIThread.Post(() => _ = account.LoadAsync()); // the saved session, without holding up the start
+        return account;
+    }
+
+    private static void StartScrobbling(Scrobbler scrobbler, MainViewModel shell)
+    {
+        scrobbler.Reported += (_, report) => _ = shell.ScrobbleStatus.ShowAsync(report);
+        DispatcherTimer.Run(() =>
+        {
+            _ = scrobbler.TickAsync();
+            return true; // for as long as the app runs
+        }, TimeSpan.FromSeconds(1));
+    }
+
+    private static void OpenInBrowser(string address)
+    {
+        if (GetMainWindow() is { } window) LinkLauncher.Open(window, address);
     }
 
     // SHIRABE_LIBRARY_DB points the app at another database file (testing, portable setups); settings and themes follow it.

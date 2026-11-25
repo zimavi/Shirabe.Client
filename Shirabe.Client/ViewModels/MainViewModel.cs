@@ -69,6 +69,9 @@ public partial class MainViewModel : ViewModelBase
     /// <summary>Messages over the bottom right of the shell (a new version is available...).</summary>
     public NotificationCenter Notifications { get; } = new();
 
+    /// <summary>The short message in the title bar about the last scrobble.</summary>
+    public ScrobbleStatusViewModel ScrobbleStatus { get; } = new();
+
     public string? StartupError { get; }
 
     [ObservableProperty]

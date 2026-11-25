@@ -10,7 +10,21 @@
         <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
 
-    <ItemGroup>
+  <!-- Shirabe's own Last.fm API key and shared secret, from environment variables of these names (CI) or from the
+       git-ignored file below. A build without them works, only without Last.fm. -->
+  <Import Project="../build/Secrets.local.props" Condition="Exists('../build/Secrets.local.props')"/>
+  <ItemGroup Condition="'$(LastFmApiKey)' != '' And '$(LastFmApiSecret)' != ''">
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>LastFmApiKey</_Parameter1>
+      <_Parameter2>$(LastFmApiKey.Trim())</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>LastFmApiSecret</_Parameter1>
+      <_Parameter2>$(LastFmApiSecret.Trim())</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
         <PackageReference Include="Avalonia"/>
         <PackageReference Include="Avalonia.Themes.Fluent"/>
         <PackageReference Include="Avalonia.Fonts.Inter"/>
@@ -64,6 +78,9 @@
       </Compile>
       <Compile Update="Views\SpeedMenuView.axaml.cs">
         <DependentUpon>SpeedMenuView.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\LastFmView.axaml.cs">
+        <DependentUpon>LastFmView.axaml</DependentUpon>
       </Compile>
     </ItemGroup>
 </Project>

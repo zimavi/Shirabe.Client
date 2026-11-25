@@ -54,7 +54,15 @@ jobs:
           dotnet tool install -g vpk --version "$velopack"
 
       - name: Publish (self-contained)
+        env: # the build puts them into the app, see Shirabe.Client.csproj
+          LastFmApiKey: ${{ secrets.LASTFM_API_KEY }}
+          LastFmApiSecret: ${{ secrets.LASTFM_API_SECRET }}
         run: |
+          # A release must not silently ship without Last.fm; a manual run (a fork, say) may.
+          if [[ "$GITHUB_REF_TYPE" == tag && ( -z "$LastFmApiKey" || -z "$LastFmApiSecret" ) ]]; then
+            echo "::error::The LASTFM_API_KEY or LASTFM_API_SECRET repository secret is missing"
+            exit 1
+          fi
           dotnet publish Shirabe.Client.Desktop/Shirabe.Client.Desktop.csproj -c Release -r ${{ matrix.rid }} \
             --self-contained -p:SourceRevisionId="${GITHUB_SHA::9}" -o publish
           # The build only warns when a BASS download fails; do not ship an app without its audio libraries.

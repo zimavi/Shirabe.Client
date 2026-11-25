@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:views="using:Shirabe.Client.Views"
+             xmlns:loc="using:Shirabe.Client.Localization"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="250"
+             x:Class="Shirabe.Client.Views.LastFmView"
+             x:DataType="vm:LastFmViewModel">
+    <StackPanel Spacing="6">
+        <TextBlock Classes="section" Text="{loc:T LastFm_Section}" />
+        <views:SettingRow Title="{loc:T LastFm_Account}" Description="{Binding Status}">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Content="{loc:T LastFm_ViewProfile}" Tag="{Binding ProfileUrl}"
+                        IsVisible="{Binding IsSignedIn}" />
+                <Button Content="{loc:T LastFm_Disconnect}" Command="{Binding DisconnectCommand}"
+                        IsVisible="{Binding IsSignedIn}" />
+                <Button Content="{loc:T LastFm_Connect}" Command="{Binding ConnectCommand}"
+                        IsVisible="{Binding ShowConnect}" />
+                <Button Content="{loc:T LastFm_Cancel}" Command="{Binding ConnectCancelCommand}"
+                        IsVisible="{Binding IsWaiting}" />
+            </StackPanel>
+        </views:SettingRow>
+        <views:SettingRow Title="{loc:T LastFm_Scrobble}" Description="{loc:T LastFm_ScrobbleDescription}"
+                          IsEnabled="{Binding IsSignedIn}">
+            <ToggleSwitch IsChecked="{Binding Settings.ScrobblingEnabled}"
+                          AutomationProperties.Name="{loc:T LastFm_Scrobble}" />
+        </views:SettingRow>
+        <TextBlock Text="{loc:T LastFm_NoStorage}" TextWrapping="Wrap" IsVisible="{Binding ShowStorageWarning}"
+                   FontSize="12" Margin="16,2" Foreground="{DynamicResource TextSecondaryBrush}" />
+        <TextBlock Text="{Binding Error}" TextWrapping="Wrap" FontSize="12" Margin="16,2"
+                   IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        <views:SettingRow Title="{loc:T LastFm_Credit}" Description="{loc:T LastFm_CreditDescription}">
+            <Button Content="{loc:T LastFm_Open}" Tag="{Binding WebsiteUrl}" />
+        </views:SettingRow>
+    </StackPanel>
+</UserControl>
