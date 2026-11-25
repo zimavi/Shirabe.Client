@@ -2,6 +2,7 @@ using Shirabe.Client.ViewModels;
 using Shirabe.Core.Library;
 using Shirabe.Core.Media;
 using Shirabe.Core.Playback;
+
 using Xunit;
 
 namespace Shirabe.Tests;
@@ -19,13 +20,15 @@ public class PlayerViewModelTests
     }
 
     private static TrackSummary Song(string title) =>
-        new(Guid.NewGuid(), title, "Artist", "Album", TimeSpan.FromSeconds(100), new Uri(Path.Combine(Path.GetTempPath(), title + ".mp3")).AbsoluteUri);
+        new(Guid.NewGuid(), title, "Artist", "Album", TimeSpan.FromSeconds(100),
+            new Uri(Path.Combine(Path.GetTempPath(), title + ".mp3")).AbsoluteUri);
 
     [Fact]
     public async Task TrackLoaded_is_raised_for_every_song_loaded_with_the_new_songs_details_already_set()
     {
         var seen = new List<(string Title, double Position, double Duration)>();
-        _viewModel.TrackLoaded += (_, _) => seen.Add((_viewModel.Title, _viewModel.PositionSeconds, _viewModel.DurationSeconds));
+        _viewModel.TrackLoaded += (_, _) =>
+            seen.Add((_viewModel.Title, _viewModel.PositionSeconds, _viewModel.DurationSeconds));
         var a = Song("A");
         _player.Duration = TimeSpan.FromSeconds(100);
 
@@ -64,7 +67,8 @@ public class PlayerViewModelTests
         Assert.True(viewModel.IsPlaying);
         var isPlayingChanges = 0;
         var loaded = 0;
-        viewModel.PropertyChanged += (_, e) => isPlayingChanges += e.PropertyName == nameof(PlayerViewModel.IsPlaying) ? 1 : 0;
+        viewModel.PropertyChanged += (_, e) =>
+            isPlayingChanges += e.PropertyName == nameof(PlayerViewModel.IsPlaying) ? 1 : 0;
         viewModel.TrackLoaded += (_, _) => loaded++;
 
         await viewModel.PlayAsync(Song("B"));
@@ -72,6 +76,42 @@ public class PlayerViewModelTests
 
         Assert.Equal(0, isPlayingChanges);
         Assert.Equal(1, loaded);
+    }
+
+    [Fact]
+    public async Task SeekBy_moves_from_the_engine_position_and_stays_inside_the_song()
+    {
+        await _viewModel.PlayAsync(Song("A")); // the fake reports 120 s
+        _player.Position = TimeSpan.FromSeconds(10);
+
+        _viewModel.SeekBy(5);
+        _player.Position = TimeSpan.FromSeconds(2);
+        _viewModel.SeekBy(-5);
+        _player.Position = TimeSpan.FromSeconds(118);
+        _viewModel.SeekBy(5);
+
+        Assert.Equal([TimeSpan.FromSeconds(15), TimeSpan.Zero, TimeSpan.FromSeconds(120)], _player.Seeks);
+    }
+
+    [Fact]
+    public void SeekBy_does_nothing_without_a_song()
+    {
+        _viewModel.SeekBy(5);
+
+        Assert.Empty(_player.Seeks);
+    }
+
+    [Fact]
+    public void ChangeVolume_stays_between_silent_and_full()
+    {
+        _viewModel.ChangeVolume(-0.4);
+        Assert.Equal(0.6, _viewModel.Volume, 3);
+
+        _viewModel.ChangeVolume(-1);
+        Assert.Equal(0, _viewModel.Volume);
+
+        _viewModel.ChangeVolume(2);
+        Assert.Equal(1, _viewModel.Volume);
     }
 
     private sealed class QueueContext : SynchronizationContext
@@ -200,7 +240,8 @@ public class PlayerViewModelTests
     public async Task PlayAsync_opens_the_track_from_its_media_address_and_shows_its_artist()
     {
         var path = Path.Combine(Path.GetTempPath(), "Song One.flac");
-        var track = new TrackSummary(Guid.NewGuid(), "Song One", "Artist A", "Album X", null, new Uri(path).AbsoluteUri);
+        var track = new TrackSummary(Guid.NewGuid(), "Song One", "Artist A", "Album X", null,
+            new Uri(path).AbsoluteUri);
 
         await _viewModel.PlayAsync(track);
 
@@ -212,7 +253,8 @@ public class PlayerViewModelTests
     [Fact]
     public async Task A_track_without_an_artist_is_shown_as_unknown()
     {
-        var track = new TrackSummary(Guid.NewGuid(), "Song", null, null, null, new Uri(Path.Combine(Path.GetTempPath(), "s.flac")).AbsoluteUri);
+        var track = new TrackSummary(Guid.NewGuid(), "Song", null, null, null,
+            new Uri(Path.Combine(Path.GetTempPath(), "s.flac")).AbsoluteUri);
 
         await _viewModel.PlayAsync(track);
 

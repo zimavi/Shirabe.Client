@@ -45,6 +45,8 @@ public partial class App : Application
             if (e.PropertyName == nameof(AppSettings.Language)) Loc.Instance.SetLanguage(settings.Language);
         };
 
+        ShortcutHints.Instance.Attach(settings);
+
         // shortcut: the theme problems are texts made once here, so they keep the startup language until a restart
         var themes = ThemeCatalog.Load(Path.Combine(dataFolder, "themes"));
 

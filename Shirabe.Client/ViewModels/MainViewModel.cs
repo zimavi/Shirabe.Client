@@ -1,3 +1,5 @@
+using System.Windows.Input;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -78,6 +80,52 @@ public partial class MainViewModel : ViewModelBase
     public bool HasStudio => _studioFactory is not null;
 
     public bool HasLibrary => Songs is not null;
+
+    private const double SeekSeconds = 5;
+    private const double VolumeStep = 0.05;
+
+    /// <summary>Does what a keyboard shortcut stands for. False without a player: there is no shell to act on.</summary>
+    public bool Run(ShortcutAction action)
+    {
+        if (Player is not { }) return false;
+
+        switch (action)
+        {
+            case ShortcutAction.SeekBack: Player.SeekBy(-SeekSeconds); break;
+            case ShortcutAction.SeekForward: Player.SeekBy(SeekSeconds); break;
+            case ShortcutAction.VolumeUp: Player.ChangeVolume(VolumeStep); break;
+            case ShortcutAction.VolumeDown: Player.ChangeVolume(-VolumeStep); break;
+            default:
+                ICommand command = action switch
+                {
+                    ShortcutAction.PlayPause => Player.TogglePlayPauseCommand,
+                    ShortcutAction.Previous => Player.PreviousCommand,
+                    ShortcutAction.Next => Player.NextCommand,
+                    ShortcutAction.Mute => Player.ToggleMuteCommand,
+                    ShortcutAction.Shuffle => Player.ToggleShuffleCommand,
+                    ShortcutAction.Repeat => Player.CycleRepeatCommand,
+                    ShortcutAction.Lyrics => Player.ToggleLyricsCommand,
+                    ShortcutAction.Queue => Player.ToggleQueueCommand,
+                    ShortcutAction.Home => ShowHomeCommand,
+                    ShortcutAction.Songs => ShowSongsCommand,
+                    ShortcutAction.Studio => ShowStudioCommand,
+                    ShortcutAction.Settings => ShowSettingsCommand,
+                    _ => throw new ArgumentOutOfRangeException(nameof(action)),
+                };
+                if (command.CanExecute(null)) command.Execute(null); // Execute alone does not ask
+                break;
+        }
+
+        return true;
+    }
+
+    /// <summary>Closes the queue or lyrics panel; false when neither was open.</summary>
+    public bool ClosePanel()
+    {
+        if (Player is null || !(Player.IsQueueOpen || Player.IsLyricsOpen)) return false;
+        Player.IsQueueOpen = Player.IsLyricsOpen = false;
+        return true;
+    }
 
     [RelayCommand]
     private void ShowHome() => CurrentPage = _home;

@@ -13,7 +13,7 @@ internal sealed class ArtworkCache(string directory)
 
     public string Directory { get; } = directory;
 
-    public string PathOf(string fileName) => System.IO.Path.Combine(Directory, fileName);
+    public string PathOf(string fileName) => Path.Combine(Directory, fileName);
 
     /// <returns>The file name of what was stored under <paramref name="name"/>, or null if nothing was.</returns>
     public string? Find(string name) => Extensions.Select(e => name + e).FirstOrDefault(f => File.Exists(PathOf(f)));
@@ -31,7 +31,8 @@ internal sealed class ArtworkCache(string directory)
         if (File.Exists(path)) return fileName;
 
         System.IO.Directory.CreateDirectory(Directory);
-        var temporary = path + "." + Guid.NewGuid().ToString("N") + ".tmp"; // never leave a half-written image under its real name
+        var temporary =
+            path + "." + Guid.NewGuid().ToString("N") + ".tmp"; // never leave a half-written image under its real name
         File.WriteAllBytes(temporary, image);
         File.Move(temporary, path, overwrite: true);
         return fileName;
@@ -44,7 +45,9 @@ internal sealed class ArtworkCache(string directory)
         [0x89, 0x50, 0x4E, 0x47, ..] => ".png",
         [(byte)'G', (byte)'I', (byte)'F', (byte)'8', ..] => ".gif",
         [(byte)'B', (byte)'M', ..] => ".bmp",
-        [(byte)'R', (byte)'I', (byte)'F', (byte)'F', _, _, _, _, (byte)'W', (byte)'E', (byte)'B', (byte)'P', ..] => ".webp",
+        [
+            (byte)'R', (byte)'I', (byte)'F', (byte)'F', _, _, _, _, (byte)'W', (byte)'E', (byte)'B', (byte)'P', ..
+        ] => ".webp",
         _ => null,
     };
 }

@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -72,6 +73,14 @@ public partial class AppSettings : ObservableObject
     /// <summary>Language tag such as "uk" or "pt-BR"; empty follows the system's language.</summary>
     [ObservableProperty]
     public partial string Language { get; set; } = "";
+
+    /// <summary>The keys the user changed, by action name; read and write them through <see cref="Services.Shortcuts"/>.</summary>
+    [AllowNull] // a hand-edited file can hold "Shortcuts": null
+    public Dictionary<string, string> Shortcuts
+    {
+        get;
+        set => SetProperty(ref field, value ?? []);
+    } = [];
 
     /// <summary>Name of the chosen <see cref="Theme"/>.</summary>
     [ObservableProperty]

@@ -247,6 +247,15 @@ public partial class PlayerViewModel : ViewModelBase
     /// <summary>Copies the player's position to <see cref="PositionSeconds"/> without seeking.</summary>
     public void RefreshPosition() => SetPosition(_player.Position.TotalSeconds);
 
+    /// <summary>Moves the position by <paramref name="seconds"/> (negative goes back), staying inside the song.</summary>
+    public void SeekBy(double seconds)
+    {
+        if (!HasMedia || DurationSeconds <= 0) return;
+        PositionSeconds = Math.Clamp(_player.Position.TotalSeconds + seconds, 0, DurationSeconds);
+    }
+
+    public void ChangeVolume(double delta) => Volume = Math.Clamp(Volume + delta, 0, 1);
+
     [RelayCommand(CanExecute = nameof(HasMedia))]
     private void TogglePlayPause()
     {

@@ -16,6 +16,7 @@ public partial class SettingsViewModel : ViewModelBase
             new GeneralSettingsViewModel(settings),
             new AppearanceSettingsViewModel(settings, themes),
             new LyricsSettingsViewModel(settings),
+            new ShortcutsSettingsViewModel(settings),
             new ConnectionsSettingsViewModel(settings),
             new AboutViewModel(),
         ];

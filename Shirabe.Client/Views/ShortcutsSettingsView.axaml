@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:views="using:Shirabe.Client.Views"
+             xmlns:loc="using:Shirabe.Client.Localization"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="600"
+             x:Class="Shirabe.Client.Views.ShortcutsSettingsView"
+             x:DataType="vm:ShortcutsSettingsViewModel">
+    <StackPanel Spacing="12">
+        <TextBlock Text="{loc:T Shortcuts_FixedKeys}" TextWrapping="Wrap" FontSize="12"
+                   Foreground="{DynamicResource TextSecondaryBrush}" />
+
+        <ItemsControl ItemsSource="{Binding Rows}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Spacing="6" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:ShortcutRowViewModel">
+                    <views:SettingRow Title="{Binding Name}" Description="{Binding Message}">
+                        <Button Content="{Binding KeyText}" Command="{Binding StartCaptureCommand}" MinWidth="160"
+                                HorizontalContentAlignment="Center"
+                                AutomationProperties.Name="{Binding Name}" />
+                    </views:SettingRow>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Button Content="{loc:T Shortcuts_ResetAll}" Command="{Binding ResetAllCommand}" />
+    </StackPanel>
+</UserControl>
