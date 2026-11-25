@@ -28,6 +28,8 @@ internal static class TagReader
     static TagReader()
     {
         ATL.Settings.OutputStacktracesToConsole = false;
+        // Otherwise ATL reports the file name as the title of a file without one, and saves it into the file on a write.
+        ATL.Settings.UseFileNameWhenNoTitle = false;
 #if DEBUG
         // ATL does not throw for most of what goes wrong (a corrupt tag, an unsupported frame); it only logs. Debug builds show that log.
         var log = new ATL.Logging.Log();
