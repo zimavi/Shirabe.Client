@@ -2,6 +2,7 @@ name: Release
 
 # Push a tag v<version> (it must equal version.txt) to build every package and publish a GitHub Release.
 # "Run workflow" by hand builds everything and keeps the files as workflow artifacts, but publishes nothing.
+# The CI tests run beside the build; nothing is published unless they pass on every platform.
 on:
   push:
     tags: [ "v*" ]
@@ -26,6 +27,9 @@ jobs:
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
+  test:
+    uses: ./.github/workflows/ci.yml
+
   build:
     needs: version
     strategy:
@@ -35,6 +39,7 @@ jobs:
           - { os: ubuntu-latest, rid: linux-x64, bass: libbass.so, bassfx: libbass_fx.so }
           - { os: macos-latest, rid: osx-arm64, bass: libbass.dylib, bassfx: libbass_fx.dylib }
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 20 # a few minutes is normal; without a limit a hung step holds the runner for six hours
     defaults:
       run:
         shell: bash
@@ -148,9 +153,10 @@ jobs:
             !dist/assets.*.json
             !dist/RELEASES*
           if-no-files-found: error
+          compression-level: 0 # installers and packages are compressed already
 
   release:
-    needs: [ version, build ]
+    needs: [ version, test, build ]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
