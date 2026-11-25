@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+    <!-- Written by make_art.py; change the art there. -->
+    <defs>
+        <linearGradient id="face" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1024" y2="1024">
+            <stop offset="0" stop-color="#AA0B23"/>
+            <stop offset="1" stop-color="#FE5777"/>
+        </linearGradient>
+        <linearGradient id="ring" gradientUnits="userSpaceOnUse" x1="102" y1="102" x2="922" y2="922">
+            <stop offset="0" stop-color="#FF2D64"/>
+            <stop offset="1" stop-color="#FF96CD"/>
+        </linearGradient>
+    </defs>
+    <circle cx="512" cy="512" r="512" fill="url(#face)"/>
+    <circle cx="512" cy="512" r="403" fill="none" stroke="url(#ring)" stroke-width="16"/>
+    <g fill="#FEFBFF" transform="translate(224 224) scale(0.5)">
+        <path d="M 288 94 C 308 93 325 96 340 103 C 405 130 470 168 517 205 C 548 228 565 248 565 280 C 565 322 530 359 485 359 C 462 359 448 354 432 340 C 380 295 320 240 260 192 C 238 174 228 160 228 140 C 228 114 254 94 288 94 Z"/>
+        <path d="M 142 368 C 160 368 175 370 195 376 C 255 393 330 427 380 456 C 415 478 434 505 434 540 C 434 585 398 622 355 622 C 335 622 320 618 302 605 C 245 560 185 520 120 482 C 95 466 80 445 80 420 C 80 390 108 368 142 368 Z"/>
+        <path d="M 1008 330 C 1045 330 1072 355 1072 392 C 1072 415 1062 440 1050 465 C 1010 545 955 620 880 698 C 830 750 770 805 700 855 C 610 920 500 972 385 1025 C 345 1043 312 1057 278 1057 C 232 1057 200 1015 200 968 C 200 932 222 910 258 896 C 280 887 300 881 320 875 C 420 840 500 805 575 755 C 660 700 720 645 770 603 C 830 543 890 470 932 398 C 952 360 970 330 1008 330 Z"/>
+    </g>
+</svg>

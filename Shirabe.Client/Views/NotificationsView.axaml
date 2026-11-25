@@ -23,8 +23,13 @@
                             <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap" />
                             <TextBlock Text="{Binding Message}" FontSize="13" TextWrapping="Wrap"
                                        Foreground="{DynamicResource TextSecondaryBrush}" />
-                            <Button Content="{Binding LinkLabel}" Tag="{Binding Link}" IsVisible="{Binding HasLink}"
-                                    HorizontalAlignment="Left" Margin="0,8,0,0" />
+                            <WrapPanel>
+                                <Button Classes="accent" Content="{Binding ActionLabel}" Command="{Binding Action}"
+                                        IsVisible="{Binding HasAction}" Margin="0,8,8,0" />
+                                <Button Content="{Binding LinkLabel}" Tag="{Binding Link}"
+                                        IsVisible="{Binding HasLink}"
+                                        Margin="0,8,0,0" />
+                            </WrapPanel>
                         </StackPanel>
                         <Button Grid.Column="1" Classes="icon" VerticalAlignment="Top"
                                 Command="{Binding DismissCommand}"

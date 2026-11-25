@@ -32,5 +32,13 @@ contents:
     type: symlink
   - src: packaging/linux/shirabe.desktop
     dst: /usr/share/applications/shirabe.desktop
-  - src: Shirabe.Client/Assets/Icon.png
-    dst: /usr/share/pixmaps/shirabe.png
+  - src: packaging/linux/icons/48.png
+    dst: /usr/share/icons/hicolor/48x48/apps/shirabe.png
+  - src: packaging/linux/icons/128.png
+    dst: /usr/share/icons/hicolor/128x128/apps/shirabe.png
+  - src: packaging/linux/icons/256.png
+    dst: /usr/share/icons/hicolor/256x256/apps/shirabe.png
+  - src: packaging/linux/icons/512.png
+    dst: /usr/share/icons/hicolor/512x512/apps/shirabe.png
+  - src: packaging/art/shirabe.svg
+    dst: /usr/share/icons/hicolor/scalable/apps/shirabe.svg

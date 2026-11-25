@@ -74,9 +74,22 @@ jobs:
       - name: Pack (Windows)
         if: runner.os == 'Windows'
         run: |
+          bash packaging/windows/license-rtf.sh "$RUNNER_TEMP/license.rtf"
+          # The splash is what Setup.exe shows; the --msi* and --inst* options are the pages of the .msi.
           vpk pack --packId Shirabe --packVersion "$VERSION" --packTitle Shirabe --packAuthors zimavi \
             --packDir publish --mainExe Shirabe.exe --runtime win-x64 --icon Shirabe.Client/Assets/app.ico \
-            --msi --noPortable --outputDir dist
+            --msi --noPortable --outputDir dist \
+            --splashImage packaging/windows/splash.png --splashProgressColor "#E8456B" \
+            --msiTopBanner packaging/windows/msi-banner.bmp --msiDialogBackground packaging/windows/msi-dialog.bmp \
+            --instWelcome packaging/windows/welcome.txt --instLicense "$RUNNER_TEMP/license.rtf" \
+            --instConclusion packaging/windows/conclusion.txt
+
+          # vpk leaves the platform out of the Windows package name only (Linux gets -linux-full): add it, in the feed too.
+          old="Shirabe-$VERSION-full.nupkg"
+          new="Shirabe-$VERSION-win-full.nupkg"
+          mv "dist/$old" "dist/$new"
+          sed -i "s/\"$old\"/\"$new\"/" dist/releases.win.json
+          grep -qF "\"$new\"" dist/releases.win.json || { echo "::error::releases.win.json does not name $new"; exit 1; }
 
       # .AppImage and its feed files with vpk; .tar.gz, .deb and .rpm from the same publish folder.
       - name: Pack (Linux)
@@ -97,34 +110,41 @@ jobs:
           # tree entries keep the file modes of the publish folder: the launcher must stay executable
           dpkg-deb -c "dist/Shirabe-$VERSION-linux-x64.deb" | grep -E '^-rwxr-xr-x .* \./opt/shirabe/Shirabe$'
 
-      # vpk makes the .app (no auto-update manifest in it: the app falls back to the notify-only GitHub check); the .dmg is built here.
+      # The .app (inside vpk's portable zip) and its feed files with vpk; the .dmg is built here. No .pkg installer.
       - name: Pack (macOS)
         if: runner.os == 'macOS'
         run: |
-          mkdir icon.iconset
-          for s in 16 32 128 256; do
-            sips -z $s $s Shirabe.Client/Assets/Icon.png --out icon.iconset/icon_${s}x${s}.png
-            sips -z $((s*2)) $((s*2)) Shirabe.Client/Assets/Icon.png --out icon.iconset/icon_${s}x${s}@2x.png
-          done
-          iconutil -c icns icon.iconset -o Shirabe.icns
+          # "-" signs ad hoc (no Apple certificate): without a signature over the whole bundle, macOS calls a downloaded
+          # copy "damaged". vpk signs before it makes the zip and the update package, with the entitlements .NET needs.
+          vpk pack --packId Shirabe --packVersion "$VERSION" --packTitle Shirabe --packAuthors zimavi \
+            --packDir publish --mainExe Shirabe --runtime osx-arm64 --icon packaging/macos/Shirabe.icns --noInst --outputDir dist \
+            --signAppIdentity=-
+          # vpk already puts the platform into this name, nothing to rename.
+          test -f "dist/Shirabe-$VERSION-osx-full.nupkg" || { echo "::error::The macOS update package is missing"; exit 1; }
 
-          vpk bundle --packId Shirabe --packVersion "$VERSION" --packTitle Shirabe --packAuthors zimavi \
-            --packDir publish --mainExe Shirabe --runtime osx-arm64 --icon Shirabe.icns --outputDir bundle
+          mkdir dmg
+          # ditto, not unzip: it keeps the symlinks and file modes inside the .app
+          ditto -x -k dist/Shirabe-osx-Portable.zip dmg
+          rm dist/Shirabe-osx-Portable.zip
+          test -x dmg/Shirabe.app/Contents/MacOS/Shirabe
 
-          mkdir -p dmg dist
-          cp -R bundle/Shirabe.app dmg/
-          ln -s /Applications dmg/Applications
-          hdiutil create -volname Shirabe -srcfolder dmg -ov -format UDZO dist/Shirabe-osx-arm64.dmg
+          python3 -m venv "$RUNNER_TEMP/dmgbuild"
+          "$RUNNER_TEMP/dmgbuild/bin/pip" install --quiet dmgbuild==1.6.7 ds_store==1.3.3 mac_alias==2.2.3
+          "$RUNNER_TEMP/dmgbuild/bin/dmgbuild" -s packaging/macos/dmg.py -D app=dmg/Shirabe.app \
+            Shirabe dist/Shirabe-osx-arm64.dmg
 
-      # vpk also writes Velopack's update feed (.nupkg, releases.*.json, RELEASES*); nothing reads it, the app only
-      # notifies about new releases through GitHub's API, so it stays out of the release.
+          # The signature, checked on the app as it comes out of the finished image.
+          hdiutil attach -nobrowse -readonly -mountpoint "$RUNNER_TEMP/mnt" dist/Shirabe-osx-arm64.dmg
+          codesign --verify --deep --strict --verbose=2 "$RUNNER_TEMP/mnt/Shirabe.app"
+          hdiutil detach "$RUNNER_TEMP/mnt"
+
+      # Velopack's update feed is .nupkg and releases.*.json. assets.*.json (for vpk upload) and RELEASES* (legacy,
+      # still naming the Windows package without its platform) stay out.
       - uses: actions/upload-artifact@v7
         with:
           name: release-${{ matrix.rid }}
           path: |
             dist/*
-            !dist/*.nupkg
-            !dist/releases.*.json
             !dist/assets.*.json
             !dist/RELEASES*
           if-no-files-found: error
