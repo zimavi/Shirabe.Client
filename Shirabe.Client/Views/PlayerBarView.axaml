@@ -15,13 +15,20 @@
             BorderThickness="0,1,0,0"
             Height="88"
             Padding="16,0">
-        <Grid ColumnDefinitions="*,2*,*" VerticalAlignment="Center">
+        <Grid VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+                <!-- Wide enough for the buttons and the volume slider in the narrowest window -->
+                <ColumnDefinition Width="*" MinWidth="272" />
+            </Grid.ColumnDefinitions>
+
             <!-- Now playing -->
-            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+            <Grid Grid.Column="0" ColumnDefinitions="Auto,*" ColumnSpacing="12" VerticalAlignment="Center">
                 <views:CoverView Width="56" Height="56" ArtworkPath="{Binding ArtworkPath}"
                                  ToolTip.Tip="{Binding ArtworkPath, Converter={x:Static conv:CoverTooltipConverter.Instance}}"
                                  ToolTip.Placement="Top" ToolTip.ShowDelay="300" />
-                <StackPanel VerticalAlignment="Center" Spacing="2">
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
                     <TextBlock Text="{Binding Title}" FontWeight="SemiBold"
                                TextTrimming="CharacterEllipsis" MaxWidth="240" />
                     <!-- The artist; replaced by the reason when the last attempt to play failed -->
@@ -33,7 +40,7 @@
                                ToolTip.Tip="{Binding ErrorMessage}"
                                IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
                 </StackPanel>
-            </StackPanel>
+            </Grid>
 
             <!-- Transport and progress -->
             <Grid Grid.Column="1" RowDefinitions="40,Auto" RowSpacing="2" MaxWidth="560" Margin="24,0"
@@ -126,6 +133,21 @@
                         Value="{Binding Volume, Mode=TwoWay}" AutomationProperties.Name="{loc:T Player_Volume}"
                         ToolTip.Tip="{Binding VolumeText}" ToolTip.ShowDelay="0"
                         PointerWheelChanged="OnVolumeWheel" />
+                <Button Classes="icon" Classes.active="{Binding IsSpeedChanged}"
+                        IsVisible="{Binding Settings.PlaybackSpeedControl}"
+                        ToolTip.Tip="{loc:T Audio_Speed}" AutomationProperties.Name="{loc:T Audio_Speed}">
+                    <Panel>
+                        <PathIcon Data="{DynamicResource Icon.Speed}" IsVisible="{Binding !IsSpeedChanged}" />
+                        <!-- Away from 1x the number takes the icon's place -->
+                        <TextBlock Text="{Binding SpeedText}" IsVisible="{Binding IsSpeedChanged}" FontSize="11"
+                                   FontWeight="SemiBold" />
+                    </Panel>
+                    <Button.Flyout>
+                        <Flyout Placement="TopEdgeAlignedRight">
+                            <views:SpeedMenuView />
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
             </StackPanel>
         </Grid>
     </Border>

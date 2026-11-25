@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:loc="using:Shirabe.Client.Localization"
+             mc:Ignorable="d" d:DesignWidth="260"
+             x:Class="Shirabe.Client.Views.SpeedMenuView"
+             x:DataType="vm:PlayerViewModel">
+    <!-- The menu of the speed button in the player bar -->
+    <StackPanel Width="260" Spacing="14">
+        <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+            <TextBlock Text="{loc:T Audio_Speed}" FontWeight="SemiBold" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1" Text="{Binding SpeedText}" Margin="8,0,0,0" VerticalAlignment="Center"
+                       Foreground="{DynamicResource TextSecondaryBrush}" />
+            <Button Grid.Column="3" Classes="icon" Click="OnSettingsClick"
+                    ToolTip.Tip="{loc:T Audio_MoreSettings}" AutomationProperties.Name="{loc:T Audio_MoreSettings}">
+                <PathIcon Data="{DynamicResource Icon.Settings}" />
+            </Button>
+        </Grid>
+
+        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="4">
+            <Button Classes="segment" Classes.selected="{Binding IsSlowed}" Content="{loc:T Audio_Slowed}"
+                    Command="{Binding UseSlowedSpeedCommand}" />
+            <Button Grid.Column="1" Classes="segment" Classes.selected="{Binding IsNormalSpeed}"
+                    Content="{loc:T Audio_Normal}" Command="{Binding UseNormalSpeedCommand}" />
+            <Button Grid.Column="2" Classes="segment" Classes.selected="{Binding IsSpedUp}"
+                    Content="{loc:T Audio_SpedUp}" Command="{Binding UseSpedUpSpeedCommand}" />
+        </Grid>
+
+        <Slider Theme="{StaticResource ShirabeSlider}" Minimum="0.5" Maximum="2" SmallChange="0.05" LargeChange="0.25"
+                TickFrequency="0.05" IsSnapToTickEnabled="True" Value="{Binding Settings.PlaybackSpeed, Mode=TwoWay}"
+                AutomationProperties.Name="{loc:T Audio_Speed}" />
+
+        <StackPanel Spacing="4" IsEnabled="{Binding SupportsEffects}">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="{loc:T Audio_KeepPitch}" VerticalAlignment="Center" />
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding Settings.KeepPitch}" MinWidth="0"
+                              AutomationProperties.Name="{loc:T Audio_KeepPitch}" />
+            </Grid>
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="{loc:T Audio_Reverb}" VerticalAlignment="Center" />
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding Settings.Reverb}" MinWidth="0"
+                              AutomationProperties.Name="{loc:T Audio_Reverb}" />
+            </Grid>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

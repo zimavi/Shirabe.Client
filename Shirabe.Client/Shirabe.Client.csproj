@@ -62,5 +62,8 @@
       <Compile Update="Views\ShortcutsSettingsView.axaml.cs">
         <DependentUpon>ShortcutsSettingsView.axaml</DependentUpon>
       </Compile>
+      <Compile Update="Views\SpeedMenuView.axaml.cs">
+        <DependentUpon>SpeedMenuView.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

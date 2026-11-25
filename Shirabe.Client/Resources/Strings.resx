@@ -140,10 +140,20 @@
         <comment>Audio bit rate in kilobits per second. {0} is a number.</comment></data>
     <data name="Audio_SectionPlayback" xml:space="preserve"><value>PLAYBACK</value>
         <comment>Small heading above the settings about speed, pitch and reverb. Keep it uppercase if the language has letter case.</comment></data>
+    <data name="Audio_Speed" xml:space="preserve"><value>Playback speed</value>
+        <comment>Tooltip and accessible name of the speed button in the player bar and of its slider, and the title of the menu it opens.</comment></data>
     <data name="Audio_SpeedControl" xml:space="preserve"><value>Playback speed control</value>
         <comment>Name of an on/off switch. Also its accessible name.</comment></data>
     <data name="Audio_SpeedControlDescription" xml:space="preserve"><value>Shows a speed button in the player bar for slowed or sped-up listening. Off: songs play at normal speed.</value>
         <comment>Explanation under the "Playback speed control" switch. "Off" means the switch is turned off.</comment></data>
+    <data name="Audio_Slowed" xml:space="preserve"><value>Slowed</value>
+        <comment>Button in the speed menu that plays songs slower (0.8x). Very short: three buttons share one narrow row.</comment></data>
+    <data name="Audio_Normal" xml:space="preserve"><value>Normal</value>
+        <comment>Button in the speed menu for normal speed (1x). Very short: three buttons share one narrow row.</comment></data>
+    <data name="Audio_SpedUp" xml:space="preserve"><value>Sped up</value>
+        <comment>Button in the speed menu that plays songs faster (1.25x). Very short: three buttons share one narrow row.</comment></data>
+    <data name="Audio_MoreSettings" xml:space="preserve"><value>Audio settings</value>
+        <comment>Tooltip and accessible name of the gear button in the speed menu; it opens the settings page about audio.</comment></data>
     <data name="Audio_KeepPitch" xml:space="preserve"><value>Keep pitch</value>
         <comment>Name of an on/off switch, in the settings and in the narrow speed menu. Also its accessible name. Short.</comment></data>
     <data name="Audio_KeepPitchDescription" xml:space="preserve"><value>Changes the speed without changing the pitch. Off: faster also sounds higher, slower sounds lower.</value>
