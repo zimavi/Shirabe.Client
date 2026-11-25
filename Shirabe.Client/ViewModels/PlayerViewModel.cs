@@ -1,7 +1,11 @@
+using System.ComponentModel;
+using System.Globalization;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Shirabe.Client.Localization;
+using Shirabe.Client.Services;
 using Shirabe.Core.Library;
 using Shirabe.Core.Media;
 using Shirabe.Core.Playback;
@@ -19,14 +23,25 @@ public partial class PlayerViewModel : ViewModelBase
     private static readonly TimeSpan RestartThreshold = TimeSpan.FromSeconds(3);
 
     private readonly IAudioPlayer _player;
+    private readonly AppSettings _settings;
+    private readonly IReplayGainSource? _replayGain;
     private readonly PlaybackQueue _queue = new();
     private bool _updatingPosition;
     private double _lastAudibleVolume = 1;
 
-    public PlayerViewModel(IAudioPlayer player)
+    /// <param name="settings">The sound settings to follow. Null (tests): the defaults.</param>
+    /// <param name="replayGain">Where normalisation gets its values. Null: songs play as they are.</param>
+    public PlayerViewModel(IAudioPlayer player, AppSettings? settings = null, IReplayGainSource? replayGain = null)
     {
         _player = player;
+        _settings = settings ?? new AppSettings();
+        _replayGain = replayGain;
         Volume = player.Volume;
+        player.KeepPitch = _settings.KeepPitch;
+        player.Reverb = _settings.Reverb;
+        ApplySpeed();
+        ApplyEqualizer();
+        _settings.PropertyChanged += OnSettingsChanged;
         _player.StateChanged += (_, _) => OnUiThread(() => IsPlaying = _player.State == PlaybackState.Playing);
         _player.Ended += (_, _) => OnUiThread(OnEnded);
         _queue.Changed += (_, _) => QueueItems = [.. _queue.Items];
@@ -256,6 +271,93 @@ public partial class PlayerViewModel : ViewModelBase
 
     public void ChangeVolume(double delta) => Volume = Math.Clamp(Volume + delta, 0, 1);
 
+    /// <summary>One notch of the mouse wheel over the volume. Rounding first keeps it on whole percents after a drag.</summary>
+    public void ScrollVolume(int direction)
+    {
+        var percent = Math.Round(Volume * 100) + Math.Sign(direction) * _settings.VolumeScrollStep;
+        Volume = Math.Clamp(percent, 0, 100) / 100;
+    }
+
+    private void OnSettingsChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
+        {
+            case nameof(AppSettings.PlaybackSpeed) or nameof(AppSettings.PlaybackSpeedControl):
+                ApplySpeed();
+                foreach (var property in (string[])
+                         [nameof(SpeedText), nameof(IsSpeedChanged), nameof(IsSlowed), nameof(IsNormalSpeed), nameof(IsSpedUp)])
+                    OnPropertyChanged(property);
+                break;
+            case nameof(AppSettings.KeepPitch): _player.KeepPitch = _settings.KeepPitch; break;
+            case nameof(AppSettings.Reverb): _player.Reverb = _settings.Reverb; break;
+            case nameof(AppSettings.EqualizerEnabled) or nameof(AppSettings.EqualizerGains): ApplyEqualizer(); break;
+            case nameof(AppSettings.ExponentialVolume): ApplyVolume(); break;
+            case nameof(AppSettings.Normalization): ReapplyGain(); break;
+        }
+    }
+
+    private const double SlowedSpeed = 0.8;
+    private const double SpedUpSpeed = 1.25;
+
+    /// <summary>The sound settings, for the speed menu to edit.</summary>
+    public AppSettings Settings => _settings;
+
+    /// <summary>False when the audio engine runs without its effects add-on.</summary>
+    public bool SupportsEffects => _player.SupportsEffects;
+
+    /// <summary>The speed songs actually play at: normal unless the speed control is switched on.</summary>
+    public double EffectiveSpeed => _settings.PlaybackSpeedControl ? _settings.PlaybackSpeed : 1;
+
+    public string SpeedText => string.Create(CultureInfo.InvariantCulture, $"{_settings.PlaybackSpeed:0.##}×");
+
+    /// <summary>Not 1×: the player bar then shows the number instead of the icon.</summary>
+    public bool IsSpeedChanged => _settings.PlaybackSpeed != 1;
+
+    public bool IsSlowed => _settings.PlaybackSpeed == SlowedSpeed;
+
+    public bool IsNormalSpeed => _settings.PlaybackSpeed == 1;
+
+    public bool IsSpedUp => _settings.PlaybackSpeed == SpedUpSpeed;
+
+    [RelayCommand]
+    private void UseSlowedSpeed() => _settings.PlaybackSpeed = SlowedSpeed;
+
+    [RelayCommand]
+    private void UseNormalSpeed() => _settings.PlaybackSpeed = 1;
+
+    [RelayCommand]
+    private void UseSpedUpSpeed() => _settings.PlaybackSpeed = SpedUpSpeed;
+
+    /// <summary>The shell opens Settings &gt; Audio.</summary>
+    public event EventHandler? AudioSettingsRequested;
+
+    [RelayCommand]
+    private void OpenAudioSettings() => AudioSettingsRequested?.Invoke(this, EventArgs.Empty);
+
+    private void ApplySpeed() => _player.Speed = EffectiveSpeed;
+
+    private void ApplyEqualizer() => _player.Equalizer = _settings.EqualizerEnabled ? _settings.EqualizerGains : [];
+
+    private void ApplyVolume() =>
+        _player.Volume = (float)(_settings.ExponentialVolume ? Math.Pow(Volume, 3) : Volume);
+
+    private async Task<float> GainOfAsync(TrackSummary track)
+    {
+        if (_settings.Normalization == NormalizationMode.Off || _replayGain is null) return 1;
+
+        var values = await _replayGain.ReadAsync(track.MediaUri);
+        return values?.Factor(_settings.Normalization) ?? 1;
+    }
+
+    // Event handler: runs on the UI thread, and an unexpected exception should be loud, hence async void.
+    private async void ReapplyGain()
+    {
+        if (CurrentTrack is not { } track) return;
+
+        var gain = await GainOfAsync(track);
+        if (CurrentTrack == track) _player.Gain = gain;
+    }
+
     [RelayCommand(CanExecute = nameof(HasMedia))]
     private void TogglePlayPause()
     {
@@ -354,8 +456,10 @@ public partial class PlayerViewModel : ViewModelBase
 
     private async Task<bool> TryLoadAsync(TrackSummary track, bool play)
     {
+        float gain;
         try
         {
+            gain = await GainOfAsync(track);
             await _player.LoadAsync(MediaSources.FromUri(track.MediaUri));
         }
         catch (Exception ex) when (ex is FileNotFoundException or DirectoryNotFoundException)
@@ -370,6 +474,7 @@ public partial class PlayerViewModel : ViewModelBase
             return false;
         }
 
+        _player.Gain = gain;
         ErrorMessage = null;
         Title = track.Title;
         Subtitle = track.Artist ?? Loc.Get("Common_UnknownArtist");
@@ -386,7 +491,7 @@ public partial class PlayerViewModel : ViewModelBase
 
     partial void OnVolumeChanged(double value)
     {
-        _player.Volume = (float)value;
+        ApplyVolume();
         if (value > 0) _lastAudibleVolume = value;
     }
 

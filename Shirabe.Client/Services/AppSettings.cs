@@ -1,8 +1,11 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using CommunityToolkit.Mvvm.ComponentModel;
+
+using Shirabe.Core.Playback;
 
 namespace Shirabe.Client.Services;
 
@@ -73,6 +76,67 @@ public partial class AppSettings : ObservableObject
     /// <summary>Language tag such as "uk" or "pt-BR"; empty follows the system's language.</summary>
     [ObservableProperty]
     public partial string Language { get; set; } = "";
+
+    /// <summary>Id of the audio output device (see <see cref="IAudioOutput"/>); "" is the system's default.</summary>
+    [AllowNull] // a hand-edited file
+    public string OutputDevice
+    {
+        get;
+        set => SetProperty(ref field, value ?? "");
+    } = "";
+
+    /// <summary>Show the playback speed button in the player bar. Off, songs play at normal speed.</summary>
+    [ObservableProperty]
+    public partial bool PlaybackSpeedControl { get; set; }
+
+    /// <summary>How fast songs play while <see cref="PlaybackSpeedControl"/> is on, 0.5 to 2.</summary>
+    public double PlaybackSpeed
+    {
+        get;
+        set => SetProperty(ref field, Math.Round(Math.Clamp(value, 0.5, 2), 2));
+    } = 1;
+
+    /// <summary>Changing the speed leaves the pitch alone.</summary>
+    [ObservableProperty]
+    public partial bool KeepPitch { get; set; }
+
+    /// <summary>Add a room reverb to whatever is playing.</summary>
+    [ObservableProperty]
+    public partial bool Reverb { get; set; }
+
+    [ObservableProperty]
+    public partial bool EqualizerEnabled { get; set; }
+
+    /// <summary>Gain in dB of each of <see cref="EqualizerBands.Frequencies"/>. Always one value per band.</summary>
+    [AllowNull] // a hand-edited file
+    public double[] EqualizerGains
+    {
+        get;
+        set => SetProperty(ref field, Bands(value));
+    } = Bands(null);
+
+    private static double[] Bands(double[]? gains) =>
+    [
+        .. Enumerable.Range(0, EqualizerBands.Frequencies.Count).Select(band => band < gains?.Length
+            ? Math.Round(Math.Clamp(gains[band], -EqualizerBands.MaxGain, EqualizerBands.MaxGain), 1)
+            : 0)
+    ];
+
+    /// <summary>Even out loudness with the ReplayGain tags of the files.</summary>
+    [ObservableProperty]
+    [JsonConverter(typeof(JsonStringEnumConverter<NormalizationMode>))]
+    public partial NormalizationMode Normalization { get; set; }
+
+    /// <summary>The volume slider follows a curve, with finer steps among the quiet levels.</summary>
+    [ObservableProperty]
+    public partial bool ExponentialVolume { get; set; }
+
+    /// <summary>Percent the volume changes per notch of the mouse wheel.</summary>
+    public int VolumeScrollStep
+    {
+        get;
+        set => SetProperty(ref field, Math.Clamp(value, 1, 25));
+    } = 1;
 
     /// <summary>The keys the user changed, by action name; read and write them through <see cref="Services.Shortcuts"/>.</summary>
     [AllowNull] // a hand-edited file can hold "Shortcuts": null

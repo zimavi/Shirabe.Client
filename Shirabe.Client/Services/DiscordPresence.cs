@@ -35,6 +35,7 @@ public sealed class DiscordPresence : IDisposable
         _player.PropertyChanged += OnPlayerPropertyChanged;
         _player.Seeked += OnSeeked;
         _player.TrackLoaded += OnTrackLoaded;
+        _settings.PropertyChanged += OnSettingsChanged;
         if (_player.IsPlaying) Update(); // switched on while a song is playing
     }
 
@@ -43,10 +44,17 @@ public sealed class DiscordPresence : IDisposable
         _player.PropertyChanged -= OnPlayerPropertyChanged;
         _player.Seeked -= OnSeeked;
         _player.TrackLoaded -= OnTrackLoaded;
+        _settings.PropertyChanged -= OnSettingsChanged;
         _client.Dispose();
     }
 
     private void OnSeeked(object? sender, EventArgs e) => Update();
+
+    private void OnSettingsChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(AppSettings.PlaybackSpeed) or nameof(AppSettings.PlaybackSpeedControl)
+            && _player.IsPlaying) Update();
+    }
 
     // Switching songs while one plays leaves IsPlaying true, so nothing else would tell us. A song loaded paused (the
     // restored session) shows no card; pressing play does.
@@ -85,7 +93,8 @@ public sealed class DiscordPresence : IDisposable
     {
         _client.SetPresence(Build(_player.Title, _player.Subtitle, _player.Album, cover, _player.IsPlaying,
             _player.IsRepeatActive, _player.IsRepeatOne,
-            TimeSpan.FromSeconds(_player.PositionSeconds), TimeSpan.FromSeconds(_player.DurationSeconds),
+            TimeSpan.FromSeconds(_player.PositionSeconds / _player.EffectiveSpeed),
+            TimeSpan.FromSeconds(_player.DurationSeconds / _player.EffectiveSpeed),
             DateTime.UtcNow, _player.CurrentTrack?.LinkUrl, _player.CurrentTrack?.LinkLabel));
     }
 

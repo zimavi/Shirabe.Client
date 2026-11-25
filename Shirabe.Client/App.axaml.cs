@@ -210,7 +210,7 @@ public partial class App : Application
                 Loc.Get("Startup_AudioEngine", ex.Message));
         }
 
-        var playerViewModel = new PlayerViewModel(player);
+        var playerViewModel = new PlayerViewModel(player, appSettings, new ReplayGainReader());
 
         var libraryPath = GetLibraryPath();
 

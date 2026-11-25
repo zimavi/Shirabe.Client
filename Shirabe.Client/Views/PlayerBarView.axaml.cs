@@ -11,13 +11,11 @@ public partial class PlayerBarView : UserControl
         InitializeComponent();
     }
 
-    // One wheel notch is 1%. Rounding first keeps the volume on whole percents after a drag.
     private void OnVolumeWheel(object? sender, PointerWheelEventArgs e)
     {
         if (DataContext is not PlayerViewModel viewModel || e.Delta.Y == 0) return;
 
-        var percent = Math.Round(viewModel.Volume * 100) + Math.Sign(e.Delta.Y);
-        viewModel.Volume = Math.Clamp(percent, 0, 100) / 100;
+        viewModel.ScrollVolume(Math.Sign(e.Delta.Y));
         e.Handled = true;
     }
 }
