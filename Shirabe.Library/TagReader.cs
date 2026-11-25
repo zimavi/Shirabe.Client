@@ -1,5 +1,8 @@
+using System.Globalization;
+
 using Shirabe.Core.Lyrics;
 using Shirabe.Core.Metadata;
+using Shirabe.Core.Playback;
 
 namespace Shirabe.Library;
 
@@ -117,6 +120,28 @@ internal static class TagReader
         }
 
         return new TagLyrics(synced, texts);
+    }
+
+    /// <summary>Null when the file has neither a track nor an album gain. ATL lists these tags under their raw names.</summary>
+    // shortcut: Opus files that only carry R128_*_GAIN are not normalised, add them when someone has such files
+    public static ReplayGain? ReadReplayGain(string path)
+    {
+        var track = new ATL.Track(path);
+
+        double? Value(string name)
+        {
+            var text = track.AdditionalFields
+                .FirstOrDefault(f => f.Key.EndsWith(name, StringComparison.OrdinalIgnoreCase)).Value?.Trim();
+            if (text is null) return null;
+            if (text.EndsWith("dB", StringComparison.OrdinalIgnoreCase)) text = text[..^2];
+
+            return double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var number)
+                   && double.IsFinite(number) ? number : null;
+        }
+
+        var gain = new ReplayGain(Value("REPLAYGAIN_TRACK_GAIN"), Value("REPLAYGAIN_TRACK_PEAK"),
+            Value("REPLAYGAIN_ALBUM_GAIN"), Value("REPLAYGAIN_ALBUM_PEAK"));
+        return gain.TrackGainDb is null && gain.AlbumGainDb is null ? null : gain;
     }
 
     /// <summary>The <c>SHIRABE_METADATA</c> tag (standard, section 13.3). ATL files it under that name for ID3v2 and Vorbis comments; MP4 freeform atoms may carry a prefix.</summary>
