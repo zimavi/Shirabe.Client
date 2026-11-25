@@ -82,5 +82,8 @@
       <Compile Update="Views\LastFmView.axaml.cs">
         <DependentUpon>LastFmView.axaml</DependentUpon>
       </Compile>
+      <Compile Update="Views\ScrobbleStatusView.axaml.cs">
+        <DependentUpon>ScrobbleStatusView.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>
