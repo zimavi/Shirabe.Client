@@ -40,7 +40,16 @@ public sealed partial class NotificationViewModel : ObservableObject
 
     public string Title { get; }
 
-    public string Message { get; }
+    [ObservableProperty] public partial string Message { get; set; }
+
+    /// <summary>What the optional action button does (the link button is separate). Set it together with its label.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasAction))]
+    public partial IAsyncRelayCommand? Action { get; set; }
+
+    [ObservableProperty] public partial string? ActionLabel { get; set; }
+
+    public bool HasAction => Action is not null;
 
     public string? LinkLabel { get; }
 
