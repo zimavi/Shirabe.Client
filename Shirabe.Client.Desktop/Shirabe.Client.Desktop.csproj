@@ -10,6 +10,8 @@
 
     <PropertyGroup>
         <ApplicationManifest>app.manifest</ApplicationManifest>
+      <!-- The icon of Shirabe.exe itself (Explorer, taskbar pins, shortcuts). -->
+      <ApplicationIcon>..\Shirabe.Client\Assets\app.ico</ApplicationIcon>
     </PropertyGroup>
 
   <!-- For packagers whose package manager owns the updates, even of a Velopack-packed build: -p:SelfUpdate=false

@@ -74,9 +74,15 @@ jobs:
       - name: Pack (Windows)
         if: runner.os == 'Windows'
         run: |
+          bash packaging/windows/license-rtf.sh "$RUNNER_TEMP/license.rtf"
+          # The splash is what Setup.exe shows; the --msi* and --inst* options are the pages of the .msi.
           vpk pack --packId Shirabe --packVersion "$VERSION" --packTitle Shirabe --packAuthors zimavi \
             --packDir publish --mainExe Shirabe.exe --runtime win-x64 --icon Shirabe.Client/Assets/app.ico \
-            --msi --noPortable --outputDir dist
+            --msi --noPortable --outputDir dist \
+            --splashImage packaging/windows/splash.png --splashProgressColor "#E8456B" \
+            --msiTopBanner packaging/windows/msi-banner.bmp --msiDialogBackground packaging/windows/msi-dialog.bmp \
+            --instWelcome packaging/windows/welcome.txt --instLicense "$RUNNER_TEMP/license.rtf" \
+            --instConclusion packaging/windows/conclusion.txt
 
           # vpk leaves the platform out of the Windows package name only (Linux gets -linux-full): add it, in the feed too.
           old="Shirabe-$VERSION-full.nupkg"
@@ -108,17 +114,10 @@ jobs:
       - name: Pack (macOS)
         if: runner.os == 'macOS'
         run: |
-          mkdir icon.iconset
-          for s in 16 32 128 256; do
-            sips -z $s $s Shirabe.Client/Assets/Icon.png --out icon.iconset/icon_${s}x${s}.png
-            sips -z $((s*2)) $((s*2)) Shirabe.Client/Assets/Icon.png --out icon.iconset/icon_${s}x${s}@2x.png
-          done
-          iconutil -c icns icon.iconset -o Shirabe.icns
-
           # "-" signs ad hoc (no Apple certificate): without a signature over the whole bundle, macOS calls a downloaded
           # copy "damaged". vpk signs before it makes the zip and the update package, with the entitlements .NET needs.
           vpk pack --packId Shirabe --packVersion "$VERSION" --packTitle Shirabe --packAuthors zimavi \
-            --packDir publish --mainExe Shirabe --runtime osx-arm64 --icon Shirabe.icns --noInst --outputDir dist \
+            --packDir publish --mainExe Shirabe --runtime osx-arm64 --icon packaging/macos/Shirabe.icns --noInst --outputDir dist \
             --signAppIdentity=-
           # vpk already puts the platform into this name, nothing to rename.
           test -f "dist/Shirabe-$VERSION-osx-full.nupkg" || { echo "::error::The macOS update package is missing"; exit 1; }
@@ -128,9 +127,16 @@ jobs:
           ditto -x -k dist/Shirabe-osx-Portable.zip dmg
           rm dist/Shirabe-osx-Portable.zip
           test -x dmg/Shirabe.app/Contents/MacOS/Shirabe
-          codesign --verify --deep --strict --verbose=2 dmg/Shirabe.app
-          ln -s /Applications dmg/Applications
-          hdiutil create -volname Shirabe -srcfolder dmg -ov -format UDZO dist/Shirabe-osx-arm64.dmg
+
+          python3 -m venv "$RUNNER_TEMP/dmgbuild"
+          "$RUNNER_TEMP/dmgbuild/bin/pip" install --quiet dmgbuild==1.6.7 ds_store==1.3.3 mac_alias==2.2.3
+          "$RUNNER_TEMP/dmgbuild/bin/dmgbuild" -s packaging/macos/dmg.py -D app=dmg/Shirabe.app \
+            Shirabe dist/Shirabe-osx-arm64.dmg
+
+          # The signature, checked on the app as it comes out of the finished image.
+          hdiutil attach -nobrowse -readonly -mountpoint "$RUNNER_TEMP/mnt" dist/Shirabe-osx-arm64.dmg
+          codesign --verify --deep --strict --verbose=2 "$RUNNER_TEMP/mnt/Shirabe.app"
+          hdiutil detach "$RUNNER_TEMP/mnt"
 
       # Velopack's update feed is .nupkg and releases.*.json. assets.*.json (for vpk upload) and RELEASES* (legacy,
       # still naming the Windows package without its platform) stay out.

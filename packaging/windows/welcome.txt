@@ -1,0 +1,3 @@
+Shirabe is a music player for the music you already have: your local library, lyrics, queue and rich metadata, with no account or server.
+
+Select Next to continue.
