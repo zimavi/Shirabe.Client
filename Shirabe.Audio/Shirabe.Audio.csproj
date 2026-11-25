@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="ManagedBass"/>
+        <PackageReference Include="ManagedBass.Fx"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -36,5 +37,26 @@
               ContinueOnError="true"/>
         <Warning Condition="!Exists('$(BassNativeFile)')"
                  Text="The native BASS library ($(BassFile)) could not be downloaded. Put it in native/$(BassNativeRid)/ yourself, see native/README.md."/>
+    </Target>
+
+    <!-- The same for the BASS_FX add-on (the site keeps add-ons under files/z/0/). Without it songs play, but keep pitch,
+         reverb and the equaliser are unavailable. -->
+    <Target Name="DownloadBassFxNative" BeforeTargets="BeforeBuild" Condition="'$(BassFxZip)' != '' And !Exists('$(BassFxNativeFile)')">
+        <DownloadFile SourceUrl="https://www.un4seen.com/files/z/0/$(BassFxZip)"
+                      DestinationFolder="$(IntermediateOutputPath)bassfx"
+                      Retries="2"
+                      ContinueOnError="true">
+            <Output TaskParameter="DownloadedFile" PropertyName="BassFxZipPath"/>
+        </DownloadFile>
+        <Unzip SourceFiles="$(BassFxZipPath)"
+               DestinationFolder="$(IntermediateOutputPath)bassfx/extracted"
+               Condition="'$(BassFxZipPath)' != ''"
+               ContinueOnError="true"/>
+        <Copy SourceFiles="$(IntermediateOutputPath)bassfx/extracted/$(BassFxEntry)"
+              DestinationFiles="$(BassFxNativeFile)"
+              Condition="'$(BassFxZipPath)' != ''"
+              ContinueOnError="true"/>
+        <Warning Condition="!Exists('$(BassFxNativeFile)')"
+                 Text="The native BASS_FX library ($(BassFxFile)) could not be downloaded. Put it in native/$(BassNativeRid)/ yourself, see native/README.md."/>
     </Target>
 </Project>

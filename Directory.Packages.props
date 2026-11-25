@@ -17,6 +17,7 @@
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <!-- Audio. Bindings only: the native BASS libraries are not redistributed here, see native/README.md -->
     <PackageVersion Include="ManagedBass" Version="4.0.2" />
+    <PackageVersion Include="ManagedBass.Fx" Version="4.0.2"/>
     <PackageVersion Include="DiscordRichPresence" Version="1.6.1.70" />
     <PackageVersion Include="Velopack" Version="1.2.161" />
     <PackageVersion Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.15" />

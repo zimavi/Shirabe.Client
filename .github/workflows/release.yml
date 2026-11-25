@@ -31,9 +31,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - { os: windows-latest, rid: win-x64, bass: bass.dll }
-          - { os: ubuntu-latest, rid: linux-x64, bass: libbass.so }
-          - { os: macos-latest, rid: osx-arm64, bass: libbass.dylib }
+          - { os: windows-latest, rid: win-x64, bass: bass.dll, bassfx: bass_fx.dll }
+          - { os: ubuntu-latest, rid: linux-x64, bass: libbass.so, bassfx: libbass_fx.so }
+          - { os: macos-latest, rid: osx-arm64, bass: libbass.dylib, bassfx: libbass_fx.dylib }
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -57,8 +57,10 @@ jobs:
         run: |
           dotnet publish Shirabe.Client.Desktop/Shirabe.Client.Desktop.csproj -c Release -r ${{ matrix.rid }} \
             --self-contained -p:SourceRevisionId="${GITHUB_SHA::9}" -o publish
-          # The build only warns when the BASS download fails; do not ship an app without its audio library.
-          test -f "publish/${{ matrix.bass }}" || { echo "::error::${{ matrix.bass }} is missing from the publish folder"; exit 1; }
+          # The build only warns when a BASS download fails; do not ship an app without its audio libraries.
+          for library in "${{ matrix.bass }}" "${{ matrix.bassfx }}"; do
+            test -f "publish/$library" || { echo "::error::$library is missing from the publish folder"; exit 1; }
+          done
 
       # Setup.exe and .msi, plus the feed files (.nupkg, releases.win.json) that installed copies check for updates.
       - name: Pack (Windows)

@@ -1,6 +1,7 @@
 <Project>
-    <!-- The native BASS library for this platform: which one it is (shared with the download in Shirabe.Audio) and
-         copying it next to the output of the projects that import this file. The binaries are not in git, see native/README.md.
+    <!-- The native BASS library and its BASS_FX add-on for this platform: which ones they are (shared with the download in
+         Shirabe.Audio) and copying them next to the output of the projects that import this file. The binaries are not in
+         git, see native/README.md.
          Set BassNativeRid yourself (win-x64, linux-x64, linux-arm64, osx) to choose another platform's library. -->
     <PropertyGroup>
         <BassNativeRid Condition="'$(BassNativeRid)' == '' And $([MSBuild]::IsOSPlatform('Windows'))">win-x64</BassNativeRid>
@@ -14,24 +15,37 @@
         <BassZip>bass24.zip</BassZip>
         <BassEntry>x64/bass.dll</BassEntry> <!-- the bass.dll at the root of the zip is the 32-bit one -->
         <BassFile>bass.dll</BassFile>
+        <BassFxZip>bass_fx24.zip</BassFxZip>
+        <BassFxEntry>x64/bass_fx.dll</BassFxEntry>
+        <BassFxFile>bass_fx.dll</BassFxFile>
     </PropertyGroup>
     <PropertyGroup Condition="'$(BassNativeRid)' == 'linux-x64'">
         <BassZip>bass24-linux.zip</BassZip>
         <BassEntry>libs/x86_64/libbass.so</BassEntry>
         <BassFile>libbass.so</BassFile>
+        <BassFxZip>bass_fx24-linux.zip</BassFxZip>
+        <BassFxEntry>libs/x86_64/libbass_fx.so</BassFxEntry>
+        <BassFxFile>libbass_fx.so</BassFxFile>
     </PropertyGroup>
     <PropertyGroup Condition="'$(BassNativeRid)' == 'linux-arm64'">
         <BassZip>bass24-linux.zip</BassZip>
         <BassEntry>libs/aarch64/libbass.so</BassEntry>
         <BassFile>libbass.so</BassFile>
+        <BassFxZip>bass_fx24-linux.zip</BassFxZip>
+        <BassFxEntry>libs/aarch64/libbass_fx.so</BassFxEntry>
+        <BassFxFile>libbass_fx.so</BassFxFile>
     </PropertyGroup>
     <PropertyGroup Condition="'$(BassNativeRid)' == 'osx'">
         <BassZip>bass24-osx.zip</BassZip>
         <BassEntry>libbass.dylib</BassEntry>
         <BassFile>libbass.dylib</BassFile>
+        <BassFxZip>bass_fx24-osx.zip</BassFxZip>
+        <BassFxEntry>libbass_fx.dylib</BassFxEntry>
+        <BassFxFile>libbass_fx.dylib</BassFxFile>
     </PropertyGroup>
     <PropertyGroup>
         <BassNativeFile>$(MSBuildThisFileDirectory)../native/$(BassNativeRid)/$(BassFile)</BassNativeFile>
+        <BassFxNativeFile>$(MSBuildThisFileDirectory)../native/$(BassNativeRid)/$(BassFxFile)</BassFxNativeFile>
     </PropertyGroup>
 
     <!-- Listed while building, not while the project is loaded: the library may only have been downloaded a moment ago. -->
@@ -42,6 +56,11 @@
                   Visible="false"
                   CopyToOutputDirectory="PreserveNewest"
                   Condition="Exists('$(BassNativeFile)')"/>
+            <None Include="$(BassFxNativeFile)"
+                  Link="$(BassFxFile)"
+                  Visible="false"
+                  CopyToOutputDirectory="PreserveNewest"
+                  Condition="Exists('$(BassFxNativeFile)')"/>
         </ItemGroup>
     </Target>
 </Project>

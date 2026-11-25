@@ -38,6 +38,10 @@ public sealed class AboutViewModel : SettingsPageViewModel
         new("Inter typeface", "SIL Open Font License 1.1", "https://rsms.me/inter/"),
         new("Material Design Icons", "Apache License 2.0", "https://github.com/google/material-design-icons"),
         new("ManagedBass", "MIT", "https://github.com/ManagedBass/ManagedBass"),
+        // BASS_FX asks for credit; SoundTouch and Freeverb are inside it.
+        new("BASS_FX by JOBnik!", "Freeware", "https://www.un4seen.com/"),
+        new("SoundTouch (in BASS_FX), © Olli Parviainen", "LGPL", "https://www.surina.net/soundtouch/"),
+        new("Freeverb (in BASS_FX), Jezar at Dreampoint", "Public domain", "https://ccrma.stanford.edu/~jos/pasp/Freeverb.html"),
         new("Audio Tools Library (ATL)", "MIT", "https://github.com/Zeugma440/atldotnet"),
         new("CommunityToolkit.Mvvm", "MIT", "https://github.com/CommunityToolkit/dotnet"),
         new("Entity Framework Core", "MIT", "https://github.com/dotnet/efcore"),
