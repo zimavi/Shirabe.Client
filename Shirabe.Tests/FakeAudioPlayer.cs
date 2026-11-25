@@ -13,6 +13,18 @@ internal sealed class FakeAudioPlayer : IAudioPlayer
 
     public float Volume { get; set; } = 1f;
 
+    public double Speed { get; set; } = 1;
+
+    public float Gain { get; set; } = 1f;
+
+    public bool SupportsEffects { get; set; } = true;
+
+    public bool KeepPitch { get; set; }
+
+    public bool Reverb { get; set; }
+
+    public IReadOnlyList<double> Equalizer { get; set; } = [];
+
     public IMediaSource? Loaded { get; private set; }
 
     public Exception? LoadException { get; set; }
