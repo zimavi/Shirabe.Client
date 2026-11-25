@@ -79,6 +79,31 @@
         <comment>Tray icon menu item that shows the main window again. "Shirabe" is the app's name: do not translate it.</comment></data>
   <data name="Tray_Quit" xml:space="preserve"><value>Вийти</value>
         <comment>Tray icon menu item that closes the app completely (closing the window only hides it to the tray).</comment></data>
+  <!-- Settings: Keyboard shortcuts. The other action names in that list are the Player_* and Nav_* texts above. -->
+  <data name="Shortcuts_Title" xml:space="preserve"><value>Shortcuts</value>
+        <comment>Name of a settings page, in the list of pages. Keyboard shortcuts.</comment></data>
+  <data name="Shortcuts_Description" xml:space="preserve"><value>Keys for playback and navigation</value>
+        <comment>One short line under the page name "Shortcuts" in the list of settings pages. "Keys" means keyboard keys.</comment></data>
+  <data name="Shortcuts_FixedKeys" xml:space="preserve"><value>Select a key to change it. Esc closes the lyrics or queue panel, and the media keys on your keyboard work while the Shirabe window is active.</value>
+        <comment>Explanation at the top of the keyboard shortcuts settings page. "Esc" is the Escape key. "Media keys" are the play/pause, next and previous keys some keyboards have.</comment></data>
+  <data name="Shortcuts_SeekBack" xml:space="preserve"><value>Seek back 5 seconds</value>
+        <comment>Name of a keyboard shortcut: moves the playing song 5 seconds back.</comment></data>
+  <data name="Shortcuts_SeekForward" xml:space="preserve"><value>Seek forward 5 seconds</value>
+        <comment>Name of a keyboard shortcut: moves the playing song 5 seconds ahead.</comment></data>
+  <data name="Shortcuts_VolumeUp" xml:space="preserve"><value>Volume up</value>
+        <comment>Name of a keyboard shortcut: makes the sound louder.</comment></data>
+  <data name="Shortcuts_VolumeDown" xml:space="preserve"><value>Volume down</value>
+        <comment>Name of a keyboard shortcut: makes the sound quieter.</comment></data>
+  <data name="Shortcuts_PressKey" xml:space="preserve"><value>Press a key…</value>
+        <comment>Text on a button while the app waits for the user to press the new keyboard shortcut. Short.</comment></data>
+  <data name="Shortcuts_NotSet" xml:space="preserve"><value>Not set</value>
+        <comment>Text on a button of an action that has no keyboard shortcut. Short.</comment></data>
+  <data name="Shortcuts_CaptureHelp" xml:space="preserve"><value>Esc cancels. Backspace removes the shortcut.</value>
+        <comment>Help shown while the app waits for a new keyboard shortcut. "Esc" and "Backspace" are key names.</comment></data>
+  <data name="Shortcuts_Taken" xml:space="preserve"><value>That key is already used by "{0}". Press another one, or Esc to cancel.</value>
+        <comment>Shown when the pressed keyboard shortcut belongs to another action. {0} is the name of that action.</comment></data>
+  <data name="Shortcuts_ResetAll" xml:space="preserve"><value>Reset all shortcuts</value>
+        <comment>Button that brings every keyboard shortcut back to the one the app came with.</comment></data>
   <!-- Settings: General -->
   <data name="General_Title" xml:space="preserve"><value>Загальне</value>
         <comment>Name of a settings page, in the list of pages. Holds the everyday options.</comment></data>
