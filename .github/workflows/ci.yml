@@ -1,0 +1,81 @@
+name: CI
+
+# Builds, tests and publishes the app on every platform a release ships. Nothing is packaged or uploaded, see release.yml.
+# Changes to Markdown files only start no run (a branch rule that requires these checks would then wait forever).
+on:
+  push:
+    branches: [ master ] # also what fills the caches that pull requests start from
+    paths-ignore: [ "**.md" ]
+  pull_request:
+    paths-ignore: [ "**.md" ]
+  workflow_dispatch:
+  workflow_call: # release.yml runs this before it publishes
+
+permissions:
+  contents: read
+
+concurrency:
+  # The workflow name (the caller's, when called) keeps a release's tests and a CI run of the same ref from cancelling each other.
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: ${{ matrix.rid }}
+    strategy:
+      fail-fast: false # one platform failing must not hide the others
+      matrix:
+        include:
+          - { os: windows-latest, rid: win-x64, bass: bass.dll, bassfx: bass_fx.dll }
+          - { os: ubuntu-latest, rid: linux-x64, bass: libbass.so, bassfx: libbass_fx.so }
+          - { os: macos-latest, rid: osx-arm64, bass: libbass.dylib, bassfx: libbass_fx.dylib }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    env:
+      # A folder of our own: the runner's default one also holds preinstalled packages, which the cache would take along.
+      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+          check-latest: false # an installed 10.0 SDK will do
+          cache: true
+          cache-dependency-path: |
+            Directory.Packages.props
+            */*.csproj
+
+      # BASS downloads are "latest" files with unchanging names, so the month is in the key to pick up new versions.
+      - id: month
+        run: echo "month=$(date -u +%Y-%m)" >> "$GITHUB_OUTPUT"
+
+      # Saved only when the job succeeds, so a failed download is never kept.
+      - uses: actions/cache@v6
+        with:
+          path: native/*/*bass*
+          key: bass-${{ matrix.rid }}-${{ steps.month.outputs.month }}-${{ hashFiles('build/BassNative.props', 'Shirabe.Audio/Shirabe.Audio.csproj') }}
+
+      - name: Build
+        run: dotnet build Shirabe.Client.slnx -c Release
+
+      - name: Test
+        run: dotnet test --project Shirabe.Tests/Shirabe.Tests.csproj -c Release --no-build
+
+      # The audio tests skip themselves when BASS cannot be loaded, which would pass without testing the engine.
+      - name: Test the audio engine (no skips)
+        run: >-
+          dotnet test --project Shirabe.Tests/Shirabe.Tests.csproj -c Release --no-build
+          --filter-class "*BassAudioPlayerTests" --fail-skips on
+
+      - name: Publish (self-contained)
+        run: |
+          dotnet publish Shirabe.Client.Desktop/Shirabe.Client.Desktop.csproj -c Release -r ${{ matrix.rid }} \
+            --self-contained -o publish
+          # The build only warns when a BASS download fails.
+          for library in "${{ matrix.bass }}" "${{ matrix.bassfx }}"; do
+            test -f "publish/$library" || { echo "::error::$library is missing from the publish folder"; exit 1; }
+          done
