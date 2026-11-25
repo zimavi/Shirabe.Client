@@ -52,6 +52,48 @@ public class LastFmClientTests
         Assert.Contains("api_sig=df19c3622a204d2dacd179c35bfa0571", web.Sent);
     }
 
+    [Fact]
+    public async Task A_scrobble_is_posted_with_numbered_names_whole_seconds_and_a_signature()
+    {
+        var web = new FakeWeb(HttpStatusCode.OK, """{"scrobbles":{"@attr":{"accepted":1,"ignored":0}}}""");
+        var track = new LastFmTrack("Artist & Co.", "Song", "Альбом", TimeSpan.FromSeconds(200.7));
+
+        await Client(web).ScrobbleAsync(new LastFmSession("u", "SK"), track,
+            DateTimeOffset.FromUnixTimeSeconds(1_700_000_000).ToOffset(TimeSpan.FromHours(3)), Ct);
+
+        var sent = Uri.UnescapeDataString(web.Sent.Replace('+', ' '));
+        Assert.StartsWith("sk=SK&artist[0]=Artist & Co.&track[0]=Song&album[0]=Альбом&duration[0]=200&" +
+                          "timestamp[0]=1700000000&method=track.scrobble&api_key=KEY&", sent);
+        // md5 of the sorted names and values, then the secret
+        Assert.Contains("api_sig=b19085f2ac28124278672f7d71c27656", sent);
+    }
+
+    [Theory]
+    [InlineData(null, null)]
+    [InlineData(" ", 0.5)]
+    public async Task Now_playing_leaves_out_what_is_not_known(string? album, double? seconds)
+    {
+        var web = new FakeWeb(HttpStatusCode.OK, """{"nowplaying":{}}""");
+        TimeSpan? duration = seconds is { } value ? TimeSpan.FromSeconds(value) : null;
+
+        await Client(web).UpdateNowPlayingAsync(new LastFmSession("u", "SK"),
+            new LastFmTrack("Artist", "Song", album, duration), Ct);
+
+        Assert.Equal("sk=SK&artist=Artist&track=Song&method=track.updateNowPlaying&api_key=KEY" +
+                     "&api_sig=adcba1ebccf924612150db00da8c3f5d&format=json", web.Sent);
+    }
+
+    [Fact]
+    public async Task An_answer_that_confirms_nothing_is_a_LastFm_error()
+    {
+        var client = Client(new FakeWeb(HttpStatusCode.OK, "{}"));
+        var session = new LastFmSession("u", "SK");
+        var track = new LastFmTrack("Artist", "Song");
+
+        await Assert.ThrowsAsync<LastFmException>(() => client.ScrobbleAsync(session, track, DateTimeOffset.Now, Ct));
+        await Assert.ThrowsAsync<LastFmException>(() => client.UpdateNowPlayingAsync(session, track, Ct));
+    }
+
     [Theory]
     [InlineData(HttpStatusCode.OK)]
     [InlineData(HttpStatusCode.Forbidden)]

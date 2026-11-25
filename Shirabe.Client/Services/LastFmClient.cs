@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -7,6 +8,11 @@ namespace Shirabe.Client.Services;
 
 /// <summary>A signed-in Last.fm account. The key does not expire (the user can revoke it on the website).</summary>
 public sealed record LastFmSession(string User, string Key);
+
+/// <summary>
+/// A song as Last.fm is told about it. The artist and title must come from the song's metadata, never from a file name.
+/// </summary>
+public sealed record LastFmTrack(string Artist, string Title, string? Album = null, TimeSpan? Duration = null);
 
 /// <summary>Last.fm refused a request, or answered with something unusable (<see cref="Code"/> 0).</summary>
 public sealed class LastFmException(int code, string message) : Exception(message)
@@ -61,6 +67,41 @@ public sealed class LastFmClient(string apiKey, string secret, HttpClient? http 
             .ConfigureAwait(false);
         var session = Member(response, "session");
         return new LastFmSession(Text(session, "name"), Text(session, "key"));
+    }
+
+    /// <summary>Shows the song on the user's profile as playing now. Not worth retrying when it fails.</summary>
+    public async Task UpdateNowPlayingAsync(LastFmSession session, LastFmTrack track,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await CallAsync("track.updateNowPlaying", TrackParameters(session, track, ""),
+            cancellationToken).ConfigureAwait(false);
+        Member(response, "nowplaying");
+    }
+
+    /// <summary>
+    /// Adds a listen to the user's history. A listen Last.fm chooses to ignore (a timestamp too old, say) is not an
+    /// error: sending it again would not help.
+    /// </summary>
+    /// <param name="startedAt">When the song started playing.</param>
+    public async Task ScrobbleAsync(LastFmSession session, LastFmTrack track, DateTimeOffset startedAt,
+        CancellationToken cancellationToken = default)
+    {
+        var parameters = TrackParameters(session, track, "[0]"); // names are numbered: one request can hold 50
+        parameters["timestamp[0]"] = startedAt.ToUnixTimeSeconds().ToString(CultureInfo.InvariantCulture);
+        var response = await CallAsync("track.scrobble", parameters, cancellationToken).ConfigureAwait(false);
+        Member(response, "scrobbles"); // anything else is not a confirmation
+    }
+
+    private static Dictionary<string, string> TrackParameters(LastFmSession session, LastFmTrack track, string index)
+    {
+        var parameters = new Dictionary<string, string>
+        {
+            ["sk"] = session.Key, ["artist" + index] = track.Artist, ["track" + index] = track.Title,
+        };
+        if (!string.IsNullOrWhiteSpace(track.Album)) parameters["album" + index] = track.Album;
+        if (track.Duration is { TotalSeconds: >= 1 } duration)
+            parameters["duration" + index] = ((long)duration.TotalSeconds).ToString(CultureInfo.InvariantCulture);
+        return parameters;
     }
 
     private async Task<JsonElement> CallAsync(string method, Dictionary<string, string> parameters,
