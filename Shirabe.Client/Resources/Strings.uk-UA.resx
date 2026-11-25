@@ -80,62 +80,62 @@
   <data name="Tray_Quit" xml:space="preserve"><value>Вийти</value>
         <comment>Tray icon menu item that closes the app completely (closing the window only hides it to the tray).</comment></data>
   <!-- Settings: Keyboard shortcuts. The other action names in that list are the Player_* and Nav_* texts above. -->
-  <data name="Shortcuts_Title" xml:space="preserve"><value>Shortcuts</value>
+  <data name="Shortcuts_Title" xml:space="preserve"><value>Гарячі клавіші</value>
         <comment>Name of a settings page, in the list of pages. Keyboard shortcuts.</comment></data>
-  <data name="Shortcuts_Description" xml:space="preserve"><value>Keys for playback and navigation</value>
+  <data name="Shortcuts_Description" xml:space="preserve"><value>Клавіші для відтворення і навігації</value>
         <comment>One short line under the page name "Shortcuts" in the list of settings pages. "Keys" means keyboard keys.</comment></data>
-  <data name="Shortcuts_FixedKeys" xml:space="preserve"><value>Select a key to change it. Esc closes the lyrics or queue panel, and the media keys on your keyboard work while the Shirabe window is active.</value>
+  <data name="Shortcuts_FixedKeys" xml:space="preserve"><value>Виберіть клавішу для зміни. Esc закриває панель тексту або черги, а також медіа кнопки на вашій клавіатурі коли вікно Shirabe активне.</value>
         <comment>Explanation at the top of the keyboard shortcuts settings page. "Esc" is the Escape key. "Media keys" are the play/pause, next and previous keys some keyboards have.</comment></data>
-  <data name="Shortcuts_SeekBack" xml:space="preserve"><value>Seek back 5 seconds</value>
+  <data name="Shortcuts_SeekBack" xml:space="preserve"><value>Перемотати назад на 5 секунд</value>
         <comment>Name of a keyboard shortcut: moves the playing song 5 seconds back.</comment></data>
-  <data name="Shortcuts_SeekForward" xml:space="preserve"><value>Seek forward 5 seconds</value>
+  <data name="Shortcuts_SeekForward" xml:space="preserve"><value>Перемотати вперед на 5 секунд</value>
         <comment>Name of a keyboard shortcut: moves the playing song 5 seconds ahead.</comment></data>
-  <data name="Shortcuts_VolumeUp" xml:space="preserve"><value>Volume up</value>
+  <data name="Shortcuts_VolumeUp" xml:space="preserve"><value>Збільшити гучність</value>
         <comment>Name of a keyboard shortcut: makes the sound louder.</comment></data>
-  <data name="Shortcuts_VolumeDown" xml:space="preserve"><value>Volume down</value>
+  <data name="Shortcuts_VolumeDown" xml:space="preserve"><value>Зменшити гучність</value>
         <comment>Name of a keyboard shortcut: makes the sound quieter.</comment></data>
-  <data name="Shortcuts_PressKey" xml:space="preserve"><value>Press a key…</value>
+  <data name="Shortcuts_PressKey" xml:space="preserve"><value>Натисніть клавішу…</value>
         <comment>Text on a button while the app waits for the user to press the new keyboard shortcut. Short.</comment></data>
-  <data name="Shortcuts_NotSet" xml:space="preserve"><value>Not set</value>
+  <data name="Shortcuts_NotSet" xml:space="preserve"><value>Не задано</value>
         <comment>Text on a button of an action that has no keyboard shortcut. Short.</comment></data>
-  <data name="Shortcuts_CaptureHelp" xml:space="preserve"><value>Esc cancels. Backspace removes the shortcut.</value>
+  <data name="Shortcuts_CaptureHelp" xml:space="preserve"><value>Esc скасовує. Backspace прибирає гарячу клавішу.</value>
         <comment>Help shown while the app waits for a new keyboard shortcut. "Esc" and "Backspace" are key names.</comment></data>
-  <data name="Shortcuts_Taken" xml:space="preserve"><value>That key is already used by "{0}". Press another one, or Esc to cancel.</value>
+  <data name="Shortcuts_Taken" xml:space="preserve"><value>Клавіша вже використовується "{0}". Натисніть іншу, або Esc щоб скасувати.</value>
         <comment>Shown when the pressed keyboard shortcut belongs to another action. {0} is the name of that action.</comment></data>
-  <data name="Shortcuts_ResetAll" xml:space="preserve"><value>Reset all shortcuts</value>
+  <data name="Shortcuts_ResetAll" xml:space="preserve"><value>Скинути всі гарячі клавіші</value>
         <comment>Button that brings every keyboard shortcut back to the one the app came with.</comment></data>
   <!-- Settings: Audio -->
-  <data name="Audio_Title" xml:space="preserve"><value>Audio</value>
+  <data name="Audio_Title" xml:space="preserve"><value>Аудіо</value>
         <comment>Name of a settings page, in the list of pages.</comment></data>
-  <data name="Audio_Description" xml:space="preserve"><value>Output, playback, equalizer and volume</value>
+  <data name="Audio_Description" xml:space="preserve"><value>Вивід, відтворення, еквалайзер і гучність</value>
         <comment>One short line under the page name "Audio" in the list of settings pages. Lists what is on the page.</comment></data>
-  <data name="Audio_SectionOutput" xml:space="preserve"><value>OUTPUT</value>
+  <data name="Audio_SectionOutput" xml:space="preserve"><value>ВИХІД</value>
         <comment>Small heading above the settings about where the sound goes. Keep it uppercase if the language has letter case.</comment></data>
-  <data name="Audio_Device" xml:space="preserve"><value>Output device</value>
+  <data name="Audio_Device" xml:space="preserve"><value>Пристрій виводу</value>
         <comment>Name of the setting where the user picks speakers or headphones. Also the accessible name of the drop-down list.</comment></data>
-  <data name="Audio_DeviceDescription" xml:space="preserve"><value>The speakers or headphones Shirabe plays through.</value>
+  <data name="Audio_DeviceDescription" xml:space="preserve"><value>Динаміки або навушники через які грає Shirabe.</value>
         <comment>Explanation under "Output device". "Shirabe" is the app's name: do not translate it.</comment></data>
-  <data name="Audio_SystemDefault" xml:space="preserve"><value>System default</value>
+  <data name="Audio_SystemDefault" xml:space="preserve"><value>За замовчуванням</value>
         <comment>First entry of the output device list: whatever the operating system is set to use.</comment></data>
   <data name="Audio_DeviceMissing" xml:space="preserve"><value>The chosen device is not available, so the system default is playing.</value>
         <comment>Warning under the output device list, e.g. when headphones are unplugged.</comment></data>
-  <data name="Audio_NowOutput" xml:space="preserve"><value>Playing through</value>
+  <data name="Audio_NowOutput" xml:space="preserve"><value>Відтворюється через</value>
         <comment>Title of a line that shows the output device in use, its sample rate and channels.</comment></data>
-  <data name="Audio_NowSource" xml:space="preserve"><value>Current file</value>
+  <data name="Audio_NowSource" xml:space="preserve"><value>Поточний файл</value>
         <comment>Title of a line that shows technical facts about the loaded audio file: format, sample rate, channels, bit rate.</comment></data>
-  <data name="Audio_Unknown" xml:space="preserve"><value>Unknown</value>
+  <data name="Audio_Unknown" xml:space="preserve"><value>Невідомий</value>
         <comment>Shown when the app cannot tell which output device is in use.</comment></data>
   <data name="Audio_KHz" xml:space="preserve"><value>{0} kHz</value>
         <comment>A sample rate. {0} is a number such as 44.1.</comment></data>
-  <data name="Audio_Channels" xml:space="preserve"><value>channels: {0}</value>
+  <data name="Audio_Channels" xml:space="preserve"><value>каналів: {0}</value>
         <comment>Number of audio channels (2 is stereo). {0} is a number. Shown in the middle of a line of technical facts.</comment></data>
-  <data name="Audio_BitDepth" xml:space="preserve"><value>{0}-bit</value>
+  <data name="Audio_BitDepth" xml:space="preserve"><value>{0}-біт</value>
         <comment>Audio bit depth. {0} is a number such as 16 or 24.</comment></data>
-  <data name="Audio_Bitrate" xml:space="preserve"><value>{0} kbps</value>
+  <data name="Audio_Bitrate" xml:space="preserve"><value>{0} Кбіт/с</value>
         <comment>Audio bit rate in kilobits per second. {0} is a number.</comment></data>
-  <data name="Audio_SectionPlayback" xml:space="preserve"><value>PLAYBACK</value>
+  <data name="Audio_SectionPlayback" xml:space="preserve"><value>ПРОГРАВАЧ</value>
         <comment>Small heading above the settings about speed, pitch and reverb. Keep it uppercase if the language has letter case.</comment></data>
-  <data name="Audio_Speed" xml:space="preserve"><value>Playback speed</value>
+  <data name="Audio_Speed" xml:space="preserve"><value>Швидкість відтворення</value>
         <comment>Tooltip and accessible name of the speed button in the player bar and of its slider, and the title of the menu it opens.</comment></data>
   <data name="Audio_SpeedControl" xml:space="preserve"><value>Playback speed control</value>
         <comment>Name of an on/off switch. Also its accessible name.</comment></data>
