@@ -11,7 +11,8 @@ public sealed partial class ShortcutsSettingsViewModel : SettingsPageViewModel
 {
     private readonly AppSettings _settings;
 
-    public ShortcutsSettingsViewModel(AppSettings settings) : base("Shortcuts_Title", "Shortcuts_Description")
+    public ShortcutsSettingsViewModel(AppSettings settings) : base("Shortcuts_Title", "Shortcuts_Description",
+        "Icon.Settings.Shortcuts")
     {
         _settings = settings;
         Rows = [.. Enum.GetValues<ShortcutAction>().Select(action => new ShortcutRowViewModel(settings, action))];

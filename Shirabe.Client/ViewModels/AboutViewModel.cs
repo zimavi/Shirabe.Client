@@ -12,7 +12,7 @@ public sealed class AboutViewModel : SettingsPageViewModel
     {
     }
 
-    public AboutViewModel(AppVersion app) : base("About_Title", "About_Description")
+    public AboutViewModel(AppVersion app) : base("About_Title", "About_Description", "Icon.Settings.About")
     {
         Version = app.Version;
         Commit = app.Commit;
@@ -41,7 +41,8 @@ public sealed class AboutViewModel : SettingsPageViewModel
         // BASS_FX asks for credit; SoundTouch and Freeverb are inside it.
         new("BASS_FX by JOBnik!", "Freeware", "https://www.un4seen.com/"),
         new("SoundTouch (in BASS_FX), © Olli Parviainen", "LGPL", "https://www.surina.net/soundtouch/"),
-        new("Freeverb (in BASS_FX), Jezar at Dreampoint", "Public domain", "https://ccrma.stanford.edu/~jos/pasp/Freeverb.html"),
+        new("Freeverb (in BASS_FX), Jezar at Dreampoint", "Public domain",
+            "https://ccrma.stanford.edu/~jos/pasp/Freeverb.html"),
         new("Audio Tools Library (ATL)", "MIT", "https://github.com/Zeugma440/atldotnet"),
         new("CommunityToolkit.Mvvm", "MIT", "https://github.com/CommunityToolkit/dotnet"),
         new("Entity Framework Core", "MIT", "https://github.com/dotnet/efcore"),

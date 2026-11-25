@@ -8,7 +8,7 @@ public sealed class AppearanceSettingsViewModel : SettingsPageViewModel
     private readonly string? _themesFolder;
 
     public AppearanceSettingsViewModel(AppSettings settings, ThemeCatalog themes)
-        : base("Appearance_Title", "Appearance_Description")
+        : base("Appearance_Title", "Appearance_Description", "Icon.Settings.Appearance")
     {
         Settings = settings;
         _themesFolder = themes.Folder;

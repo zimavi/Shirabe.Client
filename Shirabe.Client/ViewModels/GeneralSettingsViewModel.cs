@@ -9,7 +9,8 @@ namespace Shirabe.Client.ViewModels;
 
 public sealed class GeneralSettingsViewModel : SettingsPageViewModel
 {
-    public GeneralSettingsViewModel(AppSettings settings) : base("General_Title", "General_Description")
+    public GeneralSettingsViewModel(AppSettings settings) : base("General_Title", "General_Description",
+        "Icon.Settings.General")
     {
         Settings = settings;
         Languages = [new LanguageOption(""), .. Loc.Available.Select(culture => new LanguageOption(culture.Name))];

@@ -31,6 +31,16 @@ public class SettingsViewModelTests
     }
 
     [Fact]
+    public void Every_settings_page_names_an_icon_that_exists()
+    {
+        // A misspelt name would only show as an empty space in the list.
+        var icons = File.ReadAllText(Path.Combine(LocalizationTests.ClientFolder(), "Styles", "Icons.axaml"));
+        var viewModel = new SettingsViewModel(new AppSettings(), new ThemeCatalog([], []));
+
+        Assert.All(viewModel.Pages, page => Assert.Contains($"x:Key=\"{page.IconKey}\"", icons));
+    }
+
+    [Fact]
     public void Every_settings_page_has_a_view_the_view_locator_can_find()
     {
         // ViewLocator maps Shirabe.Client.ViewModels.FooViewModel to Shirabe.Client.Views.FooView.

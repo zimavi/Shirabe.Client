@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Shirabe.Client.ViewModels"
              xmlns:loc="using:Shirabe.Client.Localization"
+             xmlns:conv="using:Shirabe.Client.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
              x:Class="Shirabe.Client.Views.SettingsView"
              x:DataType="vm:SettingsViewModel">
@@ -14,11 +15,15 @@
             <ListBox Classes="settings-pages" ItemsSource="{Binding Pages}" SelectedItem="{Binding SelectedPage}">
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="vm:SettingsPageViewModel">
-                        <StackPanel Spacing="2" Margin="0,4">
-                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
-                            <TextBlock Text="{Binding Description}" FontSize="12" TextTrimming="CharacterEllipsis"
-                                       Foreground="{DynamicResource TextSecondaryBrush}" />
-                        </StackPanel>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Margin="0,4">
+                            <PathIcon Data="{Binding IconKey, Converter={x:Static conv:IconKeyConverter.Instance}}"
+                                      Width="18" Height="18" VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="1" Spacing="2">
+                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding Description}" FontSize="12" TextTrimming="CharacterEllipsis"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

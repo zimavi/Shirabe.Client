@@ -20,12 +20,16 @@ public sealed partial class AudioSettingsViewModel : SettingsPageViewModel
 
     /// <param name="output">Null: the player cannot say or change where the sound goes.</param>
     public AudioSettingsViewModel(AppSettings settings, IAudioOutput? output = null, PlayerViewModel? player = null)
-        : base("Audio_Title", "Audio_Description")
+        : base("Audio_Title", "Audio_Description", "Icon.Settings.Audio")
     {
         Settings = settings;
         _output = output;
         SupportsEffects = player?.SupportsEffects ?? false;
-        Bands = [.. EqualizerBands.Frequencies.Select((frequency, band) => new EqualizerBandViewModel(settings, band, frequency))];
+        Bands =
+        [
+            .. EqualizerBands.Frequencies.Select((frequency, band) =>
+                new EqualizerBandViewModel(settings, band, frequency))
+        ];
         Refresh();
 
         // shortcut: never unsubscribed, fine while the settings pages live as long as the app

@@ -7,7 +7,8 @@ namespace Shirabe.Client.ViewModels;
 
 public sealed class LyricsSettingsViewModel : SettingsPageViewModel
 {
-    public LyricsSettingsViewModel(AppSettings settings) : base("Lyrics_Title", "Lyrics_Description")
+    public LyricsSettingsViewModel(AppSettings settings) : base("Lyrics_Title", "Lyrics_Description",
+        "Icon.Settings.Lyrics")
     {
         Settings = settings;
         // The labels next to the sliders follow them.

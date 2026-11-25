@@ -17,7 +17,7 @@ public partial class LocalizationTests
     [GeneratedRegex(@"Loc\.Get\(\s*""(\w+)""")]
     private static partial Regex CodeKey();
 
-    private static string ClientFolder()
+    internal static string ClientFolder()
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
         while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "Shirabe.Client.slnx"))) dir = dir.Parent;
