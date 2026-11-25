@@ -1,15 +1,19 @@
+using System.Text.Json.Nodes;
+
 using Shirabe.Client.Studio;
 using Shirabe.Client.ViewModels;
 using Shirabe.Core.Library;
 using Shirabe.Core.Metadata;
 using Shirabe.Metadata;
+
 using Xunit;
 
 namespace Shirabe.Tests;
 
 public sealed class StudioEditorTests : IDisposable
 {
-    private static readonly TrackSummary Song = new(Guid.NewGuid(), "Poker Face", "Lady Gaga", "The Fame", null, "file:///C:/music/Poker%20Face.flac");
+    private static readonly TrackSummary Song = new(Guid.NewGuid(), "Poker Face", "Lady Gaga", "The Fame", null,
+        "file:///music/Poker%20Face.flac");
 
     private readonly string _folder = Path.Combine(Path.GetTempPath(), $"shirabe-editor-{Guid.NewGuid():N}");
     private readonly FakeFilePicker _picker = new();
@@ -25,9 +29,11 @@ public sealed class StudioEditorTests : IDisposable
     public void Dispose() => Directory.Delete(_folder, recursive: true);
 
     private static string Template(string layer = "canonical") =>
-        DocumentTemplates.New(Song.RecordingId, layer, new DateTime(2026, 11, 23, 9, 0, 0, DateTimeKind.Utc), Song.Title, Song.Artist, Song.Album).ToJson();
+        DocumentTemplates.New(Song.RecordingId, layer, new DateTime(2026, 11, 23, 9, 0, 0, DateTimeKind.Utc),
+            Song.Title, Song.Artist, Song.Album).ToJson();
 
-    private StudioEditorViewModel Editor(string? json = null, TrackSummary? target = null, bool withStore = true, bool withLibrary = true) =>
+    private StudioEditorViewModel Editor(string? json = null, TrackSummary? target = null, bool withStore = true,
+        bool withLibrary = true) =>
         new(_picker, withStore ? _store : null, withLibrary ? _library : null, "Heading", json ?? Template(), target);
 
     // ---- live checking ----
@@ -102,12 +108,12 @@ public sealed class StudioEditorTests : IDisposable
     public void Format_tidies_a_valid_document_and_leaves_a_broken_one_alone()
     {
         var editor = Editor();
-        var compact = System.Text.Json.Nodes.JsonNode.Parse(editor.Text)!.ToJsonString();
+        var compact = JsonNode.Parse(editor.Text)!.ToJsonString();
         editor.Text = compact;
 
         editor.FormatCommand.Execute(null);
         Assert.Contains("\n", editor.Text);
-        Assert.Equal(compact, System.Text.Json.Nodes.JsonNode.Parse(editor.Text)!.ToJsonString());
+        Assert.Equal(compact, JsonNode.Parse(editor.Text)!.ToJsonString());
 
         editor.Text = "{ broken";
         editor.FormatCommand.Execute(null);
@@ -134,11 +140,14 @@ public sealed class StudioEditorTests : IDisposable
     [Fact]
     public async Task A_title_with_characters_a_file_cannot_have_gives_a_usable_name()
     {
-        var editor = Editor(DocumentTemplates.New(Guid.NewGuid(), "canonical", DateTime.UtcNow, "AC/DC: Back In Black?").ToJson());
+        var editor = Editor(DocumentTemplates.New(Guid.NewGuid(), "canonical", DateTime.UtcNow, "AC/DC: Back In Black?")
+            .ToJson());
 
         await editor.SaveAsFileCommand.ExecuteAsync(null);
 
-        Assert.Equal("AC_DC_ Back In Black_.shirabe.json", _picker.LastSuggestedName);
+        // Only what this system forbids in a file name is replaced: Windows forbids more than Linux and macOS.
+        var name = OperatingSystem.IsWindows() ? "AC_DC_ Back In Black_" : "AC_DC: Back In Black?";
+        Assert.Equal($"{name}.shirabe.json", _picker.LastSuggestedName);
     }
 
     [Fact]
@@ -169,9 +178,10 @@ public sealed class StudioEditorTests : IDisposable
     [Fact]
     public void Saving_to_a_song_needs_a_song_and_a_valid_document()
     {
-        Assert.False(Editor().SaveAsSidecarCommand.CanExecute(null));          // no song chosen
+        Assert.False(Editor().SaveAsSidecarCommand.CanExecute(null)); // no song chosen
         Assert.False(Editor().StartEmbedCommand.CanExecute(null));
-        Assert.False(Editor(target: Song, withStore: false).SaveAsSidecarCommand.CanExecute(null)); // no store to write with
+        Assert.False(Editor(target: Song, withStore: false).SaveAsSidecarCommand
+            .CanExecute(null)); // no store to write with
         Assert.True(Editor(target: Song).SaveAsSidecarCommand.CanExecute(null));
 
         var editor = Editor(target: Song);
@@ -192,7 +202,8 @@ public sealed class StudioEditorTests : IDisposable
 
         Assert.Equal([(Song.RecordingId, DocumentOrigin.Sidecar, "canonical")], _store.Writes);
         Assert.Equal("Saved to Poker Face.flac.shirabe.json, beside the audio file.", editor.Notice);
-        Assert.Equal(before, editor.Text); // writing bumps a revision in the written copy, never in what you are editing
+        Assert.Equal(before,
+            editor.Text); // writing bumps a revision in the written copy, never in what you are editing
         Assert.False(editor.IsBusy);
     }
 
@@ -232,7 +243,8 @@ public sealed class StudioEditorTests : IDisposable
     [Fact]
     public async Task A_write_that_fails_shows_why_and_the_store_message_is_not_lost()
     {
-        _store.WriteFailure = new InvalidOperationException("The audio file was left as it was. Writing failed: access denied");
+        _store.WriteFailure =
+            new InvalidOperationException("The audio file was left as it was. Writing failed: access denied");
         var editor = Editor(target: Song);
 
         await editor.SaveAsSidecarCommand.ExecuteAsync(null);
@@ -320,7 +332,8 @@ public sealed class StudioEditorTests : IDisposable
 
 public class SongPickerViewModelTests
 {
-    private static TrackSummary Track(string title, string? artist = "A") => new(Guid.NewGuid(), title, artist, null, null, $"file:///C:/{title}.flac");
+    private static TrackSummary Track(string title, string? artist = "A") =>
+        new(Guid.NewGuid(), title, artist, null, null, $"file:///C:/{title}.flac");
 
     [Fact]
     public void Choosing_needs_a_song_and_then_announces_it()
@@ -342,11 +355,12 @@ public class SongPickerViewModelTests
     [InlineData(0, "personal")]
     [InlineData(1, "canonical")]
     [InlineData(2, "community")]
-    [InlineData(9, "community")]  // out of range is kept inside
+    [InlineData(9, "community")] // out of range is kept inside
     [InlineData(-1, "personal")]
     public void The_layer_follows_the_choice_in_the_list(int index, string expected)
     {
-        var picker = new SongPickerViewModel([Track("One")], "H", "Create", chooseLayer: true) { SelectedLayerIndex = index };
+        var picker =
+            new SongPickerViewModel([Track("One")], "H", "Create", chooseLayer: true) { SelectedLayerIndex = index };
 
         Assert.Equal(expected, picker.SelectedLayer);
         Assert.Equal(3, SongPickerViewModel.LayerNames.Count);
@@ -355,7 +369,8 @@ public class SongPickerViewModelTests
     [Fact]
     public void Typing_narrows_the_list()
     {
-        var picker = new SongPickerViewModel([Track("Poker Face", "Lady Gaga"), Track("Other", "Someone")], "H", "Choose", chooseLayer: false);
+        var picker = new SongPickerViewModel([Track("Poker Face", "Lady Gaga"), Track("Other", "Someone")], "H",
+            "Choose", chooseLayer: false);
 
         picker.Filter = "gaga";
 
@@ -366,7 +381,8 @@ public class SongPickerViewModelTests
 
 public sealed class StudioNewAndEditTests : IDisposable
 {
-    private static readonly TrackSummary Song = new(Guid.NewGuid(), "Poker Face", "Lady Gaga", "The Fame", null, "file:///C:/music/a.flac");
+    private static readonly TrackSummary Song = new(Guid.NewGuid(), "Poker Face", "Lady Gaga", "The Fame", null,
+        "file:///C:/music/a.flac");
 
     private readonly string _folder = Path.Combine(Path.GetTempPath(), $"shirabe-studio-new-{Guid.NewGuid():N}");
     private readonly FakeFilePicker _picker = new();
@@ -482,7 +498,9 @@ public sealed class StudioNewAndEditTests : IDisposable
     // ---- from the properties dialog to Studio ----
 
     private static StoredDocument Stored(string layer = "canonical") =>
-        new(DocumentOrigin.Sidecar, layer, DocumentTemplates.New(Song.RecordingId, layer, DateTime.UtcNow, "From the sidecar").ToJson(), 1, 0, DateTime.UtcNow);
+        new(DocumentOrigin.Sidecar, layer,
+            DocumentTemplates.New(Song.RecordingId, layer, DateTime.UtcNow, "From the sidecar").ToJson(), 1, 0,
+            DateTime.UtcNow);
 
     [Fact]
     public async Task A_stored_document_can_be_edited_only_where_studio_can_take_it()
@@ -490,7 +508,10 @@ public sealed class StudioNewAndEditTests : IDisposable
         _store.Documents.Add(Stored());
         var without = new PropertiesViewModel(new FakeMetadataStore(), new FakeFileTags(), Song, null, _store);
         await without.LoadAsync();
-        var with = new PropertiesViewModel(new FakeMetadataStore(), new FakeFileTags(), Song, null, _store) { CanEditInStudio = true };
+        var with = new PropertiesViewModel(new FakeMetadataStore(), new FakeFileTags(), Song, null, _store)
+        {
+            CanEditInStudio = true
+        };
         await with.LoadAsync();
 
         Assert.False(without.Documents[0].CanEdit);
@@ -501,7 +522,8 @@ public sealed class StudioNewAndEditTests : IDisposable
     public async Task Asking_to_edit_a_document_of_a_song_closes_the_dialog_and_tells_the_shell()
     {
         _store.Documents.Add(Stored());
-        var songs = new SongsViewModel(_library, new FakeScanner(), new FakeFolderPicker(), new PlayerViewModel(new FakeAudioPlayer()),
+        var songs = new SongsViewModel(_library, new FakeScanner(), new FakeFolderPicker(),
+            new PlayerViewModel(new FakeAudioPlayer()),
             track => new PropertiesViewModel(new FakeMetadataStore(), new FakeFileTags(), track, null, _store));
         StudioEditRequest? request = null;
         songs.EditInStudioRequested += (_, r) => request = r;
@@ -519,7 +541,8 @@ public sealed class StudioNewAndEditTests : IDisposable
     public async Task Without_a_shell_listening_the_dialog_does_not_offer_to_edit_in_studio()
     {
         _store.Documents.Add(Stored());
-        var songs = new SongsViewModel(_library, new FakeScanner(), new FakeFolderPicker(), new PlayerViewModel(new FakeAudioPlayer()),
+        var songs = new SongsViewModel(_library, new FakeScanner(), new FakeFolderPicker(),
+            new PlayerViewModel(new FakeAudioPlayer()),
             track => new PropertiesViewModel(new FakeMetadataStore(), new FakeFileTags(), track, null, _store));
 
         await songs.ShowPropertiesCommand.ExecuteAsync(Song);
@@ -532,7 +555,8 @@ public sealed class StudioNewAndEditTests : IDisposable
     public async Task The_shell_opens_the_editor_on_the_document_with_its_song_as_the_target()
     {
         _store.Documents.Add(Stored("personal"));
-        var songs = new SongsViewModel(_library, new FakeScanner(), new FakeFolderPicker(), new PlayerViewModel(new FakeAudioPlayer()),
+        var songs = new SongsViewModel(_library, new FakeScanner(), new FakeFolderPicker(),
+            new PlayerViewModel(new FakeAudioPlayer()),
             track => new PropertiesViewModel(new FakeMetadataStore(), new FakeFileTags(), track, null, _store));
         var main = new MainViewModel(new PlayerViewModel(new FakeAudioPlayer()), songs, null,
             studioFactory: () => new StudioViewModel(_picker, _library, _store));

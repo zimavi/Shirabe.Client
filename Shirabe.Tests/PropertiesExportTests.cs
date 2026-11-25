@@ -1,7 +1,9 @@
 using System.Text.Json;
+
 using Shirabe.Client.ViewModels;
 using Shirabe.Core.Library;
 using Shirabe.Metadata;
+
 using Xunit;
 
 namespace Shirabe.Tests;
@@ -19,10 +21,13 @@ public sealed class PropertiesExportTests : IDisposable
     {
         SynchronizationContext.SetSynchronizationContext(null);
         Directory.CreateDirectory(_folder);
-        _song = new TrackSummary(Guid.NewGuid(), "Example Song", "Artist", "Album", null, new Uri(Path.Combine(_folder, "song.flac")).AbsoluteUri);
-        _store.Definitions["local:mood"] = new FieldDefinition("local:mood", FieldType.Text, Multiple: true, Label: "Mood");
+        _song = new TrackSummary(Guid.NewGuid(), "Example Song", "Artist", "Album", null,
+            new Uri(Path.Combine(_folder, "song.flac")).AbsoluteUri);
+        _store.Definitions["local:mood"] =
+            new FieldDefinition("local:mood", FieldType.Text, Multiple: true, Label: "Mood");
         _store.Definitions["local:bpm"] = new FieldDefinition("local:bpm", FieldType.Number, Label: "Tempo");
-        _store.Values[(_song.RecordingId, "local:mood")] = JsonDocument.Parse("""["calm","late"]""").RootElement.Clone();
+        _store.Values[(_song.RecordingId, "local:mood")] =
+            JsonDocument.Parse("""["calm","late"]""").RootElement.Clone();
         _store.Values[(_song.RecordingId, "local:bpm")] = JsonDocument.Parse("120").RootElement.Clone();
     }
 
@@ -53,7 +58,8 @@ public sealed class PropertiesExportTests : IDisposable
 
         var document = ReadDocument(target);
         Assert.Empty(document.Validate());
-        Assert.Equal(("personal", "user", _song.RecordingId.ToString()), (document.Layer, document.SourceKind, document.SubjectId));
+        Assert.Equal(("personal", "user", _song.RecordingId.ToString()),
+            (document.Layer, document.SourceKind, document.SubjectId));
         Assert.Equal(["local:bpm", "local:mood"], document.FieldNames);
         Assert.Equal("""["calm","late"]""", document.Root["fields"]!["local:mood"]!.ToJsonString());
         Assert.Equal("Mood", document.Root["definitions"]!["local:mood"]!["label"]!.GetValue<string>());
@@ -69,7 +75,9 @@ public sealed class PropertiesExportTests : IDisposable
 
         await dialog.ExportCommand.ExecuteAsync(null);
 
-        Assert.Equal("AC_DC_ Back In Black_.shirabe.json", _picker.LastSuggestedName);
+        // Only what this system forbids in a file name is replaced: Windows forbids more than Linux and macOS.
+        var name = OperatingSystem.IsWindows() ? "AC_DC_ Back In Black_" : "AC_DC: Back In Black?";
+        Assert.Equal($"{name}.shirabe.json", _picker.LastSuggestedName);
     }
 
     [Fact]
@@ -175,11 +183,11 @@ public sealed class PropertiesExportTests : IDisposable
     {
         var sidecar = Path.Combine(_folder, "song.flac.shirabe.json");
         const string artist = """
-            { "format": "shirabe.metadata", "version": "0.1",
-              "subject": { "type": "recording", "id": "0192f0a8-7c1e-7a53-9d0e-3b6f2a1c4d55" },
-              "layer": "canonical", "source": { "kind": "artist", "created": "2026-03-02T09:00:00Z" }, "revision": 3,
-              "fields": { "title": "The Artists Title" } }
-            """;
+                              { "format": "shirabe.metadata", "version": "0.1",
+                                "subject": { "type": "recording", "id": "0192f0a8-7c1e-7a53-9d0e-3b6f2a1c4d55" },
+                                "layer": "canonical", "source": { "kind": "artist", "created": "2026-03-02T09:00:00Z" }, "revision": 3,
+                                "fields": { "title": "The Artists Title" } }
+                              """;
         File.WriteAllText(sidecar, artist);
         var dialog = await Open();
 
