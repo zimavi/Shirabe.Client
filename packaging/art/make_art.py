@@ -3,10 +3,11 @@
 The outputs are committed; run this only after changing the art:  python packaging/art/make_art.py
 Needs Pillow, and the Segoe UI fonts of Windows for the pictures with text.
 """
+import math
 import re
 from pathlib import Path
 
-from PIL import Image, ImageChops, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGING = ROOT / "packaging"
@@ -63,8 +64,8 @@ def gradient(size, start, end, first=0.0, last=1.0):
     return small.resize((size, size), Image.BILINEAR)
 
 
-def icon(size, margin=0.0):
-    """The icon at size x size; margin is the empty border as a fraction of the size."""
+def icon(size):
+    """The flat icon (Windows, Linux, installer pictures) at size x size."""
     scale = 4
     canvas = 1024 * scale
 
@@ -83,10 +84,40 @@ def icon(size, margin=0.0):
     art = art.convert("RGBA")
     art.putalpha(disc(512))
 
-    inner = round(size * (1 - 2 * margin))
-    result = Image.new("RGBA", (size, size))
-    result.paste(art.resize((inner, inner), Image.LANCZOS), ((size - inner) // 2,) * 2)
-    return result
+    return art.resize((size, size), Image.LANCZOS)
+
+
+def squircle(size, corner, exponent):
+    """An anti-aliased square mask with continuous (superellipse) corners that reach `corner` pixels along each edge."""
+    scale = 4
+    edge, reach = size * scale, corner * scale
+    curve = [(reach * (1 - math.cos(a) ** (2 / exponent)), reach * (1 - math.sin(a) ** (2 / exponent)))
+             for a in (math.pi / 2 * step / 96 for step in range(97))]
+    # clockwise: top left, top right, bottom right, bottom left
+    points = (curve + [(edge - x, y) for x, y in reversed(curve)]
+              + [(edge - x, edge - y) for x, y in curve] + [(x, edge - y) for x, y in reversed(curve)])
+    mask = Image.new("L", (edge, edge))
+    ImageDraw.Draw(mask).polygon(points, fill=255)
+    return mask.resize((size, size), Image.LANCZOS)
+
+
+def macos_icon():
+    """The painted macOS icon (art/macos-source.png), cut cleanly and put on Apple's 1024 px grid with a soft shadow."""
+    source = Image.open(PACKAGING / "art/macos-source.png").convert("RGB")
+    assert source.size == (1024, 1024), "MAC_BODY and the corner below were measured on this picture"
+    # The body without the source's jagged outline, pale fringe and painted-on shadow.
+    body = source.resize((824, 824), Image.LANCZOS, box=(3, 4, 1021, 1006))
+    mask = Image.new("L", (1024, 1024))
+    mask.paste(squircle(824, 259, 2.52), (100, 100))
+
+    shadow = Image.new("L", (1024, 1024))
+    shadow.paste(mask.point(lambda v: round(v * 0.3)), (0, 10))
+    result = Image.new("RGBA", (1024, 1024))
+    result.putalpha(shadow.filter(ImageFilter.GaussianBlur(10)))
+    art = Image.new("RGBA", (1024, 1024))
+    art.paste(body, (100, 100))
+    art.putalpha(mask)
+    return Image.alpha_composite(result, art)
 
 
 def svg():
@@ -179,8 +210,7 @@ def main():
     icon(512).save(ROOT / "Shirabe.Client/Assets/Icon.png")
     for size in (48, 128, 256, 512):
         icon(size).save(PACKAGING / f"linux/icons/{size}.png")
-    # macOS leaves room around an icon in the Dock; a full-bleed one looks larger than its neighbours.
-    icon(1024, margin=0.08).save(PACKAGING / "macos/Shirabe.icns")
+    macos_icon().save(PACKAGING / "macos/Shirabe.icns")
 
     dmg_background(1).save(PACKAGING / "macos/dmg-background.png")
     dmg_background(2).save(PACKAGING / "macos/dmg-background@2x.png")
