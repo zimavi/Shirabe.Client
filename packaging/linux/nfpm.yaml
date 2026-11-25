@@ -15,12 +15,13 @@ description: |-
 homepage: https://github.com/zimavi/Shirabe.Client
 license: Apache-2.0
 
-# The app is self-contained (it brings its own .NET runtime); fontconfig is the one thing Skia loads from the system.
+# The app is self-contained (it brings its own .NET runtime); from the system, Skia loads fontconfig, and secrets such
+# as the Last.fm session are saved through libsecret (named by its file in the rpm, package names differ by distro).
 overrides:
   deb:
-    depends: [ libfontconfig1 ]
+    depends: [ libfontconfig1, libsecret-1-0 ]
   rpm:
-    depends: [ fontconfig ]
+    depends: [ fontconfig, "libsecret-1.so.0()(64bit)" ]
 
 contents:
   - src: publish/

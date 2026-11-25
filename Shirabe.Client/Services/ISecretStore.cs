@@ -17,7 +17,11 @@ public interface ISecretStore
     void Delete(string name);
 
     /// <summary>The secure storage of this platform, or null where Shirabe has no support for one yet.</summary>
-    static ISecretStore? ForThisPlatform() => OperatingSystem.IsWindows() ? new WindowsSecretStore() : null;
+    static ISecretStore? ForThisPlatform()
+    {
+        if (OperatingSystem.IsWindows()) return new WindowsSecretStore();
+        return OperatingSystem.IsLinux() ? new LinuxSecretStore() : null;
+    }
 }
 
 public sealed class SecretStoreException(string message, Exception? inner = null) : Exception(message, inner);
