@@ -37,6 +37,13 @@ public partial class MainViewModel : ViewModelBase
         _home = new HomeViewModel(libraryNotice);
         CurrentPage = _home;
 
+        if (player is not null)
+            player.AudioSettingsRequested += (_, _) =>
+            {
+                Settings.SelectedPage = Settings.Pages.OfType<AudioSettingsViewModel>().Single();
+                CurrentPage = Settings;
+            };
+
         // A document of a song that the person wants to edit goes to Studio.
         if (songs is not null && studioFactory is not null)
             songs.EditInStudioRequested += (_, request) => OpenEditorInStudio(request);

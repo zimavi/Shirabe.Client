@@ -1,0 +1,110 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:views="using:Shirabe.Client.Views"
+             xmlns:loc="using:Shirabe.Client.Localization"
+             xmlns:playback="using:Shirabe.Core.Playback"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="700"
+             x:Class="Shirabe.Client.Views.AudioSettingsView"
+             x:DataType="vm:AudioSettingsViewModel">
+    <StackPanel Spacing="24">
+        <StackPanel Spacing="6" IsVisible="{Binding HasOutput}">
+            <TextBlock Classes="section" Text="{loc:T Audio_SectionOutput}" />
+            <views:SettingRow Title="{loc:T Audio_Device}" Description="{loc:T Audio_DeviceDescription}">
+                <ComboBox ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" Width="260"
+                          AutomationProperties.Name="{loc:T Audio_Device}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="playback:OutputDevice">
+                            <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"
+                                       ToolTip.Tip="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </views:SettingRow>
+            <TextBlock Text="{loc:T Audio_DeviceMissing}" IsVisible="{Binding IsDeviceMissing}" TextWrapping="Wrap"
+                       FontSize="12" Foreground="IndianRed" />
+            <views:SettingRow Title="{loc:T Audio_NowOutput}" Description="{Binding OutputText}" />
+            <views:SettingRow Title="{loc:T Audio_NowSource}" Description="{Binding SourceText}" />
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+            <TextBlock Classes="section" Text="{loc:T Audio_SectionPlayback}" />
+            <TextBlock Text="{loc:T Audio_NeedsEffects}" IsVisible="{Binding !SupportsEffects}" TextWrapping="Wrap"
+                       FontSize="12" Foreground="IndianRed" />
+            <views:SettingRow Title="{loc:T Audio_SpeedControl}" Description="{loc:T Audio_SpeedControlDescription}">
+                <ToggleSwitch IsChecked="{Binding Settings.PlaybackSpeedControl}"
+                              AutomationProperties.Name="{loc:T Audio_SpeedControl}" />
+            </views:SettingRow>
+            <views:SettingRow Title="{loc:T Audio_KeepPitch}" Description="{loc:T Audio_KeepPitchDescription}"
+                              IsEnabled="{Binding SupportsEffects}">
+                <ToggleSwitch IsChecked="{Binding Settings.KeepPitch}"
+                              AutomationProperties.Name="{loc:T Audio_KeepPitch}" />
+            </views:SettingRow>
+            <views:SettingRow Title="{loc:T Audio_Reverb}" Description="{loc:T Audio_ReverbDescription}"
+                              IsEnabled="{Binding SupportsEffects}">
+                <ToggleSwitch IsChecked="{Binding Settings.Reverb}" AutomationProperties.Name="{loc:T Audio_Reverb}" />
+            </views:SettingRow>
+        </StackPanel>
+
+        <StackPanel Spacing="6" IsEnabled="{Binding SupportsEffects}">
+            <TextBlock Classes="section" Text="{loc:T Audio_SectionEqualizer}" />
+            <views:SettingRow Title="{loc:T Audio_Equalizer}" Description="{loc:T Audio_EqualizerDescription}">
+                <ToggleSwitch IsChecked="{Binding Settings.EqualizerEnabled}"
+                              AutomationProperties.Name="{loc:T Audio_Equalizer}" />
+            </views:SettingRow>
+            <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="{DynamicResource RadiusMedium}"
+                    Padding="16,12" IsEnabled="{Binding Settings.EqualizerEnabled}">
+                <StackPanel Spacing="8">
+                    <ItemsControl ItemsSource="{Binding Bands}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:EqualizerBandViewModel">
+                                <Grid ColumnDefinitions="64,*,64">
+                                    <TextBlock Text="{Binding Label}" VerticalAlignment="Center" />
+                                    <Slider Grid.Column="1" Theme="{StaticResource ShirabeSlider}" Minimum="-12"
+                                            Maximum="12" SmallChange="1" LargeChange="3" TickFrequency="1"
+                                            IsSnapToTickEnabled="True" Value="{Binding Gain, Mode=TwoWay}"
+                                            AutomationProperties.Name="{Binding Label}" />
+                                    <TextBlock Grid.Column="2" Text="{Binding GainText}" TextAlignment="Right"
+                                               VerticalAlignment="Center"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Content="{loc:T Audio_EqualizerReset}" Command="{Binding ResetEqualizerCommand}"
+                            HorizontalAlignment="Right" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+            <TextBlock Classes="section" Text="{loc:T Audio_SectionVolume}" />
+            <views:SettingRow Title="{loc:T Audio_Normalize}" Description="{loc:T Audio_NormalizeDescription}">
+                <ComboBox ItemsSource="{Binding NormalizationOptions}" SelectedItem="{Binding SelectedNormalization}"
+                          MinWidth="160" AutomationProperties.Name="{loc:T Audio_Normalize}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:NormalizationOption">
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </views:SettingRow>
+            <views:SettingRow Title="{loc:T Audio_Curve}" Description="{loc:T Audio_CurveDescription}">
+                <ToggleSwitch IsChecked="{Binding Settings.ExponentialVolume}"
+                              AutomationProperties.Name="{loc:T Audio_Curve}" />
+            </views:SettingRow>
+            <views:SettingRow Title="{loc:T Audio_ScrollStep}" Description="{loc:T Audio_ScrollStepDescription}">
+                <ComboBox ItemsSource="{Binding ScrollSteps}" SelectedItem="{Binding Settings.VolumeScrollStep}"
+                          MinWidth="90" AutomationProperties.Name="{loc:T Audio_ScrollStep}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="x:Int32">
+                            <TextBlock Text="{Binding StringFormat={}{0}%}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </views:SettingRow>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

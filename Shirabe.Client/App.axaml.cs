@@ -51,7 +51,7 @@ public partial class App : Application
         var themes = ThemeCatalog.Load(Path.Combine(dataFolder, "themes"));
 
         var mainViewModel = CreateMainViewModel(
-            new SettingsViewModel(settings, themes),
+            themes,
             (library, store) => new StudioViewModel(new FilePicker(GetMainWindow), library, store), settings,
             out var player);
         _ = new Appearance(this, settings, themes,
@@ -195,7 +195,7 @@ public partial class App : Application
 
     // The app still opens without a working audio engine so the reason can be shown, e.g. a missing bass.dll.
     private static MainViewModel CreateMainViewModel(
-        SettingsViewModel settings, Func<LocalLibrary?, IDocumentStore?, StudioViewModel> studio,
+        ThemeCatalog themes, Func<LocalLibrary?, IDocumentStore?, StudioViewModel> studio,
         AppSettings appSettings, out IAudioPlayer? player)
     {
         try
@@ -211,6 +211,8 @@ public partial class App : Application
         }
 
         var playerViewModel = new PlayerViewModel(player, appSettings, new ReplayGainReader());
+        // Made now, not when first shown: it moves the player to the saved output device.
+        var settings = new SettingsViewModel(appSettings, themes, player as IAudioOutput, playerViewModel);
 
         var libraryPath = GetLibraryPath();
 

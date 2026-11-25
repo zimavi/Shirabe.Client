@@ -77,6 +77,18 @@ public class AudioSettingsTests
     }
 
     [Fact]
+    public void The_gear_in_the_speed_menu_opens_the_audio_settings()
+    {
+        var player = Player();
+        var shell = new MainViewModel(player, null, null);
+
+        player.OpenAudioSettingsCommand.Execute(null);
+
+        Assert.True(shell.IsSettingsSelected);
+        Assert.IsType<AudioSettingsViewModel>(shell.Settings.SelectedPage);
+    }
+
+    [Fact]
     public void The_player_follows_keep_pitch_reverb_and_the_equaliser()
     {
         _settings.Reverb = true;
@@ -93,6 +105,25 @@ public class AudioSettingsTests
         Assert.True(_engine.KeepPitch);
         Assert.False(_engine.Reverb);
         Assert.Equal([3, -3, 0, 0, 0, 0, 0, 0, 0, 0], _engine.Equalizer);
+    }
+
+    [Fact]
+    public void An_equaliser_slider_changes_its_band_and_reset_flattens_all()
+    {
+        var page = new AudioSettingsViewModel(_settings, player: Player());
+        _settings.EqualizerEnabled = true;
+
+        page.Bands[5].Gain = 4;
+
+        Assert.Equal(10, page.Bands.Count);
+        Assert.Equal(("1 kHz", "+4 dB"), (page.Bands[5].Label, page.Bands[5].GainText));
+        Assert.Equal("31 Hz", page.Bands[0].Label);
+        Assert.Equal(4, _engine.Equalizer[5]);
+
+        page.ResetEqualizerCommand.Execute(null);
+
+        Assert.All(_engine.Equalizer, gain => Assert.Equal(0, gain));
+        Assert.Equal("0 dB", page.Bands[5].GainText);
     }
 
     [Theory]
@@ -179,6 +210,55 @@ public class AudioSettingsTests
     }
 
     [Fact]
+    public void The_chosen_device_is_applied_at_once_and_a_missing_one_is_reported_not_forgotten()
+    {
+        var output = new FakeOutput();
+        _settings.OutputDevice = "headphones";
+
+        var page = new AudioSettingsViewModel(_settings, output);
+
+        Assert.Equal("headphones", output.Used); // at startup, before the page is ever shown
+        Assert.True(page.IsDeviceMissing);
+        Assert.Equal("", page.SelectedDevice!.Id);
+        page.SelectedDevice = null; // a combo box reset must not clear the choice
+        Assert.Equal("headphones", _settings.OutputDevice);
+
+        // A combo box writes its own idea of the selection back while the list is being replaced.
+        page.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(page.Devices)) page.SelectedDevice = page.Devices[0];
+        };
+        output.Devices.Add(new("headphones", "Headphones")); // plugged in again
+        page.RefreshCommand.Execute(null);
+
+        Assert.Equal("headphones", _settings.OutputDevice);
+        Assert.False(page.IsDeviceMissing);
+        Assert.Equal("Headphones", page.SelectedDevice!.Name);
+
+        var list = page.Devices;
+        page.SelectedDevice = list[0];
+
+        Assert.Equal("", _settings.OutputDevice);
+        Assert.Equal("", output.Used);
+        Assert.Same(list, page.Devices); // the list must not change while a choice is being applied
+    }
+
+    [Fact]
+    public void The_page_describes_the_output_and_the_loaded_file()
+    {
+        var output = new FakeOutput();
+        var page = new AudioSettingsViewModel(_settings, output);
+
+        Assert.Equal("Speakers · 48 kHz · channels: 2", page.OutputText);
+        Assert.Equal("Nothing playing", page.SourceText);
+
+        output.Source = new SourceInfo("FLAC", 44100, 2, 16, null);
+        page.RefreshCommand.Execute(null);
+
+        Assert.Equal("FLAC · 44.1 kHz · channels: 2 · 16-bit", page.SourceText);
+    }
+
+    [Fact]
     public void Audio_settings_are_saved_and_odd_values_in_the_file_are_made_usable()
     {
         var path = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".json");
@@ -220,5 +300,26 @@ public class AudioSettingsTests
             Reads++;
             return Task.FromResult(mediaUri.Contains("loud") ? new ReplayGain(-6.0206, 1, -12.0412, 1) : null);
         }
+    }
+
+    private sealed class FakeOutput : IAudioOutput
+    {
+        public List<OutputDevice> Devices { get; } = [new("speakers", "Speakers")];
+
+        public string? Used { get; private set; }
+
+        public SourceInfo? Source { get; set; }
+
+        public IReadOnlyList<OutputDevice> GetDevices() => [.. Devices];
+
+        public bool UseDevice(string id)
+        {
+            Used = id;
+            return id.Length == 0 || Devices.Any(device => device.Id == id);
+        }
+
+        public OutputInfo? GetOutput() => new("Speakers", 48000, 2);
+
+        public SourceInfo? GetSource() => Source;
     }
 }
