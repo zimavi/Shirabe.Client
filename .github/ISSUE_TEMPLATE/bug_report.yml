@@ -1,0 +1,65 @@
+name: Bug report
+description: Something does not work as it should
+labels: [ bug ]
+body:
+  - type: markdown
+    attributes:
+      value: Issues are public. Remove your user name, file paths, keys and anything else private before posting.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: And what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open ...
+        2. Click ...
+        3. See ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version and build
+      description: From Settings > About.
+      placeholder: 0.1.0 (ce863a5e7)
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      description: On Linux, add the desktop environment or window manager.
+      placeholder: Windows 11, Ubuntu 24.04 (GNOME), macOS 15
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How did you install it?
+      options:
+        - Windows installer (Setup.exe or MSI)
+        - winget
+        - AppImage
+        - deb or rpm
+        - tar.gz
+        - macOS dmg
+        - Built from source
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: file-format
+    attributes:
+      label: Audio format
+      description: If it happens with particular songs (MP3, FLAC, ...). Please do not attach copyrighted music.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Running from source (`dotnet run --project Shirabe.Client.Desktop`) prints errors to the console.

@@ -1,0 +1,27 @@
+name: Feature request
+description: Suggest something new or a change to how something works
+labels: [ enhancement ]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does it solve?
+      description: What are you trying to do, and what gets in the way today?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Simpler alternatives
+      description: Anything simpler you considered, or how other players handle it.
+  - type: textarea
+    id: touches
+    attributes:
+      label: What does it touch?
+      description: For example the database, the metadata format, or anything stored or sent over the network.
