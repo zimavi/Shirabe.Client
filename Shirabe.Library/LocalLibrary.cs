@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+
 using Shirabe.Core.Library;
 using Shirabe.Core.Metadata;
 using Shirabe.Library.Model;
@@ -11,7 +12,17 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
 {
     private static readonly HashSet<string> AudioExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
-        ".mp3", ".flac", ".ogg", ".oga", ".opus", ".wav", ".m4a", ".aac", ".wma", ".aiff", ".aif",
+        ".mp3",
+        ".flac",
+        ".ogg",
+        ".oga",
+        ".opus",
+        ".wav",
+        ".m4a",
+        ".aac",
+        ".wma",
+        ".aiff",
+        ".aif",
     };
 
     private const int SaveEvery = 200;
@@ -27,15 +38,13 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
     private readonly ArtworkCache _artwork;
     private readonly HttpClient _http;
 
-    private LocalLibrary(DbContextOptions<LibraryDbContext> options, ArtworkCache artwork, HttpMessageHandler? downloads)
+    private LocalLibrary(DbContextOptions<LibraryDbContext> options, ArtworkCache artwork,
+        HttpMessageHandler? downloads)
     {
         _options = options;
         _artwork = artwork;
         _http = CreateHttp(downloads);
     }
-
-    public static string DefaultPath { get; } =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Shirabe", "library.db");
 
     /// <summary>
     /// Opens the database at <paramref name="path"/>, creating or migrating it. Before migrating an existing
@@ -58,7 +67,8 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
         db.Database.Migrate();
 
         // Covers live in a folder next to the database, so moving or testing with another database moves them too.
-        return new LocalLibrary(options, new ArtworkCache(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!, "artwork")), downloads);
+        return new LocalLibrary(options,
+            new ArtworkCache(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!, "artwork")), downloads);
     }
 
     public async Task<IReadOnlyList<TrackSummary>> GetTracksAsync(CancellationToken cancellationToken = default)
@@ -72,7 +82,8 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
             .Select(r => new TrackSummary(
                 r.Id,
                 r.Title,
-                r.Credits.Where(c => c.Role == CreditRoles.Artist).OrderBy(c => c.SortOrder).Select(c => c.Artist.Name).FirstOrDefault(),
+                r.Credits.Where(c => c.Role == CreditRoles.Artist).OrderBy(c => c.SortOrder).Select(c => c.Artist.Name)
+                    .FirstOrDefault(),
                 r.ReleaseTracks.Select(t => t.Release.Title).FirstOrDefault(),
                 r.Duration,
                 r.Sources.Where(s => !s.IsMissing).OrderBy(s => s.Uri).Select(s => s.Uri).First(),
@@ -89,7 +100,8 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
     private async Task<ScanResult> ScanAsync(string folder, IProgress<ScanProgress>? progress, CancellationToken ct)
     {
         var root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(folder));
-        var files = Directory.EnumerateFiles(root, "*", new EnumerationOptions { RecurseSubdirectories = true, IgnoreInaccessible = true })
+        var files = Directory.EnumerateFiles(root, "*",
+                new EnumerationOptions { RecurseSubdirectories = true, IgnoreInaccessible = true })
             .Where(file => AudioExtensions.Contains(Path.GetExtension(file)))
             .ToList();
 
@@ -114,7 +126,8 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
             {
                 r.Id,
                 r.Title,
-                AlbumArtist = r.Credits.Where(c => c.Role == CreditRoles.AlbumArtist).Select(c => c.Artist.Name).FirstOrDefault(),
+                AlbumArtist = r.Credits.Where(c => c.Role == CreditRoles.AlbumArtist).Select(c => c.Artist.Name)
+                    .FirstOrDefault(),
             })
             .ToListAsync(ct);
         foreach (var release in existingReleases)
@@ -138,7 +151,10 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
 
             var created = new Release { Title = tags.Album!, Year = tags.Year };
             if (albumArtist.Length > 0)
-                created.Credits.Add(new ArtistCredit { ArtistId = FindOrCreateArtist(albumArtist), Role = CreditRoles.AlbumArtist });
+                created.Credits.Add(new ArtistCredit
+                {
+                    ArtistId = FindOrCreateArtist(albumArtist), Role = CreditRoles.AlbumArtist
+                });
             db.Releases.Add(created);
             return releaseIds[key] = created.Id;
         }
@@ -152,7 +168,10 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
             db.ArtistCredits.RemoveRange(recording.Credits.Where(c => c.Role == CreditRoles.Artist));
             db.ReleaseTracks.RemoveRange(recording.ReleaseTracks);
             if (tags.Artist is not null)
-                recording.Credits.Add(new ArtistCredit { ArtistId = FindOrCreateArtist(tags.Artist), Role = CreditRoles.Artist });
+                recording.Credits.Add(new ArtistCredit
+                {
+                    ArtistId = FindOrCreateArtist(tags.Artist), Role = CreditRoles.Artist
+                });
             if (tags.Album is not null)
                 recording.ReleaseTracks.Add(new ReleaseTrack
                 {
@@ -171,7 +190,8 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
 
         // Recordings that already have stored documents from files, so a scan deletes only where there is something to delete.
         var withDocuments = (await db.MetadataDocuments.AsNoTracking()
-            .Where(d => d.Origin != DocumentOrigin.Applied).Select(d => d.RecordingId).Distinct().ToListAsync(ct)).ToHashSet();
+                .Where(d => d.Origin != DocumentOrigin.Applied).Select(d => d.RecordingId).Distinct().ToListAsync(ct))
+            .ToHashSet();
         var documentProblems = new List<ScanFailure>();
 
         int added = 0, updated = 0, unchanged = 0, processed = 0;
@@ -211,7 +231,8 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
                         {
                             var (found, problems) = ReadFileDocuments(file, null, sidecar: true, embedded: false);
                             var rows = ToRows(source.RecordingId, found, problems);
-                            await ReplaceStoredAsync(db, source.RecordingId, [DocumentOrigin.Sidecar], rows, withDocuments, ct);
+                            await ReplaceStoredAsync(db, source.RecordingId, [DocumentOrigin.Sidecar], rows,
+                                withDocuments, ct);
                             db.MediaSources.Attach(source);
                             source.SidecarStamp = stamp;
                             documentProblems.AddRange(problems.Select(p => new ScanFailure(file, p)));
@@ -222,7 +243,8 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
                     {
                         var tags = TagReader.Read(file);
                         var stamp = SidecarStampOf(file);
-                        var (found, problems) = ReadFileDocuments(file, tags.EmbeddedDocument, sidecar: true, embedded: true);
+                        var (found, problems) =
+                            ReadFileDocuments(file, tags.EmbeddedDocument, sidecar: true, embedded: true);
                         if (source is null)
                         {
                             var recording = new Recording { Title = tags.Title };
@@ -236,7 +258,8 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
                                 SidecarStamp = stamp,
                             });
                             db.Recordings.Add(recording);
-                            await ReplaceStoredAsync(db, recording.Id, [], ToRows(recording.Id, found, problems), withDocuments, ct);
+                            await ReplaceStoredAsync(db, recording.Id, [], ToRows(recording.Id, found, problems),
+                                withDocuments, ct);
                             added++;
                         }
                         else

@@ -20,6 +20,8 @@ namespace Shirabe.Client;
 
 public partial class App : Application
 {
+    private static string? _libraryPath;
+
     /// <summary>Where the newest released version is asked from; the head provides one. Null: no update check.</summary>
     public IReleaseSource? UpdateSource { get; init; }
 
@@ -270,10 +272,11 @@ public partial class App : Application
     }
 
     // SHIRABE_LIBRARY_DB points the app at another database file (testing, portable setups); settings and themes follow it.
-    private static string GetLibraryPath() =>
+    // Found once per run: the first call may move the data, and every later one must agree with it.
+    private static string GetLibraryPath() => _libraryPath ??=
         Environment.GetEnvironmentVariable("SHIRABE_LIBRARY_DB") is { Length: > 0 } custom
             ? custom
-            : LocalLibrary.DefaultPath;
+            : Path.Combine(DataFolder.Locate(), "library.db");
 
     private static TopLevel? GetMainWindow() =>
         (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
