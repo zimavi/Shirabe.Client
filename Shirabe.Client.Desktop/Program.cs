@@ -25,7 +25,8 @@ sealed class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure(() => new App
             {
-                UpdateSource = (IReleaseSource?)VelopackUpdater.TryCreate() ?? new GitHubReleases()
+                UpdateSource = channel =>
+                    (IReleaseSource?)VelopackUpdater.TryCreate(channel) ?? new GitHubReleases(channel)
             })
             .UsePlatformDetect()
             .WithInterFont()

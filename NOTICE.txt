@@ -31,7 +31,47 @@ MAY RESULT FROM THE USE OF BASS. YOU USE BASS ENTIRELY AT YOUR OWN RISK.
 
 -------------------------------------------------------------------------------
 
-2. ManagedBass
+2. BASS_FX Add-on
+Copyright (c) 2002-2018 JOBnik! [Arthur Aminov, ISRAEL]. All rights reserved.
+https://www.un4seen.com/
+
+Note: like BASS, the BASS_FX binaries are not stored in this source repository
+and are downloaded at build time. In binary distributions of this software,
+BASS_FX is included unmodified and is NOT licensed under the Apache License 2.0.
+
+BASS_FX Copyright & Disclaimer (from its readme):
+The BASS_FX library is free, so if anyone tries to charge you for it, kick 'em
+where it hurts.
+
+This software is provided "as is", without warranty of ANY KIND, either
+expressed or implied, including but not limited to the implied warranties of
+merchantability and/or fitness for a particular purpose. The author shall NOT
+be held liable for ANY damage to you, your computer, or to anyone or anything
+else, that may result from its use, or misuse. Basically, you use it at YOUR
+OWN RISK.
+
+Usage of BASS_FX indicates that you agree to the above conditions.
+
+You may freely distribute the BASS_FX package as long as NO FEE is charged and
+all the files remain INTACT AND UNMODIFIED.
+
+BASS_FX contains the following work of others (as credited in its readme):
+
+ * SoundTouch (tempo, pitch, rate and BPM processing)
+   Copyright (c) 2002-2017 Olli Parviainen
+   https://www.surina.net/soundtouch/ - LGPL license
+   https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ * Freeverb, Copyright (c) 2000 Jezar at Dreampoint - public domain
+ * smbPitchShift, Copyright (c) 1999-2009 Stephan M. Bernsee - WOL license
+   http://www.dspdimension.com/admin/pitch-shifting-using-the-ft/
+ * Auto Wah, Chorus, Distortion, Echo (some parts) and Phaser,
+   Copyright (c) 2000 Aleksey Smoli
+ * BiQuad filters, Robert Bristow-Johnson; peaking equalizer based on source
+   code by Manu Webber
+
+-------------------------------------------------------------------------------
+
+3. ManagedBass (including ManagedBass.Fx)
 Copyright (c) 2016 Mathew Sachin
 https://github.com/ManagedBass/ManagedBass
 

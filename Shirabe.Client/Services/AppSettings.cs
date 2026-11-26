@@ -50,6 +50,11 @@ public partial class AppSettings : ObservableObject
     [ObservableProperty]
     public partial bool CheckForUpdatesEnabled { get; set; } = true;
 
+    /// <summary>Which releases the update check offers.</summary>
+    [ObservableProperty]
+    [JsonConverter(typeof(JsonStringEnumConverter<UpdateChannel>))]
+    public partial UpdateChannel UpdateChannel { get; set; }
+
     /// <summary>Size of the lyrics text in points; the lyrics panel keeps it between 12 and 32.</summary>
     [ObservableProperty]
     public partial double LyricsTextSize { get; set; } = 17;
@@ -108,8 +113,7 @@ public partial class AppSettings : ObservableObject
     [ObservableProperty]
     public partial bool Reverb { get; set; }
 
-    [ObservableProperty]
-    public partial bool EqualizerEnabled { get; set; }
+    [ObservableProperty] public partial bool EqualizerEnabled { get; set; }
 
     /// <summary>Gain in dB of each of <see cref="EqualizerBands.Frequencies"/>. Always one value per band.</summary>
     [AllowNull] // a hand-edited file

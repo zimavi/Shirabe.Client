@@ -53,8 +53,11 @@ downloaded from the page above.
 
 - **macOS:** with **Playback speed control** on and **Keep pitch** off, lyrics were out of sync with the song almost all
   the time (seen on one Mac, cause not yet found). Turn Keep pitch on, or turn speed control off.
-- **Windows:** a per-user install (Setup.exe, or the MSI installed for you only) lives in the same folder as your
-  library. **Uninstalling can delete the library and settings**: copy `%LOCALAPPDATA%\Shirabe` somewhere else first.
+- **Windows, 0.1.0 and the 0.2.0 betas:** they keep your library in the folder the app is installed in
+  (`%LOCALAPPDATA%\Shirabe`). **Installing a newer version over them, or uninstalling them, can delete the library and
+  settings**: quit Shirabe (from its tray icon) and copy that folder somewhere else first. After installing the new
+  version, quit it too, delete any `library.db*` files in `%LOCALAPPDATA%\ShirabeData`, then copy `library.db*`,
+  `settings.json`, `session.json`, `artwork` and `themes` from your copy into that folder.
 - **Linux:** some desktops have no system tray. "Keep running in the tray" is therefore off by default there.
 
 ## Build from source
@@ -94,8 +97,9 @@ You can tune the text size, background vocals, break markers and timing in **Set
 ## Your data
 
 - Your library and settings live in one folder (the library is `library.db`, a normal SQLite file):
-  `%LOCALAPPDATA%\Shirabe` on Windows, `~/.local/share/Shirabe` on Linux, `~/Library/Application Support/Shirabe` on
-  macOS.
+  `%LOCALAPPDATA%\ShirabeData` on Windows, `~/.local/share/Shirabe` on Linux, `~/Library/Application Support/Shirabe`
+  on macOS. Uninstalling on Windows leaves it there; delete it yourself if you want it gone. (Up to the 0.2.0 betas,
+  Windows used `%LOCALAPPDATA%\Shirabe`; the data is moved on the first start of a newer version.)
 - Shirabe does not change your audio files, with one exception: if you choose **Write into the audio file** in Studio,
   it adds one tag (`SHIRABE_METADATA`) after asking you, keeps a copy while it works, and puts the original back if
   anything looks wrong.
