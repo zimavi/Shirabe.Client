@@ -9,6 +9,14 @@ It works fully offline on your own files. No account, no server.
 > Shirabe is early and changing quickly. It works and I use it, but expect rough edges.
 > It runs on Windows, Linux and macOS; Windows gets the most testing.
 
+![Shirabe playing a song, with synced lyrics filling in word by word](screenshots/lyrics.png)
+
+| Queue | Song details | Equalizer |
+|---|---|---|
+| ![The play queue beside the song list](screenshots/queue.png) | ![A song's metadata document and file tags](screenshots/details.png) | ![The 10-band equalizer in the audio settings](screenshots/equalizer.png) |
+
+<sub>The music, artists and artwork in the screenshots are made up.</sub>
+
 ## What it does today
 
 - **Plays your music.** Add a folder, Shirabe scans it and keeps a library. Queue, shuffle, repeat, volume, keyboard
