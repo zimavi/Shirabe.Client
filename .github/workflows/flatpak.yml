@@ -1,9 +1,10 @@
 name: Publish to Flatpak
 
-# Opens a pull request to zimavi/flatpak for one GitHub release (the newest one, pre-releases included, unless a tag is
-# given). It merges itself once its build check passes, and that repository then publishes it.
+# Opens pull requests to zimavi/flatpak (final releases) and zimavi/flatpak-beta (all releases) for one GitHub release
+# (the newest one, pre-releases included, unless a tag is given). Each repository's scripts/bump.sh decides whether the
+# release belongs there. A pull request merges itself once its build check passes, and that repository publishes it.
 # The release workflow runs this; "Run workflow" by hand repeats it.
-# One-time setup: a repository secret FLATPAK_TOKEN holding a fine-grained token for zimavi/flatpak only, with
+# One-time setup: a repository secret FLATPAK_TOKEN holding a fine-grained token for those two repositories only, with
 # Contents and Pull requests read and write.
 on:
   workflow_call:
@@ -27,10 +28,14 @@ concurrency:
 jobs:
   flatpak:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false # one repository failing does not stop the other
+      matrix:
+        repository: [ zimavi/flatpak, zimavi/flatpak-beta ]
     steps:
       - uses: actions/checkout@v7
         with:
-          repository: zimavi/flatpak
+          repository: ${{ matrix.repository }}
           token: ${{ secrets.FLATPAK_TOKEN }}
 
       - name: Update the manifest
@@ -54,9 +59,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.FLATPAK_TOKEN }}
           VERSION: ${{ steps.bump.outputs.version }}
+          REPO: ${{ matrix.repository }}
         run: |
           if [[ -z "$(git status --porcelain)" ]]; then
-            echo "The Flatpak repository already has $VERSION"
+            echo "Nothing to change in $REPO for $VERSION"
             exit 0
           fi
           branch=update/shirabe-$VERSION
@@ -67,8 +73,8 @@ jobs:
           git add apps/ua.net.zimavi.Shirabe
           git commit -m "$title"
           git push --force origin "$branch" # a rerun replaces its own earlier branch
-          if [[ -z "$(gh pr list --repo zimavi/flatpak --head "$branch" --json number --jq '.[].number')" ]]; then
-            gh pr create --repo zimavi/flatpak --head "$branch" --base main --title "$title" \
+          if [[ -z "$(gh pr list --repo "$REPO" --head "$branch" --json number --jq '.[].number')" ]]; then
+            gh pr create --repo "$REPO" --head "$branch" --base main --title "$title" \
               --body "From https://github.com/$GITHUB_REPOSITORY/releases/tag/v$VERSION"
           fi
-          gh pr merge "$branch" --repo zimavi/flatpak --auto --squash
+          gh pr merge "$branch" --repo "$REPO" --auto --squash
