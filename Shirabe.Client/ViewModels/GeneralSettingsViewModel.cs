@@ -18,8 +18,14 @@ public sealed class GeneralSettingsViewModel : SettingsPageViewModel
         Loc.Instance.LanguageChanged += (_, _) => OnUiThread(() =>
         {
             foreach (var language in Languages) language.Refresh();
+            OnPropertyChanged(nameof(IsMachineTranslated));
         });
     }
+
+    public string CrowdinUrl => "https://crowdin.com/project/shirabe";
+
+    /// <summary>Whether the language on screen (with "System default", the one it resolved to) is machine translation.</summary>
+    public bool IsMachineTranslated => Loc.IsMachineTranslated(Loc.Instance.InUse);
 
     public AppSettings Settings { get; }
 
@@ -42,9 +48,14 @@ public sealed class LanguageOption(string tag) : ObservableObject
     public string Tag { get; } = tag;
 
     // Languages are named in themselves so a user who cannot read the current one can still find theirs.
-    public string Name => Tag.Length == 0 ? Loc.Get("Language_System") : NativeName(CultureInfo.GetCultureInfo(Tag));
+    public string Name => Tag.Length == 0 ? Loc.Get("Language_System") : Describe(CultureInfo.GetCultureInfo(Tag));
 
     public void Refresh() => OnPropertyChanged(nameof(Name));
+
+    // English is the source, so it has no percentage.
+    private static string Describe(CultureInfo culture) => culture.Name == "en"
+        ? NativeName(culture)
+        : $"{NativeName(culture)} · {Loc.Completeness(culture)}%";
 
     private static string NativeName(CultureInfo culture) =>
         culture.TextInfo.ToUpper(culture.NativeName[..1]) + culture.NativeName[1..];

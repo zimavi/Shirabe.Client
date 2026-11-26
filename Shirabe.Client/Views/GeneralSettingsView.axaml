@@ -37,6 +37,14 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </views:SettingRow>
+            <TextBlock Text="{loc:T General_MachineTranslated}" IsVisible="{Binding IsMachineTranslated}"
+                       FontSize="12" TextWrapping="Wrap" Margin="16,0"
+                       Foreground="{DynamicResource TextSecondaryBrush}" />
+            <views:SettingRow Title="{loc:T General_HelpTranslate}"
+                              Description="{loc:T General_HelpTranslateDescription}">
+                <Button Content="{loc:T About_Open}" Tag="{Binding CrowdinUrl}" Click="OnLinkClick"
+                        AutomationProperties.Name="{loc:T General_HelpTranslate}" />
+            </views:SettingRow>
         </StackPanel>
     </StackPanel>
 </UserControl>

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -102,6 +103,25 @@ public partial class LocalizationTests
         Assert.Equal("en", settings.Language);
         page.SelectedLanguage = null!; // a combo box reset must not clear the choice
         Assert.Equal("en", settings.Language);
+    }
+
+    [Fact]
+    public void Shipped_languages_show_their_completeness_and_whether_a_machine_translated_them()
+    {
+        var ukrainian = CultureInfo.GetCultureInfo("uk-UA");
+        var german = CultureInfo.GetCultureInfo("de-DE");
+
+        Assert.InRange(Loc.Completeness(ukrainian), 1, 100);
+        Assert.Equal(0, Loc.Completeness(CultureInfo.GetCultureInfo("sv-SE"))); // not shipped
+        Assert.EndsWith($" · {Loc.Completeness(german)}%", new LanguageOption("de-DE").Name);
+
+        Assert.False(Loc.IsMachineTranslated(CultureInfo.GetCultureInfo("en")));
+        Assert.False(Loc.IsMachineTranslated(ukrainian));
+        Assert.True(Loc.IsMachineTranslated(german));
+
+        Assert.Equal(german, Loc.Shipped(german));
+        Assert.Equal("en", Loc.Shipped(CultureInfo.GetCultureInfo("en-US")).Name);
+        Assert.Equal("en", Loc.Shipped(CultureInfo.GetCultureInfo("de-AT")).Name); // only de-DE ships
     }
 
     [Fact]
