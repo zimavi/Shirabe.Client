@@ -9,3 +9,4 @@ files:
   - source: /Shirabe.Client/Resources/Strings.resx
     # Crowdin writes Strings.uk.resx, Strings.pt-BR.resx ...; the build turns each into a satellite assembly.
     translation: /Shirabe.Client/Resources/Strings.%locale%.resx
+    skip_untranslated_strings: true
