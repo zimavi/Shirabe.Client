@@ -186,3 +186,11 @@ jobs:
           fail_on_unmatched_files: true
           generate_release_notes: true
           prerelease: ${{ contains(env.VERSION, '-') }}
+
+  # A release made with the workflow token starts no other workflow, so Flatpak is called from here.
+  flatpak:
+    needs: release
+    uses: ./.github/workflows/flatpak.yml
+    with:
+      tag: ${{ github.ref_name }}
+    secrets: inherit

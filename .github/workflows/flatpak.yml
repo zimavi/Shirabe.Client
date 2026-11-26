@@ -1,0 +1,74 @@
+name: Publish to Flatpak
+
+# Opens a pull request to zimavi/flatpak for one GitHub release (the newest one, pre-releases included, unless a tag is
+# given). It merges itself once its build check passes, and that repository then publishes it.
+# The release workflow runs this; "Run workflow" by hand repeats it.
+# One-time setup: a repository secret FLATPAK_TOKEN holding a fine-grained token for zimavi/flatpak only, with
+# Contents and Pull requests read and write.
+on:
+  workflow_call:
+    inputs:
+      tag:
+        type: string
+        required: false
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to submit, such as v0.1.1. Empty means the newest release.
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flatpak
+  cancel-in-progress: false
+
+jobs:
+  flatpak:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: zimavi/flatpak
+          token: ${{ secrets.FLATPAK_TOKEN }}
+
+      - name: Update the manifest
+        id: bump
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          tag=${TAG:-$(gh release list --repo "$GITHUB_REPOSITORY" --exclude-drafts --limit 1 --json tagName --jq '.[0].tagName')}
+          version=${tag#v}
+          asset=Shirabe-$version-linux-x64.tar.gz
+          published=$(gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json publishedAt --jq .publishedAt)
+          sha=$(gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern SHA256SUMS.txt --output - |
+            awk -v file="$asset" '$2 == file { print $1 }')
+          # bump.sh refuses a missing hash and an older version.
+          RELEASE_DATE=${published%%T*} bash scripts/bump.sh ua.net.zimavi.Shirabe "$version" \
+            "https://github.com/$GITHUB_REPOSITORY/releases/download/$tag/$asset" "$sha"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Open the pull request
+        env:
+          GH_TOKEN: ${{ secrets.FLATPAK_TOKEN }}
+          VERSION: ${{ steps.bump.outputs.version }}
+        run: |
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "The Flatpak repository already has $VERSION"
+            exit 0
+          fi
+          branch=update/shirabe-$VERSION
+          title="Shirabe $VERSION"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add apps/ua.net.zimavi.Shirabe
+          git commit -m "$title"
+          git push --force origin "$branch" # a rerun replaces its own earlier branch
+          if [[ -z "$(gh pr list --repo zimavi/flatpak --head "$branch" --json number --jq '.[].number')" ]]; then
+            gh pr create --repo zimavi/flatpak --head "$branch" --base main --title "$title" \
+              --body "From https://github.com/$GITHUB_REPOSITORY/releases/tag/v$VERSION"
+          fi
+          gh pr merge "$branch" --repo zimavi/flatpak --auto --squash
