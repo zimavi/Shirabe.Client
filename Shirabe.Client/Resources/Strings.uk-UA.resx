@@ -214,6 +214,12 @@
         <comment>Name of the setting where the user picks the app's language. Also the accessible name of the drop-down list.</comment></data>
   <data name="General_LanguageDescription" xml:space="preserve"><value>Мова програми. Частини, які не перекладені, залишаються англійською мовою.</value>
         <comment>Explanation under the language drop-down. "Parts" means screens and texts that still have no translation.</comment></data>
+  <data name="General_MachineTranslated" xml:space="preserve"><value>Includes machine translation</value>
+        <comment>Note under the language drop-down, shown when the language on screen was translated by a computer and may contain mistakes.</comment></data>
+  <data name="General_HelpTranslate" xml:space="preserve"><value>Help translate</value>
+        <comment>Name of a row with a button that opens the project's translation page. Also the accessible name of that button.</comment></data>
+  <data name="General_HelpTranslateDescription" xml:space="preserve"><value>Add or correct translations on Crowdin.</value>
+        <comment>Hint under "Help translate". "Crowdin" is a product name.</comment></data>
   <data name="Language_System" xml:space="preserve"><value>За замовчуванням</value>
         <comment>First entry of the language drop-down: use the language of the operating system.</comment></data>
   <!-- Settings: Appearance -->
