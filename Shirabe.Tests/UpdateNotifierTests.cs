@@ -36,6 +36,10 @@ public class UpdateNotifierTests
     [InlineData("0.2.0-beta.1", "0.2.0", false)]
     [InlineData("0.2.0-beta.2", "0.2.0-beta.1", true)]
     [InlineData("0.2.0-beta.1", "0.1.0", true)]
+    [InlineData("0.2.0-beta.10", "0.2.0-beta.9", true)] // numbers inside a pre-release too
+    [InlineData("0.2.0-beta.9", "0.2.0-beta.10", false)]
+    [InlineData("0.2.0-rc.1", "0.2.0-beta.3", true)]
+    [InlineData("0.2.0-beta.1", "0.2.0-beta", true)]
     [InlineData("0.2.0", "0.1.0+ce863a5e7", true)] // the commit is ignored
     [InlineData("0.1.0+abc", "0.1.0", false)]
     [InlineData("not a version", "0.1.0", false)]
@@ -50,7 +54,7 @@ public class UpdateNotifierTests
 
         var notification = Assert.Single(center.Items);
         Assert.Contains("0.2.0", notification.Title);
-        Assert.Equal(GitHubReleases.LatestReleasePage, notification.Link);
+        Assert.Equal(GitHubReleases.RepositoryUrl + "/releases/tag/v0.2.0", notification.Link);
         Assert.True(notification.HasLink);
         Assert.False(string.IsNullOrWhiteSpace(notification.LinkLabel));
     }
@@ -177,7 +181,7 @@ public class UpdateNotifierTests
     {
         var web = new FakeWeb(HttpStatusCode.OK, """{"tag_name":"v0.2.0","html_url":"https://example.com"}""");
 
-        var latest = await new GitHubReleases(new HttpClient(web)).GetLatestVersionAsync(Ct);
+        var latest = await new GitHubReleases(http: new HttpClient(web)).GetLatestVersionAsync(Ct);
 
         Assert.Equal("0.2.0", latest);
         Assert.Equal("https", web.Request!.RequestUri!.Scheme);
@@ -185,12 +189,51 @@ public class UpdateNotifierTests
     }
 
     [Fact]
+    public async Task The_beta_channel_takes_the_highest_version_pre_releases_included()
+    {
+        var web = new FakeWeb(HttpStatusCode.OK,
+            """[{"tag_name":"v0.1.1"},{"tag_name":"v0.2.0-beta.10"},{"tag_name":"nightly"},{"tag_name":"v0.2.0-beta.9"}]""");
+
+        var latest = await new GitHubReleases(UpdateChannel.Beta, new HttpClient(web)).GetLatestVersionAsync(Ct);
+
+        Assert.Equal("0.2.0-beta.10", latest);
+        Assert.EndsWith("/releases?per_page=10", web.Request!.RequestUri!.AbsoluteUri);
+    }
+
+    [Fact]
+    public async Task The_beta_channel_says_none_for_an_empty_list() =>
+        Assert.Null(await new GitHubReleases(UpdateChannel.Beta,
+            new HttpClient(new FakeWeb(HttpStatusCode.OK, "[]"))).GetLatestVersionAsync(Ct));
+
+    [Fact]
+    public void The_update_channel_is_stable_by_default_and_saved_by_name()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"shirabe-{Guid.NewGuid():N}.json");
+        try
+        {
+            var settings = AppSettings.Load(path);
+            Assert.Equal(UpdateChannel.Stable, settings.UpdateChannel);
+            var page = new ConnectionsSettingsViewModel(settings, new LastFmViewModel(null, _ => { }, settings));
+
+            page.SelectedUpdateChannel = page.UpdateChannelOptions[1];
+
+            Assert.Contains("\"Beta\"", File.ReadAllText(path));
+            Assert.Equal(UpdateChannel.Beta, AppSettings.Load(path).UpdateChannel);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
     public async Task GitHub_releases_says_none_before_the_first_release() =>
-        Assert.Null(await new GitHubReleases(new HttpClient(new FakeWeb(HttpStatusCode.NotFound, "{}")))
+        Assert.Null(await new GitHubReleases(http: new HttpClient(new FakeWeb(HttpStatusCode.NotFound, "{}")))
             .GetLatestVersionAsync(Ct));
 
     [Fact]
     public async Task GitHub_releases_throws_on_other_failures() =>
         await Assert.ThrowsAsync<HttpRequestException>(() =>
-            new GitHubReleases(new HttpClient(new FakeWeb(HttpStatusCode.Forbidden, "{}"))).GetLatestVersionAsync(Ct));
+            new GitHubReleases(http: new HttpClient(new FakeWeb(HttpStatusCode.Forbidden, "{}")))
+                .GetLatestVersionAsync(Ct));
 }

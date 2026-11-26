@@ -527,6 +527,14 @@
         <comment>Name of an on/off switch. Also its accessible name.</comment></data>
     <data name="Connections_CheckForUpdatesDescription" xml:space="preserve"><value>When Shirabe starts, asks GitHub whether a newer version has been released and tells you if so. GitHub can see your address; nothing else is sent. Takes effect the next time Shirabe starts.</value>
         <comment>Privacy explanation under the switch: keep the meaning exact. "GitHub" is a product name. "Your address" means the user's internet (IP) address.</comment></data>
+    <data name="Connections_UpdateChannel" xml:space="preserve"><value>Update channel</value>
+        <comment>Name of a list choosing which kind of new versions are offered. Also its accessible name.</comment></data>
+    <data name="Connections_UpdateChannelDescription" xml:space="preserve"><value>Beta also offers early test versions, which may have more bugs. Going back to Stable keeps the version you have until a newer stable one is released. Takes effect the next time Shirabe starts.</value>
+        <comment>Explanation under the update channel list. "Beta" and "Stable" must match the names of the two choices.</comment></data>
+    <data name="Connections_UpdateChannelStable" xml:space="preserve"><value>Stable</value>
+        <comment>Update channel choice: only finished releases.</comment></data>
+    <data name="Connections_UpdateChannelBeta" xml:space="preserve"><value>Beta</value>
+        <comment>Update channel choice: test versions as well.</comment></data>
     <data name="Update_Title" xml:space="preserve"><value>Shirabe {0} is available</value>
         <comment>Title of a notification. {0} is the new version number, for example 0.2.0: keep it as it is.</comment></data>
     <data name="Update_Message" xml:space="preserve"><value>Download the new release from GitHub, or update through the package manager you installed Shirabe with.</value>

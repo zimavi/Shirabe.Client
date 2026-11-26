@@ -29,13 +29,15 @@ sealed class VelopackUpdater : ISelfUpdater
     /// Null when this copy must not update itself: built with <c>-p:SelfUpdate=false</c>, not installed by Velopack
     /// (.deb, .rpm, .tar.gz, a build from source), or installed where it cannot be replaced.
     /// </summary>
-    public static VelopackUpdater? TryCreate()
+    public static VelopackUpdater? TryCreate(UpdateChannel channel)
     {
 #if NO_SELF_UPDATE
         return null;
 #else
         if (!VelopackLocator.IsCurrentSet) return null; // the visual designer does not run VelopackApp
-        var manager = new UpdateManager(new GithubSource(GitHubReleases.RepositoryUrl, null, false));
+        // No downgrades: after going back to stable, a beta stays until a newer stable release exists.
+        var manager = new UpdateManager(new GithubSource(GitHubReleases.RepositoryUrl, null,
+            prerelease: channel == UpdateChannel.Beta));
         return manager.IsInstalled && CanBeReplaced() ? new VelopackUpdater(manager) : null;
 #endif
     }

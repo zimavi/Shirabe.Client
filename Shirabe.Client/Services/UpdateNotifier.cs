@@ -31,7 +31,7 @@ public sealed class UpdateNotifier(IReleaseSource source, NotificationCenter not
         var updater = source as ISelfUpdater;
         var notification = notifications.Show(Loc.Get("Update_Title", latest),
             Loc.Get(updater is null ? "Update_Message" : "Update_SelfMessage"),
-            Loc.Get("Update_ViewRelease"), GitHubReleases.LatestReleasePage);
+            Loc.Get("Update_ViewRelease"), GitHubReleases.ReleasePage(latest));
         if (updater is not null) OfferInstall(notification, updater);
     }
 
@@ -95,8 +95,25 @@ public sealed class UpdateNotifier(IReleaseSource source, NotificationCenter not
         var byNumbers = newVersion.CompareTo(oldVersion);
         if (byNumbers != 0) return byNumbers > 0;
         if (newPre.Length == 0) return oldPre.Length > 0;
-        // shortcut: pre-release names compare as text, so "beta.10" sorts before "beta.9"; upgrade if numbered pre-releases are used
-        return oldPre.Length > 0 && string.CompareOrdinal(newPre, oldPre) > 0;
+        return oldPre.Length > 0 && ComparePreReleases(newPre, oldPre) > 0;
+    }
+
+    // SemVer: part by part between the dots, numbers as numbers ("beta.10" is after "beta.9") and before words.
+    private static int ComparePreReleases(string left, string right)
+    {
+        var a = left.Split('.');
+        var b = right.Split('.');
+        for (var i = 0; i < Math.Min(a.Length, b.Length); i++)
+        {
+            var aIsNumber = ulong.TryParse(a[i], out var aNumber);
+            var bIsNumber = ulong.TryParse(b[i], out var bNumber);
+            var order = aIsNumber && bIsNumber ? aNumber.CompareTo(bNumber)
+                : aIsNumber != bIsNumber ? (aIsNumber ? -1 : 1)
+                : string.CompareOrdinal(a[i], b[i]);
+            if (order != 0) return order;
+        }
+
+        return a.Length.CompareTo(b.Length);
     }
 
     private static bool TryParse(string text, out Version version, out string preRelease)

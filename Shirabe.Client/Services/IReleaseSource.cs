@@ -1,5 +1,12 @@
 namespace Shirabe.Client.Services;
 
+/// <summary>Which releases are offered. Beta takes pre-releases and stable releases, whichever is newest.</summary>
+public enum UpdateChannel
+{
+    Stable,
+    Beta,
+}
+
 /// <summary>Where the app asks which version is the newest release. The head supplies one.</summary>
 public interface IReleaseSource
 {

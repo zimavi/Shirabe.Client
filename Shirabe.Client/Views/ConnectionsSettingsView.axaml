@@ -36,5 +36,17 @@
             <ToggleSwitch IsChecked="{Binding Settings.CheckForUpdatesEnabled}"
                           AutomationProperties.Name="{loc:T Connections_CheckForUpdates}" />
         </views:SettingRow>
+        <views:SettingRow Title="{loc:T Connections_UpdateChannel}"
+                          Description="{loc:T Connections_UpdateChannelDescription}"
+                          IsEnabled="{Binding Settings.CheckForUpdatesEnabled}">
+            <ComboBox ItemsSource="{Binding UpdateChannelOptions}" SelectedItem="{Binding SelectedUpdateChannel}"
+                      MinWidth="160" AutomationProperties.Name="{loc:T Connections_UpdateChannel}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:UpdateChannelOption">
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </views:SettingRow>
     </StackPanel>
 </UserControl>

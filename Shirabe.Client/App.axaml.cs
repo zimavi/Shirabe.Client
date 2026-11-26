@@ -22,8 +22,10 @@ public partial class App : Application
 {
     private static string? _libraryPath;
 
-    /// <summary>Where the newest released version is asked from; the head provides one. Null: no update check.</summary>
-    public IReleaseSource? UpdateSource { get; init; }
+    /// <summary>
+    /// Where the newest released version of a channel is asked from; the head provides it. Null: no update check.
+    /// </summary>
+    public Func<UpdateChannel, IReleaseSource>? UpdateSource { get; init; }
 
     public override void Initialize()
     {
@@ -75,7 +77,8 @@ public partial class App : Application
 
             // Once at startup, in the background; a newer release shows as a notification (Settings > Connections turns it off).
             if (settings.CheckForUpdatesEnabled && UpdateSource is not null)
-                _ = new UpdateNotifier(UpdateSource, mainViewModel.Notifications, AppVersion.Current).CheckAsync();
+                _ = new UpdateNotifier(UpdateSource(settings.UpdateChannel), mainViewModel.Notifications,
+                    AppVersion.Current).CheckAsync();
 
             // Follows the "Discord presence" setting while the app runs.
             DiscordPresence? presence = null;
