@@ -157,40 +157,6 @@
         <comment>Name of an on/off switch, in the settings and in the narrow speed menu. Also its accessible name. The echo of a room. Short.</comment></data>
   <data name="Audio_ReverbDescription" xml:space="preserve"><value>Додає відлуння кімнати до будь-якої пісні що грає.</value>
         <comment>Explanation under the "Reverb" switch.</comment></data>
-  <data name="Audio_NeedsEffects" xml:space="preserve"><value>Keep pitch, reverb and the equalizer need the BASS_FX library, which could not be loaded.</value>
-        <comment>Warning above settings that are greyed out. "BASS_FX" is the name of a library: do not translate it.</comment></data>
-  <data name="Audio_SectionEqualizer" xml:space="preserve"><value>EQUALIZER</value>
-        <comment>Small heading above the equalizer settings. Keep it uppercase if the language has letter case.</comment></data>
-  <data name="Audio_Equalizer" xml:space="preserve"><value>Equalizer</value>
-        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
-  <data name="Audio_EqualizerDescription" xml:space="preserve"><value>Makes ranges of pitch louder or quieter. Boosting one lowers the overall level by as much, to avoid distortion.</value>
-        <comment>Explanation under the "Equalizer" switch.</comment></data>
-  <data name="Audio_EqualizerReset" xml:space="preserve"><value>Reset equalizer</value>
-        <comment>Button that puts every equalizer slider back to zero.</comment></data>
-  <data name="Audio_Hz" xml:space="preserve"><value>{0} Hz</value>
-        <comment>A sound frequency, the name of an equalizer slider. {0} is a number.</comment></data>
-  <data name="Audio_Decibels" xml:space="preserve"><value>{0} dB</value>
-        <comment>The value of an equalizer slider in decibels. {0} is a signed number such as +3.</comment></data>
-  <data name="Audio_SectionVolume" xml:space="preserve"><value>VOLUME</value>
-        <comment>Small heading above the volume settings. Keep it uppercase if the language has letter case.</comment></data>
-  <data name="Audio_Normalize" xml:space="preserve"><value>Volume normalization</value>
-        <comment>Name of a drop-down list that makes songs play at a similar loudness. Also its accessible name.</comment></data>
-  <data name="Audio_NormalizeDescription" xml:space="preserve"><value>Plays songs at a similar loudness, using the ReplayGain tags in your files. Files without them play as they are.</value>
-        <comment>Explanation under "Volume normalization". "ReplayGain" is the name of a standard: do not translate it.</comment></data>
-  <data name="Audio_NormalizeOff" xml:space="preserve"><value>Off</value>
-        <comment>Entry of the "Volume normalization" list: no normalization.</comment></data>
-  <data name="Audio_NormalizeTrack" xml:space="preserve"><value>By song</value>
-        <comment>Entry of the "Volume normalization" list: every song is evened out on its own.</comment></data>
-  <data name="Audio_NormalizeAlbum" xml:space="preserve"><value>By album</value>
-        <comment>Entry of the "Volume normalization" list: albums are evened out as a whole, songs keep their differences within one.</comment></data>
-  <data name="Audio_Curve" xml:space="preserve"><value>Exponential volume curve</value>
-        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
-  <data name="Audio_CurveDescription" xml:space="preserve"><value>Finer control at low volumes. Turning it on makes the same slider position quieter.</value>
-        <comment>Explanation under the "Exponential volume curve" switch.</comment></data>
-  <data name="Audio_ScrollStep" xml:space="preserve"><value>Volume scroll step</value>
-        <comment>Name of a drop-down list: how much the volume changes per notch of the mouse wheel. Also its accessible name.</comment></data>
-  <data name="Audio_ScrollStepDescription" xml:space="preserve"><value>How far one notch of the mouse wheel moves the volume.</value>
-        <comment>Explanation under "Volume scroll step". The wheel is used over the volume slider.</comment></data>
   <!-- Settings: General -->
   <data name="General_Title" xml:space="preserve"><value>Загальне</value>
         <comment>Name of a settings page, in the list of pages. Holds the everyday options.</comment></data>
@@ -214,12 +180,6 @@
         <comment>Name of the setting where the user picks the app's language. Also the accessible name of the drop-down list.</comment></data>
   <data name="General_LanguageDescription" xml:space="preserve"><value>Мова програми. Частини, які не перекладені, залишаються англійською мовою.</value>
         <comment>Explanation under the language drop-down. "Parts" means screens and texts that still have no translation.</comment></data>
-  <data name="General_MachineTranslated" xml:space="preserve"><value>Includes machine translation</value>
-        <comment>Note under the language drop-down, shown when the language on screen was translated by a computer and may contain mistakes.</comment></data>
-  <data name="General_HelpTranslate" xml:space="preserve"><value>Help translate</value>
-        <comment>Name of a row with a button that opens the project's translation page. Also the accessible name of that button.</comment></data>
-  <data name="General_HelpTranslateDescription" xml:space="preserve"><value>Add or correct translations on Crowdin.</value>
-        <comment>Hint under "Help translate". "Crowdin" is a product name.</comment></data>
   <data name="Language_System" xml:space="preserve"><value>За замовчуванням</value>
         <comment>First entry of the language drop-down: use the language of the operating system.</comment></data>
   <!-- Settings: Appearance -->
@@ -295,8 +255,6 @@
   <!-- Settings: Connections -->
   <data name="Connections_Title" xml:space="preserve"><value>З'єднання</value>
         <comment>Name of a settings page, in the list of pages. Holds the options that talk to outside services.</comment></data>
-  <data name="Connections_Description" xml:space="preserve"><value>Discord, Last.fm and online lookups</value>
-        <comment>One short line under the page name "Connections" in the list of settings pages. "Discord" and "Last.fm" are product names: do not translate them.</comment></data>
   <data name="Connections_SectionDiscord" xml:space="preserve"><value>DISCORD</value>
         <comment>Small heading above the Discord settings. "Discord" is a product name: do not translate it.</comment></data>
   <data name="Connections_Presence" xml:space="preserve"><value>Покажіть те, що я слухаю</value>
@@ -318,55 +276,7 @@
   <data name="Connections_DownloadArtworkDescription" xml:space="preserve"><value>Коли метадані пісні посилаються на обкладинку, вона завантажується, як пісня показується і зберігається на цьому комп'ютері. Вебсайт, з якого він надходить, може бачити вашу IP-адресу і що ви грали в цю пісню.</value>
         <comment>Privacy explanation under the switch: keep the meaning exact. "Your address" means the user's internet (IP) address.</comment></data>
   <!-- Settings: Connections, Last.fm -->
-  <data name="LastFm_Section" xml:space="preserve"><value>LAST.FM</value>
-        <comment>Small heading above the Last.fm settings. "Last.fm" is a product name: do not translate it.</comment></data>
-  <data name="LastFm_Account" xml:space="preserve"><value>Account</value>
-        <comment>Name of the settings row about the user's Last.fm account.</comment></data>
-  <data name="LastFm_SignedOut" xml:space="preserve"><value>Sign in on Last.fm's website. Shirabe never sees your password.</value>
-        <comment>Under "Account" when the user is not signed in. "Last.fm" and "Shirabe" are product names.</comment></data>
-  <data name="LastFm_Waiting" xml:space="preserve"><value>Allow access in your browser, then come back here.</value>
-        <comment>Under "Account" while the app waits for the user to approve it on the website that was just opened.</comment></data>
-  <data name="LastFm_SignedInAs" xml:space="preserve"><value>Signed in as {0}</value>
-        <comment>Under "Account". {0} is the user's Last.fm user name: keep it as it is.</comment></data>
-  <data name="LastFm_Unavailable" xml:space="preserve"><value>This build of Shirabe was made without a Last.fm API key.</value>
-        <comment>Under "Account" in a copy of the app that cannot use Last.fm. An API key is a code that identifies an app to a web service; a build is one compiled copy of the app.</comment></data>
-  <data name="LastFm_Connect" xml:space="preserve"><value>Connect</value>
-        <comment>Button: starts signing in to Last.fm. Short.</comment></data>
-  <data name="LastFm_Cancel" xml:space="preserve"><value>Cancel</value>
-        <comment>Button: stops waiting for the sign-in. Short.</comment></data>
-  <data name="LastFm_Disconnect" xml:space="preserve"><value>Disconnect</value>
-        <comment>Button: signs out of Last.fm in this app. Short.</comment></data>
-  <data name="LastFm_ViewProfile" xml:space="preserve"><value>View profile</value>
-        <comment>Button: opens the user's page on the Last.fm website. Short.</comment></data>
-  <data name="LastFm_Scrobble" xml:space="preserve"><value>Scrobble what I play</value>
-        <comment>Name of an on/off switch, also its accessible name. To "scrobble" is Last.fm's word for adding a played song to the user's listening history; use Last.fm's wording in your language if you know it.</comment></data>
-  <data name="LastFm_ScrobbleDescription" xml:space="preserve"><value>While connected, sends Last.fm the artist, title, album, length and start time of the songs you play.</value>
-        <comment>Privacy explanation under the switch: keep the meaning exact. "Last.fm" is a product name.</comment></data>
-  <data name="LastFm_NoStorage" xml:space="preserve"><value>Shirabe has no secure storage it can use on this computer, so you will need to sign in to Last.fm again every time it starts.</value>
-        <comment>Warning. "Secure storage" is the system's protected place for passwords and keys (Windows Credential Manager, a Linux keyring).</comment></data>
-  <data name="LastFm_NotAllowed" xml:space="preserve"><value>Access was not allowed in time. Try again.</value>
-        <comment>Error after the user did not approve the app on the Last.fm website within a few minutes.</comment></data>
-  <data name="LastFm_Unreachable" xml:space="preserve"><value>Last.fm could not be reached. Check your connection and try again.</value>
-        <comment>Error after a failed sign-in: no internet connection, or the website does not answer.</comment></data>
-  <data name="LastFm_Failed" xml:space="preserve"><value>Signing in to Last.fm failed: {0}</value>
-        <comment>Error. {0} is the reason given by Last.fm, in English.</comment></data>
-  <data name="LastFm_NotRemoved" xml:space="preserve"><value>The saved sign-in could not be removed, so it may come back after a restart. You can revoke Shirabe's access in your Last.fm settings, under Applications.</value>
-        <comment>Error after signing out. "Applications" is the name of a page in the settings of the Last.fm website; to revoke access means to take the permission away.</comment></data>
-  <data name="LastFm_Credit" xml:space="preserve"><value>Powered by AudioScrobbler</value>
-        <comment>Credit that Last.fm asks for. "AudioScrobbler" is a product name: do not translate it.</comment></data>
-  <data name="LastFm_CreditDescription" xml:space="preserve"><value>Account features are provided by Last.fm.</value>
-        <comment>Under the credit "Powered by AudioScrobbler". "Last.fm" is a product name.</comment></data>
-  <data name="LastFm_Open" xml:space="preserve"><value>Open Last.fm</value>
-        <comment>Button: opens the Last.fm website. "Last.fm" is a product name.</comment></data>
   <!-- Title bar: the message about the last scrobble -->
-  <data name="Scrobbler_Title" xml:space="preserve"><value>Scrobbler</value>
-        <comment>Heading of a small message in the title bar. A scrobbler is the part of an app that adds played songs to the user's Last.fm listening history; use Last.fm's wording in your language if you know it.</comment></data>
-  <data name="Scrobbler_Done" xml:space="preserve"><value>Scrobbled {0} by {1}</value>
-        <comment>Message after a song was added to the Last.fm history. {0} is the song title, {1} the artist: keep both. It is cut off when long.</comment></data>
-  <data name="Scrobbler_Ignored" xml:space="preserve"><value>Last.fm ignored {0} by {1}</value>
-        <comment>Message when Last.fm received a song but did not add it to the history. {0} is the song title, {1} the artist.</comment></data>
-  <data name="Scrobbler_Failed" xml:space="preserve"><value>Could not scrobble {0} by {1}</value>
-        <comment>Message when a song could not be sent to Last.fm. {0} is the song title, {1} the artist.</comment></data>
   <!-- Settings: About -->
   <data name="About_Title" xml:space="preserve"><value>Про додаток</value>
         <comment>Name of a settings page, in the list of pages. It shows the app's version, license and credits.</comment></data>
@@ -516,34 +426,12 @@
         <comment>Name of an on/off switch. Also its accessible name.</comment></data>
   <data name="Connections_CheckForUpdatesDescription" xml:space="preserve"><value>Під час запуску Shirabe запитує GitHub, чи вийшла новіша версія, і повідомляє вас, якщо вона доступна. GitHub бачить лише вашу IP-адресу; жодні інші дані не надсилаються. Зміни набудуть чинності під час наступного запуску Shirabe.</value>
         <comment>Privacy explanation under the switch: keep the meaning exact. "GitHub" is a product name. "Your address" means the user's internet (IP) address.</comment></data>
-  <data name="Connections_UpdateChannel" xml:space="preserve"><value>Update channel</value>
-        <comment>Name of a list choosing which kind of new versions are offered. Also its accessible name.</comment></data>
-  <data name="Connections_UpdateChannelDescription" xml:space="preserve"><value>Beta also offers early test versions, which may have more bugs. Going back to Stable keeps the version you have until a newer stable one is released. Takes effect the next time Shirabe starts.</value>
-        <comment>Explanation under the update channel list. "Beta" and "Stable" must match the names of the two choices.</comment></data>
-  <data name="Connections_UpdateChannelStable" xml:space="preserve"><value>Stable</value>
-        <comment>Update channel choice: only finished releases.</comment></data>
-  <data name="Connections_UpdateChannelBeta" xml:space="preserve"><value>Beta</value>
-        <comment>Update channel choice: test versions as well.</comment></data>
   <data name="Update_Title" xml:space="preserve"><value>Доступний Shirabe {0}</value>
         <comment>Title of a notification. {0} is the new version number, for example 0.2.0: keep it as it is.</comment></data>
   <data name="Update_Message" xml:space="preserve"><value>Завантажте нову версію з GitHub, або оновлення через менеджер пакетів, з яким ви встановили Shirabe.</value>
         <comment>Body of the notification about a new version. A package manager is a tool such as winget, Scoop, Homebrew or apt that installs and updates programs. "GitHub" is a product name.</comment></data>
   <data name="Update_ViewRelease" xml:space="preserve"><value>Перейти до релізу</value>
         <comment>Button of the new-version notification: opens the page where the new version can be downloaded. Short.</comment></data>
-  <data name="Update_SelfMessage" xml:space="preserve"><value>Shirabe can download and install it for you.</value>
-        <comment>Body of the notification about a new version, shown when the app can update itself.</comment></data>
-  <data name="Update_Install" xml:space="preserve"><value>Update</value>
-        <comment>Button of the new-version notification: downloads the new version. A verb. Short.</comment></data>
-  <data name="Update_Downloading" xml:space="preserve"><value>Downloading… {0}%</value>
-        <comment>Body of the update notification while the new version downloads. {0} is a number from 0 to 100: keep it as it is.</comment></data>
-  <data name="Update_Ready" xml:space="preserve"><value>Downloaded. Restart Shirabe to install it now, or it will be installed the next time Shirabe starts.</value>
-        <comment>Body of the update notification after the download has finished. "Shirabe" is the app's name.</comment></data>
-  <data name="Update_Restart" xml:space="preserve"><value>Restart now</value>
-        <comment>Button of the update notification: closes the app, installs the new version and opens it again. Short.</comment></data>
-  <data name="Update_Failed" xml:space="preserve"><value>The update did not work. Try again, or download it from the release page.</value>
-        <comment>Body of the update notification when downloading or installing the new version failed.</comment></data>
-  <data name="Update_TryAgain" xml:space="preserve"><value>Try again</value>
-        <comment>Button of the update notification after a failed download: starts the download again. Short.</comment></data>
   <data name="Notification_Dismiss" xml:space="preserve"><value>Закрити</value>
         <comment>Tooltip and accessible name of the close (X) button of a notification: it removes the notification.</comment></data>
 </root>
