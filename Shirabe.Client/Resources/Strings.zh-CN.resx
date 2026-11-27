@@ -17,21 +17,535 @@
         </value>
   </resheader>
   <!-- Sidebar -->
+  <data name="Nav_Home" xml:space="preserve"><value>首页</value>
+        <comment>Sidebar entry for the start page. Short: it has to fit the sidebar.</comment></data>
+  <data name="Nav_Songs" xml:space="preserve"><value>歌曲</value>
+        <comment>Sidebar entry and heading of the page that lists every song (track) in the user's music library.</comment></data>
+  <data name="Nav_Albums" xml:space="preserve"><value>专辑</value>
+        <comment>Sidebar entry for the page that will list albums. Shown greyed out for now.</comment></data>
+  <data name="Nav_Artists" xml:space="preserve"><value>艺术家</value>
+        <comment>Sidebar entry for the page that will list artists (singers, bands, musicians). Shown greyed out for now.</comment></data>
+  <data name="Nav_Playlists" xml:space="preserve"><value>歌单</value>
+        <comment>Sidebar entry for the page that will list the user's own playlists. Shown greyed out for now.</comment></data>
+  <data name="Nav_Studio" xml:space="preserve"><value>工作室</value>
+        <comment>Sidebar entry for the editor where music metadata (credits, covers, custom fields) is created. "Studio" means a creative workspace; a feature name, so a commonly used loanword is fine.</comment></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>设置</value>
+        <comment>Sidebar entry, title of the settings page and accessible name of the sidebar button.</comment></data>
+  <data name="Nav_SectionLibrary" xml:space="preserve"><value>音乐库</value>
+        <comment>Small heading above the library entries in the sidebar.</comment></data>
+  <data name="Nav_SectionCreate" xml:space="preserve"><value>创作</value>
+        <comment>Small heading above the Studio entry in the sidebar.</comment></data>
+  <data name="Nav_NotAvailable" xml:space="preserve"><value>暂未开放</value>
+        <comment>Tooltip of a sidebar entry whose page does not exist yet.</comment></data>
   <!-- Window buttons -->
+  <data name="Window_Minimize" xml:space="preserve"><value>最小化</value>
+        <comment>Tooltip and accessible name of the title bar button that minimizes the window to the taskbar.</comment></data>
+  <data name="Window_Maximize" xml:space="preserve"><value>最大化</value>
+        <comment>Accessible name (read by screen readers) of the title bar button that makes the window fill the screen. Not shown as text.</comment></data>
+  <data name="Window_Restore" xml:space="preserve"><value>还原</value>
+        <comment>Accessible name of the same button while the window is maximized: it returns the window to its previous size. Not shown as text.</comment></data>
+  <data name="Window_Close" xml:space="preserve"><value>关闭</value>
+        <comment>Tooltip and accessible name of the title bar button that closes the window.</comment></data>
   <!-- Player bar and tray menu -->
+  <data name="Player_Shuffle" xml:space="preserve"><value>随机播放</value>
+        <comment>Tooltip and accessible name of the button that plays the queue in random order (verb or noun, as is usual on music players).</comment></data>
+  <data name="Player_Previous" xml:space="preserve"><value>上一首</value>
+        <comment>Tooltip of the button that goes to the previous song, and an item of the tray icon menu.</comment></data>
+  <data name="Player_Next" xml:space="preserve"><value>下一首</value>
+        <comment>Tooltip of the button that goes to the next song, and an item of the tray icon menu.</comment></data>
+  <data name="Player_Play" xml:space="preserve"><value>播放</value>
+        <comment>Verb. Tray icon menu item that starts playback (shown while the music is paused), item of the song context menu, and accessible name of the play button on a song's cover.</comment></data>
+  <data name="Player_Pause" xml:space="preserve"><value>暂停</value>
+        <comment>Tray icon menu item that pauses playback. Verb. Shown while the music is playing.</comment></data>
+  <data name="Player_PlayPause" xml:space="preserve"><value>播放或暂停</value>
+        <comment>Accessible name (read by screen readers) of the one round button that switches between playing and pausing. Not shown as text.</comment></data>
+  <data name="Player_Repeat" xml:space="preserve"><value>循环播放</value>
+        <comment>Accessible name of the repeat button. Its tooltip shows one of the three "Repeat: ..." texts below.</comment></data>
+  <data name="Player_RepeatOff" xml:space="preserve"><value>循环：关闭</value>
+        <comment>Tooltip of the repeat button when nothing repeats: the queue stops after the last song.</comment></data>
+  <data name="Player_RepeatAll" xml:space="preserve"><value>循环：列表循环</value>
+        <comment>Tooltip of the repeat button when the whole queue starts over after the last song.</comment></data>
+  <data name="Player_RepeatOne" xml:space="preserve"><value>循环：单曲循环</value>
+        <comment>Tooltip of the repeat button when the current song plays again and again.</comment></data>
+  <data name="Player_Lyrics" xml:space="preserve"><value>歌词</value>
+        <comment>Tooltip and accessible name of the button that opens the panel with the words of the song (song lyrics, not poetry). Also the heading of that panel.</comment></data>
+  <data name="Player_Queue" xml:space="preserve"><value>播放队列</value>
+        <comment>Tooltip and accessible name of the button that opens the list of songs that will play next (the play queue). Also the heading of that list.</comment></data>
+  <data name="Player_Mute" xml:space="preserve"><value>静音</value>
+        <comment>Accessible name of the speaker icon button that switches the sound off and on. Not shown as text.</comment></data>
+  <data name="Player_Volume" xml:space="preserve"><value>音量</value>
+        <comment>Accessible name of the volume slider (loudness). Not shown as text.</comment></data>
+  <data name="Tray_Open" xml:space="preserve"><value>打开 Shirabe</value>
+        <comment>Tray icon menu item that shows the main window again. "Shirabe" is the app's name: do not translate it.</comment></data>
+  <data name="Tray_Quit" xml:space="preserve"><value>退出</value>
+        <comment>Tray icon menu item that closes the app completely (closing the window only hides it to the tray).</comment></data>
   <!-- Settings: Keyboard shortcuts. The other action names in that list are the Player_* and Nav_* texts above. -->
+  <data name="Shortcuts_Title" xml:space="preserve"><value>快捷键</value>
+        <comment>Name of a settings page, in the list of pages. Keyboard shortcuts.</comment></data>
+  <data name="Shortcuts_Description" xml:space="preserve"><value>播放和导航快捷键</value>
+        <comment>One short line under the page name "Shortcuts" in the list of settings pages. "Keys" means keyboard keys.</comment></data>
+  <data name="Shortcuts_FixedKeys" xml:space="preserve"><value>选择快捷键即可修改。Esc 可关闭歌词或播放队列面板，Shirabe 窗口处于活动状态时可使用键盘上的媒体键。</value>
+        <comment>Explanation at the top of the keyboard shortcuts settings page. "Esc" is the Escape key. "Media keys" are the play/pause, next and previous keys some keyboards have.</comment></data>
+  <data name="Shortcuts_SeekBack" xml:space="preserve"><value>快退 5 秒</value>
+        <comment>Name of a keyboard shortcut: moves the playing song 5 seconds back.</comment></data>
+  <data name="Shortcuts_SeekForward" xml:space="preserve"><value>快进 5 秒</value>
+        <comment>Name of a keyboard shortcut: moves the playing song 5 seconds ahead.</comment></data>
+  <data name="Shortcuts_VolumeUp" xml:space="preserve"><value>提高音量</value>
+        <comment>Name of a keyboard shortcut: makes the sound louder.</comment></data>
+  <data name="Shortcuts_VolumeDown" xml:space="preserve"><value>降低音量</value>
+        <comment>Name of a keyboard shortcut: makes the sound quieter.</comment></data>
+  <data name="Shortcuts_PressKey" xml:space="preserve"><value>按下按键…</value>
+        <comment>Text on a button while the app waits for the user to press the new keyboard shortcut. Short.</comment></data>
+  <data name="Shortcuts_NotSet" xml:space="preserve"><value>未设置</value>
+        <comment>Text on a button of an action that has no keyboard shortcut. Short.</comment></data>
+  <data name="Shortcuts_CaptureHelp" xml:space="preserve"><value>按 Esc 取消，按 Backspace 清除快捷键。</value>
+        <comment>Help shown while the app waits for a new keyboard shortcut. "Esc" and "Backspace" are key names.</comment></data>
+  <data name="Shortcuts_Taken" xml:space="preserve"><value>该按键已被“{0}”占用。请按其他按键，或按 Esc 取消。</value>
+        <comment>Shown when the pressed keyboard shortcut belongs to another action. {0} is the name of that action.</comment></data>
+  <data name="Shortcuts_ResetAll" xml:space="preserve"><value>重置所有快捷键</value>
+        <comment>Button that brings every keyboard shortcut back to the one the app came with.</comment></data>
   <!-- Settings: Audio -->
+  <data name="Audio_Title" xml:space="preserve"><value>音频</value>
+        <comment>Name of a settings page, in the list of pages.</comment></data>
+  <data name="Audio_Description" xml:space="preserve"><value>输出、播放、均衡器和音量</value>
+        <comment>One short line under the page name "Audio" in the list of settings pages. Lists what is on the page.</comment></data>
+  <data name="Audio_SectionOutput" xml:space="preserve"><value>输出</value>
+        <comment>Small heading above the settings about where the sound goes. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Audio_Device" xml:space="preserve"><value>输出设备</value>
+        <comment>Name of the setting where the user picks speakers or headphones. Also the accessible name of the drop-down list.</comment></data>
+  <data name="Audio_DeviceDescription" xml:space="preserve"><value>Shirabe 播放声音所使用的扬声器或耳机。</value>
+        <comment>Explanation under "Output device". "Shirabe" is the app's name: do not translate it.</comment></data>
+  <data name="Audio_SystemDefault" xml:space="preserve"><value>系统默认</value>
+        <comment>First entry of the output device list: whatever the operating system is set to use.</comment></data>
+  <data name="Audio_DeviceMissing" xml:space="preserve"><value>所选设备不可用，当前使用系统默认设备播放。</value>
+        <comment>Warning under the output device list, e.g. when headphones are unplugged.</comment></data>
+  <data name="Audio_NowOutput" xml:space="preserve"><value>当前输出</value>
+        <comment>Title of a line that shows the output device in use, its sample rate and channels.</comment></data>
+  <data name="Audio_NowSource" xml:space="preserve"><value>当前文件</value>
+        <comment>Title of a line that shows technical facts about the loaded audio file: format, sample rate, channels, bit rate.</comment></data>
+  <data name="Audio_Unknown" xml:space="preserve"><value>未知</value>
+        <comment>Shown when the app cannot tell which output device is in use.</comment></data>
+  <data name="Audio_KHz" xml:space="preserve"><value>{0} kHz</value>
+        <comment>A sample rate. {0} is a number such as 44.1.</comment></data>
+  <data name="Audio_Channels" xml:space="preserve"><value>声道数：{0}</value>
+        <comment>Number of audio channels (2 is stereo). {0} is a number. Shown in the middle of a line of technical facts.</comment></data>
+  <data name="Audio_BitDepth" xml:space="preserve"><value>{0} 位</value>
+        <comment>Audio bit depth. {0} is a number such as 16 or 24.</comment></data>
+  <data name="Audio_Bitrate" xml:space="preserve"><value>{0} kbps</value>
+        <comment>Audio bit rate in kilobits per second. {0} is a number.</comment></data>
+  <data name="Audio_SectionPlayback" xml:space="preserve"><value>播放</value>
+        <comment>Small heading above the settings about speed, pitch and reverb. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Audio_Speed" xml:space="preserve"><value>播放速度</value>
+        <comment>Tooltip and accessible name of the speed button in the player bar and of its slider, and the title of the menu it opens.</comment></data>
+  <data name="Audio_SpeedControl" xml:space="preserve"><value>播放速度控制</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Audio_SpeedControlDescription" xml:space="preserve"><value>在播放栏中显示变速按钮，可减速或加速播放。关闭后，歌曲将以正常速度播放。</value>
+        <comment>Explanation under the "Playback speed control" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="Audio_Slowed" xml:space="preserve"><value>减速</value>
+        <comment>Button in the speed menu that plays songs slower (0.8x). Very short: three buttons share one narrow row.</comment></data>
+  <data name="Audio_Normal" xml:space="preserve"><value>正常</value>
+        <comment>Button in the speed menu for normal speed (1x). Very short: three buttons share one narrow row.</comment></data>
+  <data name="Audio_SpedUp" xml:space="preserve"><value>加速</value>
+        <comment>Button in the speed menu that plays songs faster (1.25x). Very short: three buttons share one narrow row.</comment></data>
+  <data name="Audio_MoreSettings" xml:space="preserve"><value>音频设置</value>
+        <comment>Tooltip and accessible name of the gear button in the speed menu; it opens the settings page about audio.</comment></data>
+  <data name="Audio_KeepPitch" xml:space="preserve"><value>保持音调</value>
+        <comment>Name of an on/off switch, in the settings and in the narrow speed menu. Also its accessible name. Short.</comment></data>
+  <data name="Audio_KeepPitchDescription" xml:space="preserve"><value>改变播放速度而不改变音调。关闭后，加速时音调升高，减速时音调降低。</value>
+        <comment>Explanation under the "Keep pitch" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="Audio_Reverb" xml:space="preserve"><value>混响</value>
+        <comment>Name of an on/off switch, in the settings and in the narrow speed menu. Also its accessible name. The echo of a room. Short.</comment></data>
+  <data name="Audio_ReverbDescription" xml:space="preserve"><value>为当前播放的音频添加室内混响效果。</value>
+        <comment>Explanation under the "Reverb" switch.</comment></data>
+  <data name="Audio_NeedsEffects" xml:space="preserve"><value>保持音调、混响和均衡器需要 BASS_FX 库，但该库未能加载。</value>
+        <comment>Warning above settings that are greyed out. "BASS_FX" is the name of a library: do not translate it.</comment></data>
+  <data name="Audio_SectionEqualizer" xml:space="preserve"><value>均衡器</value>
+        <comment>Small heading above the equalizer settings. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Audio_Equalizer" xml:space="preserve"><value>均衡器</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Audio_EqualizerDescription" xml:space="preserve"><value>调节不同频段的音量。提升某一频段时，整体电平会相应降低，以避免失真。</value>
+        <comment>Explanation under the "Equalizer" switch.</comment></data>
+  <data name="Audio_EqualizerReset" xml:space="preserve"><value>重置均衡器</value>
+        <comment>Button that puts every equalizer slider back to zero.</comment></data>
+  <data name="Audio_Hz" xml:space="preserve"><value>{0} Hz</value>
+        <comment>A sound frequency, the name of an equalizer slider. {0} is a number.</comment></data>
+  <data name="Audio_Decibels" xml:space="preserve"><value>{0} dB</value>
+        <comment>The value of an equalizer slider in decibels. {0} is a signed number such as +3.</comment></data>
+  <data name="Audio_SectionVolume" xml:space="preserve"><value>音量</value>
+        <comment>Small heading above the volume settings. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Audio_Normalize" xml:space="preserve"><value>响度标准化</value>
+        <comment>Name of a drop-down list that makes songs play at a similar loudness. Also its accessible name.</comment></data>
+  <data name="Audio_NormalizeDescription" xml:space="preserve"><value>使用文件中的 ReplayGain 标签，使歌曲以相近的响度播放。没有此类标签的文件按原样播放。</value>
+        <comment>Explanation under "Volume normalization". "ReplayGain" is the name of a standard: do not translate it.</comment></data>
+  <data name="Audio_NormalizeOff" xml:space="preserve"><value>关闭</value>
+        <comment>Entry of the "Volume normalization" list: no normalization.</comment></data>
+  <data name="Audio_NormalizeTrack" xml:space="preserve"><value>按歌曲</value>
+        <comment>Entry of the "Volume normalization" list: every song is evened out on its own.</comment></data>
+  <data name="Audio_NormalizeAlbum" xml:space="preserve"><value>按专辑</value>
+        <comment>Entry of the "Volume normalization" list: albums are evened out as a whole, songs keep their differences within one.</comment></data>
+  <data name="Audio_Curve" xml:space="preserve"><value>指数音量曲线</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Audio_CurveDescription" xml:space="preserve"><value>在低音量时提供更精细的调节。启用后，相同滑块位置对应的音量更低。</value>
+        <comment>Explanation under the "Exponential volume curve" switch.</comment></data>
+  <data name="Audio_ScrollStep" xml:space="preserve"><value>滚轮音量调节步长</value>
+        <comment>Name of a drop-down list: how much the volume changes per notch of the mouse wheel. Also its accessible name.</comment></data>
+  <data name="Audio_ScrollStepDescription" xml:space="preserve"><value>鼠标滚轮每滚动一格时的音量变化幅度。</value>
+        <comment>Explanation under "Volume scroll step". The wheel is used over the volume slider.</comment></data>
   <!-- Settings: General -->
+  <data name="General_Title" xml:space="preserve"><value>常规</value>
+        <comment>Name of a settings page, in the list of pages. Holds the everyday options.</comment></data>
+  <data name="General_Description" xml:space="preserve"><value>启动、窗口和语言</value>
+        <comment>One short line under the page name "General" in the list of settings pages. Lists what is on the page.</comment></data>
+  <data name="General_SectionStartup" xml:space="preserve"><value>启动</value>
+        <comment>Small heading above the settings about what happens when the app starts. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="General_Resume" xml:space="preserve"><value>恢复上次会话</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="General_ResumeDescription" xml:space="preserve"><value>Shirabe 启动时恢复上次播放的歌曲（暂停在上次的位置）、音量、随机播放和循环设置。关闭后不再保留这些状态。</value>
+        <comment>Explanation under the "Resume last session" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="General_SectionWindow" xml:space="preserve"><value>窗口</value>
+        <comment>Small heading above the settings about the app's window. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="General_KeepInTray" xml:space="preserve"><value>在系统托盘中继续运行</value>
+        <comment>Name of an on/off switch. Also its accessible name. "Tray" is the system tray (notification area) with the app's small icon.</comment></data>
+  <data name="General_KeepInTrayDescription" xml:space="preserve"><value>关闭窗口时将其隐藏，音乐继续播放；可通过托盘图标重新打开窗口。关闭此选项后，关闭窗口即退出 Shirabe。部分桌面环境没有系统托盘，请在这些环境中关闭此选项。</value>
+        <comment>Explanation under the "Keep running in the tray" switch. "Off" means the switch is turned off. "Tray" is the system tray (notification area).</comment></data>
+  <data name="General_SectionLanguage" xml:space="preserve"><value>语言</value>
+        <comment>Small heading above the language setting. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="General_Language" xml:space="preserve"><value>语言</value>
+        <comment>Name of the setting where the user picks the app's language. Also the accessible name of the drop-down list.</comment></data>
+  <data name="General_LanguageDescription" xml:space="preserve"><value>应用的显示语言。尚未翻译的内容仍以英语显示。</value>
+        <comment>Explanation under the language drop-down. "Parts" means screens and texts that still have no translation.</comment></data>
+  <data name="General_MachineTranslated" xml:space="preserve"><value>包含机器翻译</value>
+        <comment>Note under the language drop-down, shown when the language on screen was translated by a computer and may contain mistakes.</comment></data>
+  <data name="General_HelpTranslate" xml:space="preserve"><value>协助翻译</value>
+        <comment>Name of a row with a button that opens the project's translation page. Also the accessible name of that button.</comment></data>
+  <data name="General_HelpTranslateDescription" xml:space="preserve"><value>在 Crowdin 上添加或修正翻译。</value>
+        <comment>Hint under "Help translate". "Crowdin" is a product name.</comment></data>
+  <data name="Language_System" xml:space="preserve"><value>系统默认</value>
+        <comment>First entry of the language drop-down: use the language of the operating system.</comment></data>
   <!-- Settings: Appearance -->
+  <data name="Appearance_Title" xml:space="preserve"><value>外观</value>
+        <comment>Name of a settings page, in the list of pages. Holds the look of the app: colours and animations.</comment></data>
+  <data name="Appearance_Description" xml:space="preserve"><value>主题和强调色</value>
+        <comment>One short line under the page name "Appearance" in the list of settings pages. The source uses British spelling.</comment></data>
+  <data name="Appearance_SectionTheme" xml:space="preserve"><value>主题</value>
+        <comment>Small heading above the theme setting. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Appearance_Theme" xml:space="preserve"><value>主题</value>
+        <comment>Name of the setting where the user picks a theme: a named colour scheme such as "Dark". Also the accessible name of the drop-down list.</comment></data>
+  <data name="Appearance_ThemeDescription" xml:space="preserve"><value>整个应用的配色。</value>
+        <comment>Explanation under the theme drop-down.</comment></data>
+  <data name="Appearance_CustomThemesHint" xml:space="preserve"><value>添加自定义主题：将包含“name”及以下任意颜色字段（采用 #RRGGBB 格式）的 .json 文件放入 {0}，然后重启：accent, background, sidebar, surface, surfaceHover, divider, textPrimary, textSecondary, track。未指定的颜色沿用深色主题。</value>
+        <comment>{0} is a folder path, or the text of Appearance_ThemesFolder. Keep the colour names (accent, background...) and "name" as they are: they are keys in the file.</comment></data>
+  <data name="Appearance_ThemesFolder" xml:space="preserve"><value>主题文件夹</value>
+        <comment>Inserted as {0} into Appearance_CustomThemesHint when the folder path is not known. It must read naturally right after "in" in that sentence.</comment></data>
+  <data name="Theme_NeedsName" xml:space="preserve"><value>缺少“name”字段</value>
+        <comment>Problem listed under the theme setting for a theme file without a name. It follows the file name and a colon, e.g. "mytheme.json: needs a "name"". Keep "name" as it is: it is a key in the file.</comment></data>
+  <data name="Theme_BadColour" xml:space="preserve"><value>“{0}”不是有效的“#RRGGBB”格式颜色</value>
+        <comment>Problem listed under the theme setting. {0} is a key of the theme file (accent, background...): do not translate it. "#RRGGBB" is the colour format: keep it.</comment></data>
+  <data name="Theme_NameTaken" xml:space="preserve"><value>名为“{0}”的主题已存在</value>
+        <comment>Problem listed under the theme setting. It follows the file name and a colon. {0} is the theme's name.</comment></data>
+  <data name="Appearance_SectionAccent" xml:space="preserve"><value>强调色</value>
+        <comment>Small heading above the accent colour setting (the highlight colour of buttons and sliders). Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Appearance_Follow" xml:space="preserve"><value>跟随封面</value>
+        <comment>Name of an on/off switch. "Cover" is the album artwork of the song that is playing. Also the accessible name.</comment></data>
+  <data name="Appearance_FollowDescription" xml:space="preserve"><value>根据当前播放歌曲的封面调整强调色。关闭后使用主题自身的强调色。</value>
+        <comment>Explanation under the "Follow the cover" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="Appearance_SectionMotion" xml:space="preserve"><value>动画</value>
+        <comment>Small heading above the animation setting. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Appearance_ReduceMotion" xml:space="preserve"><value>减少动态效果</value>
+        <comment>Name of an on/off switch that turns animations off (an accessibility option, like the one in the operating system). Also its accessible name.</comment></data>
+  <data name="Appearance_ReduceMotionDescription" xml:space="preserve"><value>关闭淡入淡出和滑动动画。</value>
+        <comment>Explanation under the "Reduce motion" switch.</comment></data>
   <!-- Settings: Lyrics -->
+  <data name="Lyrics_Title" xml:space="preserve"><value>歌词</value>
+        <comment>Name of a settings page, in the list of pages. "Lyrics" means the words of a song.</comment></data>
+  <data name="Lyrics_Description" xml:space="preserve"><value>字号、伴唱和时间同步</value>
+        <comment>One short line under the page name "Lyrics" in the list of settings pages. Lists what is on the page.</comment></data>
+  <data name="Lyrics_SectionText" xml:space="preserve"><value>文字</value>
+        <comment>Small heading above the settings about how the lyrics text looks. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Lyrics_TextSize" xml:space="preserve"><value>字号</value>
+        <comment>Name of the setting (a slider) for how large the lyrics are.</comment></data>
+  <data name="Lyrics_TextSizeDescription" xml:space="preserve"><value>歌词面板中的歌词字号。</value>
+        <comment>Explanation under the "Text size" setting.</comment></data>
+  <data name="Lyrics_TextSizeName" xml:space="preserve"><value>歌词字号</value>
+        <comment>Accessible name of the slider.</comment></data>
+  <data name="Lyrics_TextSizeValue" xml:space="preserve"><value>{0} pt</value>
+        <comment>Value shown next to the text size slider. {0} is a whole number; "pt" is the abbreviation of typographic points.</comment></data>
+  <data name="Lyrics_SectionShown" xml:space="preserve"><value>显示内容</value>
+        <comment>Small heading above the switches that choose which parts of the lyrics are displayed. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Lyrics_BackgroundVocals" xml:space="preserve"><value>伴唱歌词</value>
+        <comment>Name of an on/off switch. Background vocals are the secondary voices of a song (backing vocals, echoes, ad-libs). Also its accessible name.</comment></data>
+  <data name="Lyrics_BackgroundVocalsDescription" xml:space="preserve"><value>显示部分歌词中括号内的伴唱内容。</value>
+        <comment>Explanation under the "Background vocals" switch. Such parts appear in brackets in the lyrics text.</comment></data>
+  <data name="Lyrics_BreakMarkers" xml:space="preserve"><value>间奏提示</value>
+        <comment>Name of an on/off switch. The markers are three dots shown in the lyrics while the song has no singing. Also its accessible name.</comment></data>
+  <data name="Lyrics_BreakMarkersDescription" xml:space="preserve"><value>在纯器乐间奏期间显示三个逐渐填满的圆点。</value>
+        <comment>Explanation under the "Break markers" switch. An instrumental break is a part of the song without singing.</comment></data>
+  <data name="Lyrics_SectionTiming" xml:space="preserve"><value>时间同步</value>
+        <comment>Small heading above the setting that fine-tunes when lyrics light up. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Lyrics_Delay" xml:space="preserve"><value>高亮延迟</value>
+        <comment>Name of the setting (a slider) that shifts the moment a lyric line is highlighted, in milliseconds. "Highlight" means the line being sung is made bright.</comment></data>
+  <data name="Lyrics_DelayDescription" xml:space="preserve"><value>如果歌词高亮早于声音，请增大此值；如果晚于声音，请减小此值。扬声器实际发声的时间略晚于播放器报告的播放位置。</value>
+        <comment>Explanation under the "Highlight delay" slider. "Raise" and "lower" refer to moving the slider.</comment></data>
+  <data name="Lyrics_DelayName" xml:space="preserve"><value>歌词高亮延迟</value>
+        <comment>Accessible name of the slider.</comment></data>
+  <data name="Lyrics_NoDelay" xml:space="preserve"><value>无延迟</value>
+        <comment>Value shown next to the highlight delay slider when it is at zero, instead of "0 ms".</comment></data>
+  <data name="Lyrics_DelayValue" xml:space="preserve"><value>{0} ms</value>
+        <comment>{0} is a number with a sign, such as +120 or -50. "ms" is the abbreviation of milliseconds.</comment></data>
   <!-- Settings: Connections -->
+  <data name="Connections_Title" xml:space="preserve"><value>连接</value>
+        <comment>Name of a settings page, in the list of pages. Holds the options that talk to outside services.</comment></data>
+  <data name="Connections_Description" xml:space="preserve"><value>Discord、Last.fm 和在线查询</value>
+        <comment>One short line under the page name "Connections" in the list of settings pages. "Discord" and "Last.fm" are product names: do not translate them.</comment></data>
+  <data name="Connections_SectionDiscord" xml:space="preserve"><value>DISCORD</value>
+        <comment>Small heading above the Discord settings. "Discord" is a product name: do not translate it.</comment></data>
+  <data name="Connections_Presence" xml:space="preserve"><value>显示我正在听的歌曲</value>
+        <comment>Name of an on/off switch that shows the current song on the user's Discord profile.</comment></data>
+  <data name="Connections_PresenceDescription" xml:space="preserve"><value>播放时在 Discord 个人资料中显示“正在听”歌曲卡片。需要 Discord 正在运行。</value>
+        <comment>Explanation under the switch. "Listening to" is the label Discord itself shows on the card; use Discord's wording in your language if you know it.</comment></data>
+  <data name="Connections_PresenceName" xml:space="preserve"><value>Discord 活动状态</value>
+        <comment>Accessible name of the switch.</comment></data>
+  <data name="Connections_CoverLookup" xml:space="preserve"><value>在线查找专辑封面</value>
+        <comment>Name of an on/off switch. A cover is the album artwork.</comment></data>
+  <data name="Connections_CoverLookupDescription" xml:space="preserve"><value>向 Apple 的 iTunes Search 发送艺术家和专辑名称，为 Discord 卡片查找封面。不会从你的电脑发送其他信息。</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "iTunes Search" is Apple's service name: do not translate it.</comment></data>
+  <data name="Connections_CoverLookupName" xml:space="preserve"><value>封面查询</value>
+        <comment>Accessible name of the switch.</comment></data>
+  <data name="Connections_SectionArtwork" xml:space="preserve"><value>封面图片</value>
+        <comment>Small heading above the setting about downloading cover images. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Connections_DownloadArtwork" xml:space="preserve"><value>下载链接中的封面</value>
+        <comment>Name of an on/off switch. "Linked" means a song's metadata contains a web link to its cover image. Also its accessible name.</comment></data>
+  <data name="Connections_DownloadArtworkDescription" xml:space="preserve"><value>当歌曲元数据包含封面链接时，显示该歌曲时会下载封面并保存在此电脑上。封面来源网站可以获知你的 IP 地址以及你播放了这首歌曲。</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "Your address" means the user's internet (IP) address.</comment></data>
   <!-- Settings: Connections, Last.fm -->
+  <data name="LastFm_Section" xml:space="preserve"><value>LAST.FM</value>
+        <comment>Small heading above the Last.fm settings. "Last.fm" is a product name: do not translate it.</comment></data>
+  <data name="LastFm_Account" xml:space="preserve"><value>账户</value>
+        <comment>Name of the settings row about the user's Last.fm account.</comment></data>
+  <data name="LastFm_SignedOut" xml:space="preserve"><value>请在 Last.fm 网站上登录。Shirabe 不会获取你的密码。</value>
+        <comment>Under "Account" when the user is not signed in. "Last.fm" and "Shirabe" are product names.</comment></data>
+  <data name="LastFm_Waiting" xml:space="preserve"><value>请在浏览器中授权访问，然后返回此处。</value>
+        <comment>Under "Account" while the app waits for the user to approve it on the website that was just opened.</comment></data>
+  <data name="LastFm_SignedInAs" xml:space="preserve"><value>已登录为 {0}</value>
+        <comment>Under "Account". {0} is the user's Last.fm user name: keep it as it is.</comment></data>
+  <data name="LastFm_Unavailable" xml:space="preserve"><value>此 Shirabe 构建版本未配置 Last.fm API 密钥。</value>
+        <comment>Under "Account" in a copy of the app that cannot use Last.fm. An API key is a code that identifies an app to a web service; a build is one compiled copy of the app.</comment></data>
+  <data name="LastFm_Connect" xml:space="preserve"><value>连接</value>
+        <comment>Button: starts signing in to Last.fm. Short.</comment></data>
+  <data name="LastFm_Cancel" xml:space="preserve"><value>取消</value>
+        <comment>Button: stops waiting for the sign-in. Short.</comment></data>
+  <data name="LastFm_Disconnect" xml:space="preserve"><value>断开连接</value>
+        <comment>Button: signs out of Last.fm in this app. Short.</comment></data>
+  <data name="LastFm_ViewProfile" xml:space="preserve"><value>查看个人资料</value>
+        <comment>Button: opens the user's page on the Last.fm website. Short.</comment></data>
+  <data name="LastFm_Scrobble" xml:space="preserve"><value>记录我的播放历史</value>
+        <comment>Name of an on/off switch, also its accessible name. To "scrobble" is Last.fm's word for adding a played song to the user's listening history; use Last.fm's wording in your language if you know it.</comment></data>
+  <data name="LastFm_ScrobbleDescription" xml:space="preserve"><value>连接后，向 Last.fm 发送所播放歌曲的艺术家、标题、专辑、时长和开始播放时间。</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "Last.fm" is a product name.</comment></data>
+  <data name="LastFm_NoStorage" xml:space="preserve"><value>Shirabe 在此电脑上没有可用的安全存储，因此每次启动时都需要重新登录 Last.fm。</value>
+        <comment>Warning. "Secure storage" is the system's protected place for passwords and keys (Windows Credential Manager, a Linux keyring).</comment></data>
+  <data name="LastFm_NotAllowed" xml:space="preserve"><value>未在规定时间内完成授权。请重试。</value>
+        <comment>Error after the user did not approve the app on the Last.fm website within a few minutes.</comment></data>
+  <data name="LastFm_Unreachable" xml:space="preserve"><value>无法连接 Last.fm。请检查网络连接后重试。</value>
+        <comment>Error after a failed sign-in: no internet connection, or the website does not answer.</comment></data>
+  <data name="LastFm_Failed" xml:space="preserve"><value>登录 Last.fm 失败：{0}</value>
+        <comment>Error. {0} is the reason given by Last.fm, in English.</comment></data>
+  <data name="LastFm_NotRemoved" xml:space="preserve"><value>无法删除已保存的登录信息，因此重启后可能会恢复登录状态。你可以在 Last.fm 设置的“Applications”（应用程序）中撤销 Shirabe 的访问权限。</value>
+        <comment>Error after signing out. "Applications" is the name of a page in the settings of the Last.fm website; to revoke access means to take the permission away.</comment></data>
+  <data name="LastFm_Credit" xml:space="preserve"><value>由 AudioScrobbler 提供支持</value>
+        <comment>Credit that Last.fm asks for. "AudioScrobbler" is a product name: do not translate it.</comment></data>
+  <data name="LastFm_CreditDescription" xml:space="preserve"><value>账户功能由 Last.fm 提供。</value>
+        <comment>Under the credit "Powered by AudioScrobbler". "Last.fm" is a product name.</comment></data>
+  <data name="LastFm_Open" xml:space="preserve"><value>打开 Last.fm</value>
+        <comment>Button: opens the Last.fm website. "Last.fm" is a product name.</comment></data>
   <!-- Title bar: the message about the last scrobble -->
+  <data name="Scrobbler_Title" xml:space="preserve"><value>播放记录</value>
+        <comment>Heading of a small message in the title bar. A scrobbler is the part of an app that adds played songs to the user's Last.fm listening history; use Last.fm's wording in your language if you know it.</comment></data>
+  <data name="Scrobbler_Done" xml:space="preserve"><value>已提交 {1} 的《{0}》的播放记录</value>
+        <comment>Message after a song was added to the Last.fm history. {0} is the song title, {1} the artist: keep both. It is cut off when long.</comment></data>
+  <data name="Scrobbler_Ignored" xml:space="preserve"><value>Last.fm 忽略了 {1} 的《{0}》的播放记录</value>
+        <comment>Message when Last.fm received a song but did not add it to the history. {0} is the song title, {1} the artist.</comment></data>
+  <data name="Scrobbler_Failed" xml:space="preserve"><value>无法提交 {1} 的《{0}》的播放记录</value>
+        <comment>Message when a song could not be sent to Last.fm. {0} is the song title, {1} the artist.</comment></data>
   <!-- Settings: About -->
+  <data name="About_Title" xml:space="preserve"><value>关于</value>
+        <comment>Name of a settings page, in the list of pages. It shows the app's version, license and credits.</comment></data>
+  <data name="About_Description" xml:space="preserve"><value>版本、许可证和致谢</value>
+        <comment>One short line under the page name "About" in the list of settings pages.</comment></data>
+  <data name="About_SectionApp" xml:space="preserve"><value>SHIRABE</value>
+        <comment>Small heading above the version and links. "Shirabe" is the product name: do not translate it. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_Tagline" xml:space="preserve"><value>音乐值得拥有的不只是一个播放按钮。</value>
+        <comment>The project's motto, shown at the top of the About page. Translate the idea, not word for word. "Play button" is the button that starts a song.</comment></data>
+  <data name="About_Version" xml:space="preserve"><value>版本</value>
+        <comment>Name of the row that shows the app's version number, for example 0.1.0.</comment></data>
+  <data name="About_VersionDescription" xml:space="preserve"><value>报告问题时请注明此版本。</value>
+        <comment>Short hint under "Version".</comment></data>
+  <data name="About_Commit" xml:space="preserve"><value>构建版本</value>
+        <comment>Name of the row that shows the short code (a git commit hash such as ce863a5e7) identifying the exact source code this build was made from.</comment></data>
+  <data name="About_CommitDescription" xml:space="preserve"><value>此构建版本所使用的确切源代码版本。</value>
+        <comment>Short hint under "Build".</comment></data>
+  <data name="About_License" xml:space="preserve"><value>许可证</value>
+        <comment>Name of the row that tells under which license the app is released.</comment></data>
+  <data name="About_LicenseDescription" xml:space="preserve"><value>Shirabe 是采用 Apache License 2.0 的免费开源软件。</value>
+        <comment>Hint under "License". "Apache License 2.0" is the official license name: do not translate it.</comment></data>
+  <data name="About_Source" xml:space="preserve"><value>源代码</value>
+        <comment>Name of a row with a button that opens the project's page on GitHub.</comment></data>
+  <data name="About_SourceDescription" xml:space="preserve"><value>Shirabe 在 GitHub 上公开开发。</value>
+        <comment>Hint under "Source code". "GitHub" is a product name.</comment></data>
+  <data name="About_ReportProblem" xml:space="preserve"><value>报告问题</value>
+        <comment>Name of a row with a button that opens the project's issue tracker on GitHub.</comment></data>
+  <data name="About_ReportProblemDescription" xml:space="preserve"><value>发现错误或有新想法？请在 GitHub 上提交 Issue。</value>
+        <comment>Hint under "Report a problem". An "issue" is a report on GitHub's issue tracker.</comment></data>
+  <data name="About_Open" xml:space="preserve"><value>打开</value>
+        <comment>Button that opens a web page in the browser. Short: it sits at the right end of a row.</comment></data>
+  <data name="About_SectionCredits" xml:space="preserve"><value>致谢</value>
+        <comment>Small heading above the list of people. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_Author" xml:space="preserve"><value>作者与维护者</value>
+        <comment>Role of the person named in the row's description. The name itself is not translated.</comment></data>
+  <data name="About_SectionAudio" xml:space="preserve"><value>音频引擎</value>
+        <comment>Small heading above the notice about the audio library used to play music. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_AudioNotice" xml:space="preserve"><value>音频播放使用 BASS，Copyright © 1999-2026 Un4seen Developments Ltd.。BASS 是专有软件，不受 Shirabe 许可证约束，依据 Un4seen 的条款免费用于非商业用途。</value>
+        <comment>Legal notice: keep the meaning exact. "BASS" and "Un4seen Developments Ltd." are names: do not translate them. "Proprietary" means not open source.</comment></data>
+  <data name="About_AudioWebsite" xml:space="preserve"><value>BASS 网站</value>
+        <comment>Name of a row with a button that opens the BASS audio library's website. "BASS" is a product name.</comment></data>
+  <data name="About_AudioWebsiteDescription" xml:space="preserve"><value>Un4seen Developments</value>
+        <comment>Hint under "BASS website": the company that makes BASS. A company name: do not translate it.</comment></data>
+  <data name="About_SectionThirdParty" xml:space="preserve"><value>第三方组件</value>
+        <comment>Small heading above the list of open-source libraries and resources the app is built with. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_ThirdPartyIntro" xml:space="preserve"><value>Shirabe 使用以下开源组件构建。各组件均依据其自身的许可证使用。</value>
+        <comment>Sentence above the list of components. "Open-source" means the source code is public and free to use.</comment></data>
+  <data name="About_CopyHint" xml:space="preserve"><value>点击复制</value>
+        <comment>Tooltip of the version and build buttons: clicking one copies its text to the clipboard.</comment></data>
+  <data name="About_Copied" xml:space="preserve"><value>已复制</value>
+        <comment>Shown for a moment on the version or build button after its text was copied to the clipboard. Short: it replaces the button's text.</comment></data>
   <!-- Songs page -->
+  <data name="Common_UnknownArtist" xml:space="preserve"><value>未知艺术家</value>
+        <comment>Shown in place of the artist's name when a song has none (song list, queue, player bar).</comment></data>
+  <data name="Songs_Cancel" xml:space="preserve"><value>取消</value>
+        <comment>Button that stops the scan of a music folder that is in progress.</comment></data>
+  <data name="Songs_AddFolder" xml:space="preserve"><value>添加文件夹</value>
+        <comment>Button that opens a dialog to choose a folder with music; the app then scans it and adds the songs to the library.</comment></data>
+  <data name="Songs_Summary" xml:space="preserve"><value>音乐库歌曲数：{0:N0}</value>
+        <comment>Line under the page heading "Songs". {0:N0} is the number of songs, formatted with thousands separators: keep {0:N0} as it is. Worded without a counted noun on purpose, so it needs no plural forms.</comment></data>
+  <data name="Songs_ColTitle" xml:space="preserve"><value>标题</value>
+        <comment>Column heading of the song list: the song's title. Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_ColArtist" xml:space="preserve"><value>艺术家</value>
+        <comment>Column heading of the song list: the performer. Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_ColAlbum" xml:space="preserve"><value>专辑</value>
+        <comment>Column heading of the song list: the album the song is on. Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_ColTime" xml:space="preserve"><value>时长</value>
+        <comment>Column heading of the song list: the song's length (duration). Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_PlayNext" xml:space="preserve"><value>下一首播放</value>
+        <comment>Item of the song context menu: puts the song right after the one that is playing.</comment></data>
+  <data name="Songs_AddToQueue" xml:space="preserve"><value>添加到播放队列</value>
+        <comment>Item of the song context menu: puts the song at the end of the play queue.</comment></data>
+  <data name="Songs_Properties" xml:space="preserve"><value>属性</value>
+        <comment>Item of the song context menu: opens a dialog with the song's details, tags and custom fields.</comment></data>
+  <data name="Songs_EmptyTitle" xml:space="preserve"><value>暂无歌曲</value>
+        <comment>Heading shown on the Songs page while the library is empty.</comment></data>
+  <data name="Songs_EmptyHint" xml:space="preserve"><value>添加文件夹后，Shirabe 将查找其中的音乐。</value>
+        <comment>Hint under "No songs yet". "Shirabe" is the app's name: do not translate it.</comment></data>
+  <data name="Songs_ChooseFolder" xml:space="preserve"><value>选择音乐文件夹</value>
+        <comment>Title of the operating system's folder dialog opened by "Add folder".</comment></data>
+  <data name="Songs_LoadFailed" xml:space="preserve"><value>无法加载音乐库：{0}</value>
+        <comment>Error line on the Songs page. {0} is the technical reason, often in English.</comment></data>
+  <data name="Songs_ScanLooking" xml:space="preserve"><value>正在查找音乐...</value>
+        <comment>Status while a folder scan starts, before the number of files is known.</comment></data>
+  <data name="Songs_ScanProgress" xml:space="preserve"><value>正在扫描 {0:N0}/{1:N0}</value>
+        <comment>Status during a folder scan: {0} files done, {1} files in total. Keep {0:N0} and {1:N0} as they are.</comment></data>
+  <data name="Songs_ScanCancelled" xml:space="preserve"><value>扫描已取消</value>
+        <comment>Status after the user stopped a folder scan.</comment></data>
+  <data name="Songs_ScanFailed" xml:space="preserve"><value>无法扫描 {0}：{1}</value>
+        <comment>Error line on the Songs page. {0} is a folder path, {1} the technical reason, often in English.</comment></data>
+  <data name="Songs_ScanFinished" xml:space="preserve"><value>扫描完成：{0}</value>
+        <comment>Summary after a folder scan. {0} is a list of results separated by commas, made from the "Songs_Scan..." texts, e.g. "3 added, 1 updated, 10 unchanged".</comment></data>
+  <data name="Songs_ScanAdded" xml:space="preserve"><value>新增 {0:N0} 首</value>
+        <comment>Part of the scan summary: how many new songs were found. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanUpdated" xml:space="preserve"><value>更新 {0:N0} 首</value>
+        <comment>Part of the scan summary: how many songs were already known but changed (for example retagged). Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanUnchanged" xml:space="preserve"><value>{0:N0} 首未变化</value>
+        <comment>Part of the scan summary: how many songs were already known and had not changed. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanMissing" xml:space="preserve"><value>{0:N0} 首已找不到</value>
+        <comment>Part of the scan summary: how many known songs have disappeared from the folder. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanFailedFiles" xml:space="preserve"><value>{0:N0} 个文件无法读取</value>
+        <comment>Part of the scan summary: how many files were skipped because they are damaged or not audio. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanDocumentProblems" xml:space="preserve"><value>元数据文档问题：{0:N0}</value>
+        <comment>Part of the scan summary: how many metadata documents (small .shirabe.json files or tags that describe a song) were damaged or broke the format's rules. Keep {0:N0} as it is.</comment></data>
   <!-- Queue panel -->
+  <data name="Queue_Clear" xml:space="preserve"><value>清空</value>
+        <comment>Small button in the queue panel that empties the queue.</comment></data>
+  <data name="Queue_ClearTip" xml:space="preserve"><value>移除当前播放歌曲之外的所有歌曲</value>
+        <comment>Tooltip of the "Clear" button of the queue panel.</comment></data>
+  <data name="Queue_Remove" xml:space="preserve"><value>从播放队列中移除</value>
+        <comment>Tooltip and accessible name of the small X button on a queue row.</comment></data>
+  <data name="Queue_EmptyTitle" xml:space="preserve"><value>播放队列为空</value>
+        <comment>Heading shown in the queue panel when no songs are queued.</comment></data>
+  <data name="Queue_EmptyHint" xml:space="preserve"><value>从歌曲列表中播放一首歌曲即可创建队列。</value>
+        <comment>Hint under "The queue is empty". "One" means a queue.</comment></data>
   <!-- Lyrics panel -->
+  <data name="LyricsPanel_NothingPlaying" xml:space="preserve"><value>暂无播放内容</value>
+        <comment>Heading shown in the lyrics panel while no song is loaded.</comment></data>
+  <data name="LyricsPanel_NoLyrics" xml:space="preserve"><value>这首歌曲暂无歌词</value>
+        <comment>Heading shown in the lyrics panel when the loaded song has no lyrics.</comment></data>
+  <data name="LyricsPanel_PlayHint" xml:space="preserve"><value>播放歌曲后即可在此查看歌词。</value>
+        <comment>Hint under "Nothing is playing".</comment></data>
+  <data name="LyricsPanel_AddHint" xml:space="preserve"><value>请将同名的 .lrc 或 .ttml 文件放在歌曲所在目录，或在音频文件的标签中添加歌词。</value>
+        <comment>Hint under "No lyrics for this song". ".lrc" and ".ttml" are file extensions: keep them. "Tags" are the information stored inside the audio file (title, artist, lyrics...).</comment></data>
   <!-- Home page -->
+  <data name="Home_DropTitle" xml:space="preserve"><value>将音频文件拖放到此处</value>
+        <comment>Large text on the start page's drop area. Read together with Home_DropHint: "Drop an audio file here" + "to start listening".</comment></data>
+  <data name="Home_DropHint" xml:space="preserve"><value>即可开始聆听</value>
+        <comment>Second line under Home_DropTitle. It continues the sentence of the line above it.</comment></data>
   <!-- Player messages and startup problems -->
+  <data name="Player_NothingPlaying" xml:space="preserve"><value>暂无播放内容</value>
+        <comment>Title in the player bar while no song is loaded.</comment></data>
+  <data name="Player_CannotPlay" xml:space="preserve"><value>无法播放 {0}：{1}</value>
+        <comment>Error in the player bar. {0} is a song title, {1} the technical reason, often in English.</comment></data>
+  <data name="Player_CannotPlayAgain" xml:space="preserve"><value>无法重新播放 {0}：{1}</value>
+        <comment>Error in the player bar when a song could not be loaded again after the app released its file for a moment. {0} is a song title, {1} the technical reason, often in English.</comment></data>
+  <data name="Player_FileGone" xml:space="preserve"><value>无法播放 {0}：文件已移动或删除。请重新添加其所在文件夹以更新音乐库。</value>
+        <comment>Error in the player bar. {0} is a song title.</comment></data>
+  <data name="Startup_AudioEngine" xml:space="preserve"><value>无法启动音频引擎：{0}
+
+请参阅 native/README.md。</value>
+        <comment>Error shown on the start page when the sound library (BASS) is missing. {0} is the technical reason, often in English. Keep the line breaks and "native/README.md" (a file name).</comment></data>
+  <data name="Startup_LibraryOpen" xml:space="preserve"><value>无法打开音乐库（{0}）：{1}</value>
+        <comment>Error shown on the start page. {0} is the path of the library's database file, {1} the technical reason, often in English.</comment></data>
   <!-- Notifications and updates -->
+  <data name="Connections_SectionUpdates" xml:space="preserve"><value>更新</value>
+        <comment>Small heading above the setting about checking for new versions. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Connections_CheckForUpdates" xml:space="preserve"><value>检查更新</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Connections_CheckForUpdatesDescription" xml:space="preserve"><value>Shirabe 启动时向 GitHub 查询是否有新版本发布，如有则通知你。GitHub 可以获知你的 IP 地址，不会发送其他信息。下次启动 Shirabe 时生效。</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "GitHub" is a product name. "Your address" means the user's internet (IP) address.</comment></data>
+  <data name="Connections_UpdateChannel" xml:space="preserve"><value>更新渠道</value>
+        <comment>Name of a list choosing which kind of new versions are offered. Also its accessible name.</comment></data>
+  <data name="Connections_UpdateChannelDescription" xml:space="preserve"><value>测试版渠道还提供早期测试版本，可能包含更多错误。切换回稳定版渠道后，将保留当前版本，直至发布更新的稳定版。下次启动 Shirabe 时生效。</value>
+        <comment>Explanation under the update channel list. "Beta" and "Stable" must match the names of the two choices.</comment></data>
+  <data name="Connections_UpdateChannelStable" xml:space="preserve"><value>稳定版</value>
+        <comment>Update channel choice: only finished releases.</comment></data>
+  <data name="Connections_UpdateChannelBeta" xml:space="preserve"><value>测试版</value>
+        <comment>Update channel choice: test versions as well.</comment></data>
+  <data name="Update_Title" xml:space="preserve"><value>Shirabe {0} 已发布</value>
+        <comment>Title of a notification. {0} is the new version number, for example 0.2.0: keep it as it is.</comment></data>
+  <data name="Update_Message" xml:space="preserve"><value>请从 GitHub 下载新版本，或通过安装 Shirabe 时使用的软件包管理器进行更新。</value>
+        <comment>Body of the notification about a new version. A package manager is a tool such as winget, Scoop, Homebrew or apt that installs and updates programs. "GitHub" is a product name.</comment></data>
+  <data name="Update_ViewRelease" xml:space="preserve"><value>查看发行版</value>
+        <comment>Button of the new-version notification: opens the page where the new version can be downloaded. Short.</comment></data>
+  <data name="Update_SelfMessage" xml:space="preserve"><value>Shirabe 可以为你下载并安装更新。</value>
+        <comment>Body of the notification about a new version, shown when the app can update itself.</comment></data>
+  <data name="Update_Install" xml:space="preserve"><value>更新</value>
+        <comment>Button of the new-version notification: downloads the new version. A verb. Short.</comment></data>
+  <data name="Update_Downloading" xml:space="preserve"><value>正在下载… {0}%</value>
+        <comment>Body of the update notification while the new version downloads. {0} is a number from 0 to 100: keep it as it is.</comment></data>
+  <data name="Update_Ready" xml:space="preserve"><value>下载完成。立即重启 Shirabe 以安装更新，或在下次启动 Shirabe 时自动安装。</value>
+        <comment>Body of the update notification after the download has finished. "Shirabe" is the app's name.</comment></data>
+  <data name="Update_Restart" xml:space="preserve"><value>立即重启</value>
+        <comment>Button of the update notification: closes the app, installs the new version and opens it again. Short.</comment></data>
+  <data name="Update_Failed" xml:space="preserve"><value>更新失败。请重试，或前往发行版页面下载。</value>
+        <comment>Body of the update notification when downloading or installing the new version failed.</comment></data>
+  <data name="Update_TryAgain" xml:space="preserve"><value>重试</value>
+        <comment>Button of the update notification after a failed download: starts the download again. Short.</comment></data>
+  <data name="Notification_Dismiss" xml:space="preserve"><value>关闭通知</value>
+        <comment>Tooltip and accessible name of the close (X) button of a notification: it removes the notification.</comment></data>
 </root>
