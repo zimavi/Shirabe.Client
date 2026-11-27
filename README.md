@@ -61,7 +61,7 @@ downloaded from the page above.
 
 - **macOS:** with **Playback speed control** on and **Keep pitch** off, lyrics were out of sync with the song almost all
   the time (seen on one Mac, cause not yet found). Turn Keep pitch on, or turn speed control off.
-- **Windows, 0.1.0 and the 0.2.0 betas:** they keep your library in the folder the app is installed in
+- **Windows, 0.1.0 to 0.2.0-beta.2:** these versions keep your library in the folder the app is installed in
   (`%LOCALAPPDATA%\Shirabe`). **Installing a newer version over them, or uninstalling them, can delete the library and
   settings**: quit Shirabe (from its tray icon) and copy that folder somewhere else first. After installing the new
   version, quit it too, delete any `library.db*` files in `%LOCALAPPDATA%\ShirabeData`, then copy `library.db*`,
