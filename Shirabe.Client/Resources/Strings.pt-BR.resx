@@ -17,21 +17,535 @@
         </value>
   </resheader>
   <!-- Sidebar -->
+  <data name="Nav_Home" xml:space="preserve"><value>Início</value>
+        <comment>Sidebar entry for the start page. Short: it has to fit the sidebar.</comment></data>
+  <data name="Nav_Songs" xml:space="preserve"><value>Músicas</value>
+        <comment>Sidebar entry and heading of the page that lists every song (track) in the user's music library.</comment></data>
+  <data name="Nav_Albums" xml:space="preserve"><value>Álbuns</value>
+        <comment>Sidebar entry for the page that will list albums. Shown greyed out for now.</comment></data>
+  <data name="Nav_Artists" xml:space="preserve"><value>Artistas</value>
+        <comment>Sidebar entry for the page that will list artists (singers, bands, musicians). Shown greyed out for now.</comment></data>
+  <data name="Nav_Playlists" xml:space="preserve"><value>Playlists</value>
+        <comment>Sidebar entry for the page that will list the user's own playlists. Shown greyed out for now.</comment></data>
+  <data name="Nav_Studio" xml:space="preserve"><value>Estúdio</value>
+        <comment>Sidebar entry for the editor where music metadata (credits, covers, custom fields) is created. "Studio" means a creative workspace; a feature name, so a commonly used loanword is fine.</comment></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>Configurações</value>
+        <comment>Sidebar entry, title of the settings page and accessible name of the sidebar button.</comment></data>
+  <data name="Nav_SectionLibrary" xml:space="preserve"><value>BIBLIOTECA</value>
+        <comment>Small heading above the library entries in the sidebar.</comment></data>
+  <data name="Nav_SectionCreate" xml:space="preserve"><value>CRIAR</value>
+        <comment>Small heading above the Studio entry in the sidebar.</comment></data>
+  <data name="Nav_NotAvailable" xml:space="preserve"><value>Ainda não disponível</value>
+        <comment>Tooltip of a sidebar entry whose page does not exist yet.</comment></data>
   <!-- Window buttons -->
+  <data name="Window_Minimize" xml:space="preserve"><value>Minimizar</value>
+        <comment>Tooltip and accessible name of the title bar button that minimizes the window to the taskbar.</comment></data>
+  <data name="Window_Maximize" xml:space="preserve"><value>Maximizar</value>
+        <comment>Accessible name (read by screen readers) of the title bar button that makes the window fill the screen. Not shown as text.</comment></data>
+  <data name="Window_Restore" xml:space="preserve"><value>Restaurar</value>
+        <comment>Accessible name of the same button while the window is maximized: it returns the window to its previous size. Not shown as text.</comment></data>
+  <data name="Window_Close" xml:space="preserve"><value>Fechar</value>
+        <comment>Tooltip and accessible name of the title bar button that closes the window.</comment></data>
   <!-- Player bar and tray menu -->
+  <data name="Player_Shuffle" xml:space="preserve"><value>Reprodução aleatória</value>
+        <comment>Tooltip and accessible name of the button that plays the queue in random order (verb or noun, as is usual on music players).</comment></data>
+  <data name="Player_Previous" xml:space="preserve"><value>Anterior</value>
+        <comment>Tooltip of the button that goes to the previous song, and an item of the tray icon menu.</comment></data>
+  <data name="Player_Next" xml:space="preserve"><value>Próxima</value>
+        <comment>Tooltip of the button that goes to the next song, and an item of the tray icon menu.</comment></data>
+  <data name="Player_Play" xml:space="preserve"><value>Reproduzir</value>
+        <comment>Verb. Tray icon menu item that starts playback (shown while the music is paused), item of the song context menu, and accessible name of the play button on a song's cover.</comment></data>
+  <data name="Player_Pause" xml:space="preserve"><value>Pausar</value>
+        <comment>Tray icon menu item that pauses playback. Verb. Shown while the music is playing.</comment></data>
+  <data name="Player_PlayPause" xml:space="preserve"><value>Reproduzir ou pausar</value>
+        <comment>Accessible name (read by screen readers) of the one round button that switches between playing and pausing. Not shown as text.</comment></data>
+  <data name="Player_Repeat" xml:space="preserve"><value>Repetir</value>
+        <comment>Accessible name of the repeat button. Its tooltip shows one of the three "Repeat: ..." texts below.</comment></data>
+  <data name="Player_RepeatOff" xml:space="preserve"><value>Repetição: desativada</value>
+        <comment>Tooltip of the repeat button when nothing repeats: the queue stops after the last song.</comment></data>
+  <data name="Player_RepeatAll" xml:space="preserve"><value>Repetição: todas as músicas</value>
+        <comment>Tooltip of the repeat button when the whole queue starts over after the last song.</comment></data>
+  <data name="Player_RepeatOne" xml:space="preserve"><value>Repetição: esta música</value>
+        <comment>Tooltip of the repeat button when the current song plays again and again.</comment></data>
+  <data name="Player_Lyrics" xml:space="preserve"><value>Letras</value>
+        <comment>Tooltip and accessible name of the button that opens the panel with the words of the song (song lyrics, not poetry). Also the heading of that panel.</comment></data>
+  <data name="Player_Queue" xml:space="preserve"><value>Fila de reprodução</value>
+        <comment>Tooltip and accessible name of the button that opens the list of songs that will play next (the play queue). Also the heading of that list.</comment></data>
+  <data name="Player_Mute" xml:space="preserve"><value>Silenciar</value>
+        <comment>Accessible name of the speaker icon button that switches the sound off and on. Not shown as text.</comment></data>
+  <data name="Player_Volume" xml:space="preserve"><value>Volume</value>
+        <comment>Accessible name of the volume slider (loudness). Not shown as text.</comment></data>
+  <data name="Tray_Open" xml:space="preserve"><value>Abrir Shirabe</value>
+        <comment>Tray icon menu item that shows the main window again. "Shirabe" is the app's name: do not translate it.</comment></data>
+  <data name="Tray_Quit" xml:space="preserve"><value>Sair</value>
+        <comment>Tray icon menu item that closes the app completely (closing the window only hides it to the tray).</comment></data>
   <!-- Settings: Keyboard shortcuts. The other action names in that list are the Player_* and Nav_* texts above. -->
+  <data name="Shortcuts_Title" xml:space="preserve"><value>Atalhos</value>
+        <comment>Name of a settings page, in the list of pages. Keyboard shortcuts.</comment></data>
+  <data name="Shortcuts_Description" xml:space="preserve"><value>Teclas de reprodução e navegação</value>
+        <comment>One short line under the page name "Shortcuts" in the list of settings pages. "Keys" means keyboard keys.</comment></data>
+  <data name="Shortcuts_FixedKeys" xml:space="preserve"><value>Selecione um atalho para alterá-lo. Esc fecha o painel de letras ou da fila de reprodução, e as teclas de mídia do teclado funcionam enquanto a janela do Shirabe está ativa.</value>
+        <comment>Explanation at the top of the keyboard shortcuts settings page. "Esc" is the Escape key. "Media keys" are the play/pause, next and previous keys some keyboards have.</comment></data>
+  <data name="Shortcuts_SeekBack" xml:space="preserve"><value>Voltar 5 segundos</value>
+        <comment>Name of a keyboard shortcut: moves the playing song 5 seconds back.</comment></data>
+  <data name="Shortcuts_SeekForward" xml:space="preserve"><value>Avançar 5 segundos</value>
+        <comment>Name of a keyboard shortcut: moves the playing song 5 seconds ahead.</comment></data>
+  <data name="Shortcuts_VolumeUp" xml:space="preserve"><value>Aumentar volume</value>
+        <comment>Name of a keyboard shortcut: makes the sound louder.</comment></data>
+  <data name="Shortcuts_VolumeDown" xml:space="preserve"><value>Diminuir volume</value>
+        <comment>Name of a keyboard shortcut: makes the sound quieter.</comment></data>
+  <data name="Shortcuts_PressKey" xml:space="preserve"><value>Pressione uma tecla…</value>
+        <comment>Text on a button while the app waits for the user to press the new keyboard shortcut. Short.</comment></data>
+  <data name="Shortcuts_NotSet" xml:space="preserve"><value>Não definido</value>
+        <comment>Text on a button of an action that has no keyboard shortcut. Short.</comment></data>
+  <data name="Shortcuts_CaptureHelp" xml:space="preserve"><value>Esc cancela. Backspace remove o atalho.</value>
+        <comment>Help shown while the app waits for a new keyboard shortcut. "Esc" and "Backspace" are key names.</comment></data>
+  <data name="Shortcuts_Taken" xml:space="preserve"><value>Essa tecla já é usada por "{0}". Pressione outra tecla ou Esc para cancelar.</value>
+        <comment>Shown when the pressed keyboard shortcut belongs to another action. {0} is the name of that action.</comment></data>
+  <data name="Shortcuts_ResetAll" xml:space="preserve"><value>Redefinir todos os atalhos</value>
+        <comment>Button that brings every keyboard shortcut back to the one the app came with.</comment></data>
   <!-- Settings: Audio -->
+  <data name="Audio_Title" xml:space="preserve"><value>Áudio</value>
+        <comment>Name of a settings page, in the list of pages.</comment></data>
+  <data name="Audio_Description" xml:space="preserve"><value>Saída, reprodução, equalizador e volume</value>
+        <comment>One short line under the page name "Audio" in the list of settings pages. Lists what is on the page.</comment></data>
+  <data name="Audio_SectionOutput" xml:space="preserve"><value>SAÍDA</value>
+        <comment>Small heading above the settings about where the sound goes. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Audio_Device" xml:space="preserve"><value>Dispositivo de saída</value>
+        <comment>Name of the setting where the user picks speakers or headphones. Also the accessible name of the drop-down list.</comment></data>
+  <data name="Audio_DeviceDescription" xml:space="preserve"><value>Os alto-falantes ou fones de ouvido pelos quais o Shirabe reproduz o áudio.</value>
+        <comment>Explanation under "Output device". "Shirabe" is the app's name: do not translate it.</comment></data>
+  <data name="Audio_SystemDefault" xml:space="preserve"><value>Padrão do sistema</value>
+        <comment>First entry of the output device list: whatever the operating system is set to use.</comment></data>
+  <data name="Audio_DeviceMissing" xml:space="preserve"><value>O dispositivo escolhido não está disponível. O áudio está sendo reproduzido pelo dispositivo padrão do sistema.</value>
+        <comment>Warning under the output device list, e.g. when headphones are unplugged.</comment></data>
+  <data name="Audio_NowOutput" xml:space="preserve"><value>Saída atual</value>
+        <comment>Title of a line that shows the output device in use, its sample rate and channels.</comment></data>
+  <data name="Audio_NowSource" xml:space="preserve"><value>Arquivo atual</value>
+        <comment>Title of a line that shows technical facts about the loaded audio file: format, sample rate, channels, bit rate.</comment></data>
+  <data name="Audio_Unknown" xml:space="preserve"><value>Desconhecido</value>
+        <comment>Shown when the app cannot tell which output device is in use.</comment></data>
+  <data name="Audio_KHz" xml:space="preserve"><value>{0} kHz</value>
+        <comment>A sample rate. {0} is a number such as 44.1.</comment></data>
+  <data name="Audio_Channels" xml:space="preserve"><value>canais: {0}</value>
+        <comment>Number of audio channels (2 is stereo). {0} is a number. Shown in the middle of a line of technical facts.</comment></data>
+  <data name="Audio_BitDepth" xml:space="preserve"><value>{0} bits</value>
+        <comment>Audio bit depth. {0} is a number such as 16 or 24.</comment></data>
+  <data name="Audio_Bitrate" xml:space="preserve"><value>{0} kbps</value>
+        <comment>Audio bit rate in kilobits per second. {0} is a number.</comment></data>
+  <data name="Audio_SectionPlayback" xml:space="preserve"><value>REPRODUÇÃO</value>
+        <comment>Small heading above the settings about speed, pitch and reverb. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Audio_Speed" xml:space="preserve"><value>Velocidade de reprodução</value>
+        <comment>Tooltip and accessible name of the speed button in the player bar and of its slider, and the title of the menu it opens.</comment></data>
+  <data name="Audio_SpeedControl" xml:space="preserve"><value>Controle de velocidade de reprodução</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Audio_SpeedControlDescription" xml:space="preserve"><value>Exibe um botão de velocidade na barra de reprodução para ouvir músicas mais devagar ou mais rápido. Desativado: as músicas são reproduzidas na velocidade normal.</value>
+        <comment>Explanation under the "Playback speed control" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="Audio_Slowed" xml:space="preserve"><value>Lento</value>
+        <comment>Button in the speed menu that plays songs slower (0.8x). Very short: three buttons share one narrow row.</comment></data>
+  <data name="Audio_Normal" xml:space="preserve"><value>Normal</value>
+        <comment>Button in the speed menu for normal speed (1x). Very short: three buttons share one narrow row.</comment></data>
+  <data name="Audio_SpedUp" xml:space="preserve"><value>Rápido</value>
+        <comment>Button in the speed menu that plays songs faster (1.25x). Very short: three buttons share one narrow row.</comment></data>
+  <data name="Audio_MoreSettings" xml:space="preserve"><value>Configurações de áudio</value>
+        <comment>Tooltip and accessible name of the gear button in the speed menu; it opens the settings page about audio.</comment></data>
+  <data name="Audio_KeepPitch" xml:space="preserve"><value>Manter tom</value>
+        <comment>Name of an on/off switch, in the settings and in the narrow speed menu. Also its accessible name. Short.</comment></data>
+  <data name="Audio_KeepPitchDescription" xml:space="preserve"><value>Altera a velocidade sem mudar o tom. Desativado: o som fica mais agudo ao acelerar e mais grave ao desacelerar.</value>
+        <comment>Explanation under the "Keep pitch" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="Audio_Reverb" xml:space="preserve"><value>Reverberação</value>
+        <comment>Name of an on/off switch, in the settings and in the narrow speed menu. Also its accessible name. The echo of a room. Short.</comment></data>
+  <data name="Audio_ReverbDescription" xml:space="preserve"><value>Adiciona ao áudio em reprodução o efeito de reverberação de um ambiente.</value>
+        <comment>Explanation under the "Reverb" switch.</comment></data>
+  <data name="Audio_NeedsEffects" xml:space="preserve"><value>A manutenção do tom, a reverberação e o equalizador precisam da biblioteca BASS_FX, que não pôde ser carregada.</value>
+        <comment>Warning above settings that are greyed out. "BASS_FX" is the name of a library: do not translate it.</comment></data>
+  <data name="Audio_SectionEqualizer" xml:space="preserve"><value>EQUALIZADOR</value>
+        <comment>Small heading above the equalizer settings. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Audio_Equalizer" xml:space="preserve"><value>Equalizador</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Audio_EqualizerDescription" xml:space="preserve"><value>Aumenta ou reduz o volume de determinadas faixas de frequência. Aumentar uma faixa reduz o nível geral na mesma medida para evitar distorções.</value>
+        <comment>Explanation under the "Equalizer" switch.</comment></data>
+  <data name="Audio_EqualizerReset" xml:space="preserve"><value>Redefinir equalizador</value>
+        <comment>Button that puts every equalizer slider back to zero.</comment></data>
+  <data name="Audio_Hz" xml:space="preserve"><value>{0} Hz</value>
+        <comment>A sound frequency, the name of an equalizer slider. {0} is a number.</comment></data>
+  <data name="Audio_Decibels" xml:space="preserve"><value>{0} dB</value>
+        <comment>The value of an equalizer slider in decibels. {0} is a signed number such as +3.</comment></data>
+  <data name="Audio_SectionVolume" xml:space="preserve"><value>VOLUME</value>
+        <comment>Small heading above the volume settings. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Audio_Normalize" xml:space="preserve"><value>Normalização de volume</value>
+        <comment>Name of a drop-down list that makes songs play at a similar loudness. Also its accessible name.</comment></data>
+  <data name="Audio_NormalizeDescription" xml:space="preserve"><value>Reproduz músicas com volume percebido semelhante usando as tags ReplayGain dos arquivos. Arquivos sem essas tags são reproduzidos sem alterações.</value>
+        <comment>Explanation under "Volume normalization". "ReplayGain" is the name of a standard: do not translate it.</comment></data>
+  <data name="Audio_NormalizeOff" xml:space="preserve"><value>Desativada</value>
+        <comment>Entry of the "Volume normalization" list: no normalization.</comment></data>
+  <data name="Audio_NormalizeTrack" xml:space="preserve"><value>Por música</value>
+        <comment>Entry of the "Volume normalization" list: every song is evened out on its own.</comment></data>
+  <data name="Audio_NormalizeAlbum" xml:space="preserve"><value>Por álbum</value>
+        <comment>Entry of the "Volume normalization" list: albums are evened out as a whole, songs keep their differences within one.</comment></data>
+  <data name="Audio_Curve" xml:space="preserve"><value>Curva de volume exponencial</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Audio_CurveDescription" xml:space="preserve"><value>Permite um ajuste mais preciso em volumes baixos. Ao ativar, o volume fica menor na mesma posição do controle deslizante.</value>
+        <comment>Explanation under the "Exponential volume curve" switch.</comment></data>
+  <data name="Audio_ScrollStep" xml:space="preserve"><value>Incremento de volume por rolagem</value>
+        <comment>Name of a drop-down list: how much the volume changes per notch of the mouse wheel. Also its accessible name.</comment></data>
+  <data name="Audio_ScrollStepDescription" xml:space="preserve"><value>Quanto o volume varia a cada passo da roda do mouse.</value>
+        <comment>Explanation under "Volume scroll step". The wheel is used over the volume slider.</comment></data>
   <!-- Settings: General -->
+  <data name="General_Title" xml:space="preserve"><value>Geral</value>
+        <comment>Name of a settings page, in the list of pages. Holds the everyday options.</comment></data>
+  <data name="General_Description" xml:space="preserve"><value>Inicialização, janela e idioma</value>
+        <comment>One short line under the page name "General" in the list of settings pages. Lists what is on the page.</comment></data>
+  <data name="General_SectionStartup" xml:space="preserve"><value>INICIALIZAÇÃO</value>
+        <comment>Small heading above the settings about what happens when the app starts. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="General_Resume" xml:space="preserve"><value>Retomar última sessão</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="General_ResumeDescription" xml:space="preserve"><value>Ao iniciar, o Shirabe restaura a última música (pausada no ponto em que você parou), o volume, a reprodução aleatória e a repetição. Desativado: essas informações não são mantidas.</value>
+        <comment>Explanation under the "Resume last session" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="General_SectionWindow" xml:space="preserve"><value>JANELA</value>
+        <comment>Small heading above the settings about the app's window. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="General_KeepInTray" xml:space="preserve"><value>Continuar em execução na bandeja do sistema</value>
+        <comment>Name of an on/off switch. Also its accessible name. "Tray" is the system tray (notification area) with the app's small icon.</comment></data>
+  <data name="General_KeepInTrayDescription" xml:space="preserve"><value>Fechar a janela apenas a oculta, e a música continua tocando. Use o ícone na bandeja do sistema para reabri-la. Desativado: fechar a janela encerra o Shirabe. Alguns ambientes de área de trabalho não têm bandeja do sistema; nesse caso, desative a opção.</value>
+        <comment>Explanation under the "Keep running in the tray" switch. "Off" means the switch is turned off. "Tray" is the system tray (notification area).</comment></data>
+  <data name="General_SectionLanguage" xml:space="preserve"><value>IDIOMA</value>
+        <comment>Small heading above the language setting. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="General_Language" xml:space="preserve"><value>Idioma</value>
+        <comment>Name of the setting where the user picks the app's language. Also the accessible name of the drop-down list.</comment></data>
+  <data name="General_LanguageDescription" xml:space="preserve"><value>Idioma do aplicativo. As partes que ainda não foram traduzidas permanecem em inglês.</value>
+        <comment>Explanation under the language drop-down. "Parts" means screens and texts that still have no translation.</comment></data>
+  <data name="General_MachineTranslated" xml:space="preserve"><value>Inclui tradução automática</value>
+        <comment>Note under the language drop-down, shown when the language on screen was translated by a computer and may contain mistakes.</comment></data>
+  <data name="General_HelpTranslate" xml:space="preserve"><value>Ajudar na tradução</value>
+        <comment>Name of a row with a button that opens the project's translation page. Also the accessible name of that button.</comment></data>
+  <data name="General_HelpTranslateDescription" xml:space="preserve"><value>Adicione ou corrija traduções no Crowdin.</value>
+        <comment>Hint under "Help translate". "Crowdin" is a product name.</comment></data>
+  <data name="Language_System" xml:space="preserve"><value>Padrão do sistema</value>
+        <comment>First entry of the language drop-down: use the language of the operating system.</comment></data>
   <!-- Settings: Appearance -->
+  <data name="Appearance_Title" xml:space="preserve"><value>Aparência</value>
+        <comment>Name of a settings page, in the list of pages. Holds the look of the app: colours and animations.</comment></data>
+  <data name="Appearance_Description" xml:space="preserve"><value>Tema e cor de destaque</value>
+        <comment>One short line under the page name "Appearance" in the list of settings pages. The source uses British spelling.</comment></data>
+  <data name="Appearance_SectionTheme" xml:space="preserve"><value>TEMA</value>
+        <comment>Small heading above the theme setting. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Appearance_Theme" xml:space="preserve"><value>Tema</value>
+        <comment>Name of the setting where the user picks a theme: a named colour scheme such as "Dark". Also the accessible name of the drop-down list.</comment></data>
+  <data name="Appearance_ThemeDescription" xml:space="preserve"><value>As cores de todo o aplicativo.</value>
+        <comment>Explanation under the theme drop-down.</comment></data>
+  <data name="Appearance_CustomThemesHint" xml:space="preserve"><value>Adicione seu próprio tema: coloque um arquivo .json com um campo "name" e as cores desejadas no formato #RRGGBB (accent, background, sidebar, surface, surfaceHover, divider, textPrimary, textSecondary, track) em {0} e reinicie o aplicativo. As cores omitidas são obtidas do tema Dark.</value>
+        <comment>{0} is a folder path, or the text of Appearance_ThemesFolder. Keep the colour names (accent, background...) and "name" as they are: they are keys in the file.</comment></data>
+  <data name="Appearance_ThemesFolder" xml:space="preserve"><value>a pasta de temas</value>
+        <comment>Inserted as {0} into Appearance_CustomThemesHint when the folder path is not known. It must read naturally right after "in" in that sentence.</comment></data>
+  <data name="Theme_NeedsName" xml:space="preserve"><value>requer um campo "name"</value>
+        <comment>Problem listed under the theme setting for a theme file without a name. It follows the file name and a colon, e.g. "mytheme.json: needs a "name"". Keep "name" as it is: it is a key in the file.</comment></data>
+  <data name="Theme_BadColour" xml:space="preserve"><value>"{0}" não é uma cor no formato "#RRGGBB"</value>
+        <comment>Problem listed under the theme setting. {0} is a key of the theme file (accent, background...): do not translate it. "#RRGGBB" is the colour format: keep it.</comment></data>
+  <data name="Theme_NameTaken" xml:space="preserve"><value>já existe um tema chamado "{0}"</value>
+        <comment>Problem listed under the theme setting. It follows the file name and a colon. {0} is the theme's name.</comment></data>
+  <data name="Appearance_SectionAccent" xml:space="preserve"><value>DESTAQUE</value>
+        <comment>Small heading above the accent colour setting (the highlight colour of buttons and sliders). Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Appearance_Follow" xml:space="preserve"><value>Usar a cor da capa</value>
+        <comment>Name of an on/off switch. "Cover" is the album artwork of the song that is playing. Also the accessible name.</comment></data>
+  <data name="Appearance_FollowDescription" xml:space="preserve"><value>Adapta a cor de destaque à capa da música em reprodução. Desativado: mantém a cor de destaque do tema.</value>
+        <comment>Explanation under the "Follow the cover" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="Appearance_SectionMotion" xml:space="preserve"><value>ANIMAÇÕES</value>
+        <comment>Small heading above the animation setting. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Appearance_ReduceMotion" xml:space="preserve"><value>Reduzir animações</value>
+        <comment>Name of an on/off switch that turns animations off (an accessibility option, like the one in the operating system). Also its accessible name.</comment></data>
+  <data name="Appearance_ReduceMotionDescription" xml:space="preserve"><value>Desativa as animações de transição gradual e deslizamento.</value>
+        <comment>Explanation under the "Reduce motion" switch.</comment></data>
   <!-- Settings: Lyrics -->
+  <data name="Lyrics_Title" xml:space="preserve"><value>Letras</value>
+        <comment>Name of a settings page, in the list of pages. "Lyrics" means the words of a song.</comment></data>
+  <data name="Lyrics_Description" xml:space="preserve"><value>Tamanho do texto, vocais e sincronização</value>
+        <comment>One short line under the page name "Lyrics" in the list of settings pages. Lists what is on the page.</comment></data>
+  <data name="Lyrics_SectionText" xml:space="preserve"><value>TEXTO</value>
+        <comment>Small heading above the settings about how the lyrics text looks. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Lyrics_TextSize" xml:space="preserve"><value>Tamanho do texto</value>
+        <comment>Name of the setting (a slider) for how large the lyrics are.</comment></data>
+  <data name="Lyrics_TextSizeDescription" xml:space="preserve"><value>Define o tamanho das letras no painel de letras.</value>
+        <comment>Explanation under the "Text size" setting.</comment></data>
+  <data name="Lyrics_TextSizeName" xml:space="preserve"><value>Tamanho do texto das letras</value>
+        <comment>Accessible name of the slider.</comment></data>
+  <data name="Lyrics_TextSizeValue" xml:space="preserve"><value>{0} pt</value>
+        <comment>Value shown next to the text size slider. {0} is a whole number; "pt" is the abbreviation of typographic points.</comment></data>
+  <data name="Lyrics_SectionShown" xml:space="preserve"><value>EXIBIÇÃO</value>
+        <comment>Small heading above the switches that choose which parts of the lyrics are displayed. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Lyrics_BackgroundVocals" xml:space="preserve"><value>Vocais de apoio</value>
+        <comment>Name of an on/off switch. Background vocals are the secondary voices of a song (backing vocals, echoes, ad-libs). Also its accessible name.</comment></data>
+  <data name="Lyrics_BackgroundVocalsDescription" xml:space="preserve"><value>Exibe os vocais de apoio (os trechos entre parênteses ou colchetes) presentes em algumas letras.</value>
+        <comment>Explanation under the "Background vocals" switch. Such parts appear in brackets in the lyrics text.</comment></data>
+  <data name="Lyrics_BreakMarkers" xml:space="preserve"><value>Indicadores de pausa instrumental</value>
+        <comment>Name of an on/off switch. The markers are three dots shown in the lyrics while the song has no singing. Also its accessible name.</comment></data>
+  <data name="Lyrics_BreakMarkersDescription" xml:space="preserve"><value>Exibe os três pontos que se preenchem durante um trecho instrumental.</value>
+        <comment>Explanation under the "Break markers" switch. An instrumental break is a part of the song without singing.</comment></data>
+  <data name="Lyrics_SectionTiming" xml:space="preserve"><value>SINCRONIZAÇÃO</value>
+        <comment>Small heading above the setting that fine-tunes when lyrics light up. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Lyrics_Delay" xml:space="preserve"><value>Atraso do destaque</value>
+        <comment>Name of the setting (a slider) that shifts the moment a lyric line is highlighted, in milliseconds. "Highlight" means the line being sung is made bright.</comment></data>
+  <data name="Lyrics_DelayDescription" xml:space="preserve"><value>Se o destaque estiver adiantado em relação ao áudio, aumente esse valor; se estiver atrasado, diminua. O som sai dos alto-falantes um pouco depois da posição informada pelo reprodutor.</value>
+        <comment>Explanation under the "Highlight delay" slider. "Raise" and "lower" refer to moving the slider.</comment></data>
+  <data name="Lyrics_DelayName" xml:space="preserve"><value>Atraso do destaque das letras</value>
+        <comment>Accessible name of the slider.</comment></data>
+  <data name="Lyrics_NoDelay" xml:space="preserve"><value>Sem atraso</value>
+        <comment>Value shown next to the highlight delay slider when it is at zero, instead of "0 ms".</comment></data>
+  <data name="Lyrics_DelayValue" xml:space="preserve"><value>{0} ms</value>
+        <comment>{0} is a number with a sign, such as +120 or -50. "ms" is the abbreviation of milliseconds.</comment></data>
   <!-- Settings: Connections -->
+  <data name="Connections_Title" xml:space="preserve"><value>Conexões</value>
+        <comment>Name of a settings page, in the list of pages. Holds the options that talk to outside services.</comment></data>
+  <data name="Connections_Description" xml:space="preserve"><value>Discord, Last.fm e buscas on-line</value>
+        <comment>One short line under the page name "Connections" in the list of settings pages. "Discord" and "Last.fm" are product names: do not translate them.</comment></data>
+  <data name="Connections_SectionDiscord" xml:space="preserve"><value>DISCORD</value>
+        <comment>Small heading above the Discord settings. "Discord" is a product name: do not translate it.</comment></data>
+  <data name="Connections_Presence" xml:space="preserve"><value>Mostrar o que estou ouvindo</value>
+        <comment>Name of an on/off switch that shows the current song on the user's Discord profile.</comment></data>
+  <data name="Connections_PresenceDescription" xml:space="preserve"><value>Exibe a música em reprodução em um cartão "Ouvindo" no seu perfil do Discord. O Discord precisa estar em execução.</value>
+        <comment>Explanation under the switch. "Listening to" is the label Discord itself shows on the card; use Discord's wording in your language if you know it.</comment></data>
+  <data name="Connections_PresenceName" xml:space="preserve"><value>Presença no Discord</value>
+        <comment>Accessible name of the switch.</comment></data>
+  <data name="Connections_CoverLookup" xml:space="preserve"><value>Buscar capas de álbuns on-line</value>
+        <comment>Name of an on/off switch. A cover is the album artwork.</comment></data>
+  <data name="Connections_CoverLookupDescription" xml:space="preserve"><value>Envia o nome do artista e do álbum ao iTunes Search da Apple para encontrar uma capa para o cartão do Discord. Nenhum outro dado sai do seu computador.</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "iTunes Search" is Apple's service name: do not translate it.</comment></data>
+  <data name="Connections_CoverLookupName" xml:space="preserve"><value>Busca de capas</value>
+        <comment>Accessible name of the switch.</comment></data>
+  <data name="Connections_SectionArtwork" xml:space="preserve"><value>CAPAS</value>
+        <comment>Small heading above the setting about downloading cover images. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Connections_DownloadArtwork" xml:space="preserve"><value>Baixar capas vinculadas</value>
+        <comment>Name of an on/off switch. "Linked" means a song's metadata contains a web link to its cover image. Also its accessible name.</comment></data>
+  <data name="Connections_DownloadArtworkDescription" xml:space="preserve"><value>Quando os metadados de uma música contêm um link para uma capa, ela é baixada quando a música é exibida e fica armazenada neste computador. O site de origem pode ver seu endereço IP e saber que você reproduziu essa música.</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "Your address" means the user's internet (IP) address.</comment></data>
   <!-- Settings: Connections, Last.fm -->
+  <data name="LastFm_Section" xml:space="preserve"><value>LAST.FM</value>
+        <comment>Small heading above the Last.fm settings. "Last.fm" is a product name: do not translate it.</comment></data>
+  <data name="LastFm_Account" xml:space="preserve"><value>Conta</value>
+        <comment>Name of the settings row about the user's Last.fm account.</comment></data>
+  <data name="LastFm_SignedOut" xml:space="preserve"><value>Entre na sua conta pelo site do Last.fm. O Shirabe nunca tem acesso à sua senha.</value>
+        <comment>Under "Account" when the user is not signed in. "Last.fm" and "Shirabe" are product names.</comment></data>
+  <data name="LastFm_Waiting" xml:space="preserve"><value>Autorize o acesso no navegador e volte aqui.</value>
+        <comment>Under "Account" while the app waits for the user to approve it on the website that was just opened.</comment></data>
+  <data name="LastFm_SignedInAs" xml:space="preserve"><value>Conectado como {0}</value>
+        <comment>Under "Account". {0} is the user's Last.fm user name: keep it as it is.</comment></data>
+  <data name="LastFm_Unavailable" xml:space="preserve"><value>Esta compilação do Shirabe foi criada sem uma chave de API do Last.fm.</value>
+        <comment>Under "Account" in a copy of the app that cannot use Last.fm. An API key is a code that identifies an app to a web service; a build is one compiled copy of the app.</comment></data>
+  <data name="LastFm_Connect" xml:space="preserve"><value>Conectar</value>
+        <comment>Button: starts signing in to Last.fm. Short.</comment></data>
+  <data name="LastFm_Cancel" xml:space="preserve"><value>Cancelar</value>
+        <comment>Button: stops waiting for the sign-in. Short.</comment></data>
+  <data name="LastFm_Disconnect" xml:space="preserve"><value>Desconectar</value>
+        <comment>Button: signs out of Last.fm in this app. Short.</comment></data>
+  <data name="LastFm_ViewProfile" xml:space="preserve"><value>Ver perfil</value>
+        <comment>Button: opens the user's page on the Last.fm website. Short.</comment></data>
+  <data name="LastFm_Scrobble" xml:space="preserve"><value>Registrar minhas reproduções (scrobble)</value>
+        <comment>Name of an on/off switch, also its accessible name. To "scrobble" is Last.fm's word for adding a played song to the user's listening history; use Last.fm's wording in your language if you know it.</comment></data>
+  <data name="LastFm_ScrobbleDescription" xml:space="preserve"><value>Enquanto estiver conectado, envia ao Last.fm o artista, o título, o álbum, a duração e o horário de início das músicas que você reproduz.</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "Last.fm" is a product name.</comment></data>
+  <data name="LastFm_NoStorage" xml:space="preserve"><value>O Shirabe não dispõe de armazenamento seguro que possa usar neste computador. Por isso, você precisará entrar no Last.fm novamente a cada inicialização.</value>
+        <comment>Warning. "Secure storage" is the system's protected place for passwords and keys (Windows Credential Manager, a Linux keyring).</comment></data>
+  <data name="LastFm_NotAllowed" xml:space="preserve"><value>O acesso não foi autorizado a tempo. Tente novamente.</value>
+        <comment>Error after the user did not approve the app on the Last.fm website within a few minutes.</comment></data>
+  <data name="LastFm_Unreachable" xml:space="preserve"><value>Não foi possível acessar o Last.fm. Verifique sua conexão e tente novamente.</value>
+        <comment>Error after a failed sign-in: no internet connection, or the website does not answer.</comment></data>
+  <data name="LastFm_Failed" xml:space="preserve"><value>Falha ao entrar no Last.fm: {0}</value>
+        <comment>Error. {0} is the reason given by Last.fm, in English.</comment></data>
+  <data name="LastFm_NotRemoved" xml:space="preserve"><value>Não foi possível remover os dados de acesso salvos, por isso a conexão pode ser restaurada após reiniciar. Você pode revogar o acesso do Shirabe nas configurações do Last.fm, na seção Aplicativos.</value>
+        <comment>Error after signing out. "Applications" is the name of a page in the settings of the Last.fm website; to revoke access means to take the permission away.</comment></data>
+  <data name="LastFm_Credit" xml:space="preserve"><value>Com tecnologia AudioScrobbler</value>
+        <comment>Credit that Last.fm asks for. "AudioScrobbler" is a product name: do not translate it.</comment></data>
+  <data name="LastFm_CreditDescription" xml:space="preserve"><value>Os recursos da conta são fornecidos pelo Last.fm.</value>
+        <comment>Under the credit "Powered by AudioScrobbler". "Last.fm" is a product name.</comment></data>
+  <data name="LastFm_Open" xml:space="preserve"><value>Abrir Last.fm</value>
+        <comment>Button: opens the Last.fm website. "Last.fm" is a product name.</comment></data>
   <!-- Title bar: the message about the last scrobble -->
+  <data name="Scrobbler_Title" xml:space="preserve"><value>Scrobbler</value>
+        <comment>Heading of a small message in the title bar. A scrobbler is the part of an app that adds played songs to the user's Last.fm listening history; use Last.fm's wording in your language if you know it.</comment></data>
+  <data name="Scrobbler_Done" xml:space="preserve"><value>Scrobble registrado: {0} — {1}</value>
+        <comment>Message after a song was added to the Last.fm history. {0} is the song title, {1} the artist: keep both. It is cut off when long.</comment></data>
+  <data name="Scrobbler_Ignored" xml:space="preserve"><value>O Last.fm ignorou {0} — {1}</value>
+        <comment>Message when Last.fm received a song but did not add it to the history. {0} is the song title, {1} the artist.</comment></data>
+  <data name="Scrobbler_Failed" xml:space="preserve"><value>Não foi possível registrar o scrobble de {0} — {1}</value>
+        <comment>Message when a song could not be sent to Last.fm. {0} is the song title, {1} the artist.</comment></data>
   <!-- Settings: About -->
+  <data name="About_Title" xml:space="preserve"><value>Sobre</value>
+        <comment>Name of a settings page, in the list of pages. It shows the app's version, license and credits.</comment></data>
+  <data name="About_Description" xml:space="preserve"><value>Versão, licença e créditos</value>
+        <comment>One short line under the page name "About" in the list of settings pages.</comment></data>
+  <data name="About_SectionApp" xml:space="preserve"><value>SHIRABE</value>
+        <comment>Small heading above the version and links. "Shirabe" is the product name: do not translate it. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_Tagline" xml:space="preserve"><value>A música merece mais do que um botão de reprodução.</value>
+        <comment>The project's motto, shown at the top of the About page. Translate the idea, not word for word. "Play button" is the button that starts a song.</comment></data>
+  <data name="About_Version" xml:space="preserve"><value>Versão</value>
+        <comment>Name of the row that shows the app's version number, for example 0.1.0.</comment></data>
+  <data name="About_VersionDescription" xml:space="preserve"><value>Informe esta versão ao relatar um problema.</value>
+        <comment>Short hint under "Version".</comment></data>
+  <data name="About_Commit" xml:space="preserve"><value>Compilação</value>
+        <comment>Name of the row that shows the short code (a git commit hash such as ce863a5e7) identifying the exact source code this build was made from.</comment></data>
+  <data name="About_CommitDescription" xml:space="preserve"><value>O código-fonte exato usado para gerar esta compilação.</value>
+        <comment>Short hint under "Build".</comment></data>
+  <data name="About_License" xml:space="preserve"><value>Licença</value>
+        <comment>Name of the row that tells under which license the app is released.</comment></data>
+  <data name="About_LicenseDescription" xml:space="preserve"><value>O Shirabe é gratuito e de código aberto, sob a licença Apache 2.0.</value>
+        <comment>Hint under "License". "Apache License 2.0" is the official license name: do not translate it.</comment></data>
+  <data name="About_Source" xml:space="preserve"><value>Código-fonte</value>
+        <comment>Name of a row with a button that opens the project's page on GitHub.</comment></data>
+  <data name="About_SourceDescription" xml:space="preserve"><value>O Shirabe é desenvolvido de forma aberta no GitHub.</value>
+        <comment>Hint under "Source code". "GitHub" is a product name.</comment></data>
+  <data name="About_ReportProblem" xml:space="preserve"><value>Relatar um problema</value>
+        <comment>Name of a row with a button that opens the project's issue tracker on GitHub.</comment></data>
+  <data name="About_ReportProblemDescription" xml:space="preserve"><value>Encontrou um bug ou tem uma ideia? Abra uma issue no GitHub.</value>
+        <comment>Hint under "Report a problem". An "issue" is a report on GitHub's issue tracker.</comment></data>
+  <data name="About_Open" xml:space="preserve"><value>Abrir</value>
+        <comment>Button that opens a web page in the browser. Short: it sits at the right end of a row.</comment></data>
+  <data name="About_SectionCredits" xml:space="preserve"><value>CRÉDITOS</value>
+        <comment>Small heading above the list of people. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_Author" xml:space="preserve"><value>Autor e mantenedor</value>
+        <comment>Role of the person named in the row's description. The name itself is not translated.</comment></data>
+  <data name="About_SectionAudio" xml:space="preserve"><value>MOTOR DE ÁUDIO</value>
+        <comment>Small heading above the notice about the audio library used to play music. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_AudioNotice" xml:space="preserve"><value>A reprodução de áudio utiliza BASS, Copyright © 1999-2026 Un4seen Developments Ltd. BASS é um software proprietário. Ele não está coberto pela licença do Shirabe e é utilizado conforme os termos da Un4seen para uso gratuito e não comercial.</value>
+        <comment>Legal notice: keep the meaning exact. "BASS" and "Un4seen Developments Ltd." are names: do not translate them. "Proprietary" means not open source.</comment></data>
+  <data name="About_AudioWebsite" xml:space="preserve"><value>Site do BASS</value>
+        <comment>Name of a row with a button that opens the BASS audio library's website. "BASS" is a product name.</comment></data>
+  <data name="About_AudioWebsiteDescription" xml:space="preserve"><value>Un4seen Developments</value>
+        <comment>Hint under "BASS website": the company that makes BASS. A company name: do not translate it.</comment></data>
+  <data name="About_SectionThirdParty" xml:space="preserve"><value>COMPONENTES DE TERCEIROS</value>
+        <comment>Small heading above the list of open-source libraries and resources the app is built with. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_ThirdPartyIntro" xml:space="preserve"><value>O Shirabe utiliza estes componentes de código aberto. Cada um é usado de acordo com sua própria licença.</value>
+        <comment>Sentence above the list of components. "Open-source" means the source code is public and free to use.</comment></data>
+  <data name="About_CopyHint" xml:space="preserve"><value>Clique para copiar</value>
+        <comment>Tooltip of the version and build buttons: clicking one copies its text to the clipboard.</comment></data>
+  <data name="About_Copied" xml:space="preserve"><value>Copiado</value>
+        <comment>Shown for a moment on the version or build button after its text was copied to the clipboard. Short: it replaces the button's text.</comment></data>
   <!-- Songs page -->
+  <data name="Common_UnknownArtist" xml:space="preserve"><value>Artista desconhecido</value>
+        <comment>Shown in place of the artist's name when a song has none (song list, queue, player bar).</comment></data>
+  <data name="Songs_Cancel" xml:space="preserve"><value>Cancelar</value>
+        <comment>Button that stops the scan of a music folder that is in progress.</comment></data>
+  <data name="Songs_AddFolder" xml:space="preserve"><value>Adicionar pasta</value>
+        <comment>Button that opens a dialog to choose a folder with music; the app then scans it and adds the songs to the library.</comment></data>
+  <data name="Songs_Summary" xml:space="preserve"><value>Na biblioteca: {0:N0}</value>
+        <comment>Line under the page heading "Songs". {0:N0} is the number of songs, formatted with thousands separators: keep {0:N0} as it is. Worded without a counted noun on purpose, so it needs no plural forms.</comment></data>
+  <data name="Songs_ColTitle" xml:space="preserve"><value>TÍTULO</value>
+        <comment>Column heading of the song list: the song's title. Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_ColArtist" xml:space="preserve"><value>ARTISTA</value>
+        <comment>Column heading of the song list: the performer. Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_ColAlbum" xml:space="preserve"><value>ÁLBUM</value>
+        <comment>Column heading of the song list: the album the song is on. Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_ColTime" xml:space="preserve"><value>DURAÇÃO</value>
+        <comment>Column heading of the song list: the song's length (duration). Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_PlayNext" xml:space="preserve"><value>Reproduzir a seguir</value>
+        <comment>Item of the song context menu: puts the song right after the one that is playing.</comment></data>
+  <data name="Songs_AddToQueue" xml:space="preserve"><value>Adicionar à fila</value>
+        <comment>Item of the song context menu: puts the song at the end of the play queue.</comment></data>
+  <data name="Songs_Properties" xml:space="preserve"><value>Propriedades</value>
+        <comment>Item of the song context menu: opens a dialog with the song's details, tags and custom fields.</comment></data>
+  <data name="Songs_EmptyTitle" xml:space="preserve"><value>Nenhuma música ainda</value>
+        <comment>Heading shown on the Songs page while the library is empty.</comment></data>
+  <data name="Songs_EmptyHint" xml:space="preserve"><value>Adicione uma pasta e o Shirabe encontrará as músicas nela.</value>
+        <comment>Hint under "No songs yet". "Shirabe" is the app's name: do not translate it.</comment></data>
+  <data name="Songs_ChooseFolder" xml:space="preserve"><value>Escolha uma pasta de músicas</value>
+        <comment>Title of the operating system's folder dialog opened by "Add folder".</comment></data>
+  <data name="Songs_LoadFailed" xml:space="preserve"><value>Não foi possível carregar a biblioteca: {0}</value>
+        <comment>Error line on the Songs page. {0} is the technical reason, often in English.</comment></data>
+  <data name="Songs_ScanLooking" xml:space="preserve"><value>Buscando músicas…</value>
+        <comment>Status while a folder scan starts, before the number of files is known.</comment></data>
+  <data name="Songs_ScanProgress" xml:space="preserve"><value>Verificando {0:N0} de {1:N0}</value>
+        <comment>Status during a folder scan: {0} files done, {1} files in total. Keep {0:N0} and {1:N0} as they are.</comment></data>
+  <data name="Songs_ScanCancelled" xml:space="preserve"><value>Verificação cancelada</value>
+        <comment>Status after the user stopped a folder scan.</comment></data>
+  <data name="Songs_ScanFailed" xml:space="preserve"><value>Não foi possível verificar {0}: {1}</value>
+        <comment>Error line on the Songs page. {0} is a folder path, {1} the technical reason, often in English.</comment></data>
+  <data name="Songs_ScanFinished" xml:space="preserve"><value>Verificação concluída: {0}</value>
+        <comment>Summary after a folder scan. {0} is a list of results separated by commas, made from the "Songs_Scan..." texts, e.g. "3 added, 1 updated, 10 unchanged".</comment></data>
+  <data name="Songs_ScanAdded" xml:space="preserve"><value>Adições: {0:N0}</value>
+        <comment>Part of the scan summary: how many new songs were found. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanUpdated" xml:space="preserve"><value>Atualizações: {0:N0}</value>
+        <comment>Part of the scan summary: how many songs were already known but changed (for example retagged). Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanUnchanged" xml:space="preserve"><value>Sem alterações: {0:N0}</value>
+        <comment>Part of the scan summary: how many songs were already known and had not changed. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanMissing" xml:space="preserve"><value>Não encontradas: {0:N0}</value>
+        <comment>Part of the scan summary: how many known songs have disappeared from the folder. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanFailedFiles" xml:space="preserve"><value>Falhas de leitura: {0:N0}</value>
+        <comment>Part of the scan summary: how many files were skipped because they are damaged or not audio. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanDocumentProblems" xml:space="preserve"><value>Problemas em documentos de metadados: {0:N0}</value>
+        <comment>Part of the scan summary: how many metadata documents (small .shirabe.json files or tags that describe a song) were damaged or broke the format's rules. Keep {0:N0} as it is.</comment></data>
   <!-- Queue panel -->
+  <data name="Queue_Clear" xml:space="preserve"><value>Limpar</value>
+        <comment>Small button in the queue panel that empties the queue.</comment></data>
+  <data name="Queue_ClearTip" xml:space="preserve"><value>Remover tudo, exceto a música em reprodução</value>
+        <comment>Tooltip of the "Clear" button of the queue panel.</comment></data>
+  <data name="Queue_Remove" xml:space="preserve"><value>Remover da fila</value>
+        <comment>Tooltip and accessible name of the small X button on a queue row.</comment></data>
+  <data name="Queue_EmptyTitle" xml:space="preserve"><value>A fila está vazia</value>
+        <comment>Heading shown in the queue panel when no songs are queued.</comment></data>
+  <data name="Queue_EmptyHint" xml:space="preserve"><value>Reproduza uma música da lista para iniciar uma fila.</value>
+        <comment>Hint under "The queue is empty". "One" means a queue.</comment></data>
   <!-- Lyrics panel -->
+  <data name="LyricsPanel_NothingPlaying" xml:space="preserve"><value>Nada em reprodução</value>
+        <comment>Heading shown in the lyrics panel while no song is loaded.</comment></data>
+  <data name="LyricsPanel_NoLyrics" xml:space="preserve"><value>Não há letras para esta música</value>
+        <comment>Heading shown in the lyrics panel when the loaded song has no lyrics.</comment></data>
+  <data name="LyricsPanel_PlayHint" xml:space="preserve"><value>Reproduza uma música para ver a letra aqui.</value>
+        <comment>Hint under "Nothing is playing".</comment></data>
+  <data name="LyricsPanel_AddHint" xml:space="preserve"><value>Coloque um arquivo .lrc ou .ttml com o mesmo nome na mesma pasta da música ou adicione a letra às tags do arquivo.</value>
+        <comment>Hint under "No lyrics for this song". ".lrc" and ".ttml" are file extensions: keep them. "Tags" are the information stored inside the audio file (title, artist, lyrics...).</comment></data>
   <!-- Home page -->
+  <data name="Home_DropTitle" xml:space="preserve"><value>Solte um arquivo de áudio aqui</value>
+        <comment>Large text on the start page's drop area. Read together with Home_DropHint: "Drop an audio file here" + "to start listening".</comment></data>
+  <data name="Home_DropHint" xml:space="preserve"><value>para começar a ouvir</value>
+        <comment>Second line under Home_DropTitle. It continues the sentence of the line above it.</comment></data>
   <!-- Player messages and startup problems -->
+  <data name="Player_NothingPlaying" xml:space="preserve"><value>Nada em reprodução</value>
+        <comment>Title in the player bar while no song is loaded.</comment></data>
+  <data name="Player_CannotPlay" xml:space="preserve"><value>Não foi possível reproduzir {0}: {1}</value>
+        <comment>Error in the player bar. {0} is a song title, {1} the technical reason, often in English.</comment></data>
+  <data name="Player_CannotPlayAgain" xml:space="preserve"><value>Não foi possível reproduzir {0} novamente: {1}</value>
+        <comment>Error in the player bar when a song could not be loaded again after the app released its file for a moment. {0} is a song title, {1} the technical reason, often in English.</comment></data>
+  <data name="Player_FileGone" xml:space="preserve"><value>Não foi possível reproduzir {0}: o arquivo foi movido ou excluído. Adicione a pasta novamente para atualizar a biblioteca.</value>
+        <comment>Error in the player bar. {0} is a song title.</comment></data>
+  <data name="Startup_AudioEngine" xml:space="preserve"><value>Não foi possível iniciar o motor de áudio: {0}
+
+Consulte native/README.md.</value>
+        <comment>Error shown on the start page when the sound library (BASS) is missing. {0} is the technical reason, often in English. Keep the line breaks and "native/README.md" (a file name).</comment></data>
+  <data name="Startup_LibraryOpen" xml:space="preserve"><value>Não foi possível abrir a biblioteca de músicas ({0}): {1}</value>
+        <comment>Error shown on the start page. {0} is the path of the library's database file, {1} the technical reason, often in English.</comment></data>
   <!-- Notifications and updates -->
+  <data name="Connections_SectionUpdates" xml:space="preserve"><value>ATUALIZAÇÕES</value>
+        <comment>Small heading above the setting about checking for new versions. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Connections_CheckForUpdates" xml:space="preserve"><value>Verificar atualizações</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Connections_CheckForUpdatesDescription" xml:space="preserve"><value>Ao iniciar, o Shirabe consulta o GitHub para verificar se uma versão mais recente foi lançada e avisa você se houver. O GitHub pode ver seu endereço IP; nenhum outro dado é enviado. Entra em vigor na próxima inicialização do Shirabe.</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "GitHub" is a product name. "Your address" means the user's internet (IP) address.</comment></data>
+  <data name="Connections_UpdateChannel" xml:space="preserve"><value>Canal de atualização</value>
+        <comment>Name of a list choosing which kind of new versions are offered. Also its accessible name.</comment></data>
+  <data name="Connections_UpdateChannelDescription" xml:space="preserve"><value>O canal Beta também oferece versões de teste antecipadas, que podem conter mais bugs. Voltar ao canal Estável mantém sua versão atual até que uma versão estável mais recente seja lançada. Entra em vigor na próxima inicialização do Shirabe.</value>
+        <comment>Explanation under the update channel list. "Beta" and "Stable" must match the names of the two choices.</comment></data>
+  <data name="Connections_UpdateChannelStable" xml:space="preserve"><value>Estável</value>
+        <comment>Update channel choice: only finished releases.</comment></data>
+  <data name="Connections_UpdateChannelBeta" xml:space="preserve"><value>Beta</value>
+        <comment>Update channel choice: test versions as well.</comment></data>
+  <data name="Update_Title" xml:space="preserve"><value>Shirabe {0} está disponível</value>
+        <comment>Title of a notification. {0} is the new version number, for example 0.2.0: keep it as it is.</comment></data>
+  <data name="Update_Message" xml:space="preserve"><value>Baixe a nova versão pelo GitHub ou atualize pelo gerenciador de pacotes que você usou para instalar o Shirabe.</value>
+        <comment>Body of the notification about a new version. A package manager is a tool such as winget, Scoop, Homebrew or apt that installs and updates programs. "GitHub" is a product name.</comment></data>
+  <data name="Update_ViewRelease" xml:space="preserve"><value>Ver versão</value>
+        <comment>Button of the new-version notification: opens the page where the new version can be downloaded. Short.</comment></data>
+  <data name="Update_SelfMessage" xml:space="preserve"><value>O Shirabe pode baixá-la e instalá-la para você.</value>
+        <comment>Body of the notification about a new version, shown when the app can update itself.</comment></data>
+  <data name="Update_Install" xml:space="preserve"><value>Atualizar</value>
+        <comment>Button of the new-version notification: downloads the new version. A verb. Short.</comment></data>
+  <data name="Update_Downloading" xml:space="preserve"><value>Baixando… {0}%</value>
+        <comment>Body of the update notification while the new version downloads. {0} is a number from 0 to 100: keep it as it is.</comment></data>
+  <data name="Update_Ready" xml:space="preserve"><value>Download concluído. Reinicie o Shirabe para instalar a atualização agora ou ela será instalada na próxima inicialização.</value>
+        <comment>Body of the update notification after the download has finished. "Shirabe" is the app's name.</comment></data>
+  <data name="Update_Restart" xml:space="preserve"><value>Reiniciar agora</value>
+        <comment>Button of the update notification: closes the app, installs the new version and opens it again. Short.</comment></data>
+  <data name="Update_Failed" xml:space="preserve"><value>A atualização falhou. Tente novamente ou baixe a atualização pela página da versão.</value>
+        <comment>Body of the update notification when downloading or installing the new version failed.</comment></data>
+  <data name="Update_TryAgain" xml:space="preserve"><value>Tentar novamente</value>
+        <comment>Button of the update notification after a failed download: starts the download again. Short.</comment></data>
+  <data name="Notification_Dismiss" xml:space="preserve"><value>Dispensar</value>
+        <comment>Tooltip and accessible name of the close (X) button of a notification: it removes the notification.</comment></data>
 </root>
