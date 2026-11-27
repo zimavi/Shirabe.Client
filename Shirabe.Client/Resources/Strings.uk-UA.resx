@@ -157,6 +157,40 @@
         <comment>Name of an on/off switch, in the settings and in the narrow speed menu. Also its accessible name. The echo of a room. Short.</comment></data>
   <data name="Audio_ReverbDescription" xml:space="preserve"><value>Додає відлуння кімнати до будь-якої пісні що грає.</value>
         <comment>Explanation under the "Reverb" switch.</comment></data>
+  <data name="Audio_NeedsEffects" xml:space="preserve"><value>Для збереження висоти тону, реверберації та еквалайзера потрібна бібліотека BASS_FX, яку не вдалося завантажити.</value>
+        <comment>Warning above settings that are greyed out. "BASS_FX" is the name of a library: do not translate it.</comment></data>
+  <data name="Audio_SectionEqualizer" xml:space="preserve"><value>ЕКВАЛАЙЗЕР</value>
+        <comment>Small heading above the equalizer settings. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Audio_Equalizer" xml:space="preserve"><value>Еквалайзер</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Audio_EqualizerDescription" xml:space="preserve"><value>Підсилює або послаблює окремі діапазони частот. Підсилення одного з них знижує загальний рівень гучності на відповідну величину, щоб уникнути спотворень звуку.</value>
+        <comment>Explanation under the "Equalizer" switch.</comment></data>
+  <data name="Audio_EqualizerReset" xml:space="preserve"><value>Скинути еквалайзер</value>
+        <comment>Button that puts every equalizer slider back to zero.</comment></data>
+  <data name="Audio_Hz" xml:space="preserve"><value>{0} Гц</value>
+        <comment>A sound frequency, the name of an equalizer slider. {0} is a number.</comment></data>
+  <data name="Audio_Decibels" xml:space="preserve"><value>{0} дБ</value>
+        <comment>The value of an equalizer slider in decibels. {0} is a signed number such as +3.</comment></data>
+  <data name="Audio_SectionVolume" xml:space="preserve"><value>ГУЧНІСТЬ</value>
+        <comment>Small heading above the volume settings. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Audio_Normalize" xml:space="preserve"><value>Нормалізація гучності</value>
+        <comment>Name of a drop-down list that makes songs play at a similar loudness. Also its accessible name.</comment></data>
+  <data name="Audio_NormalizeDescription" xml:space="preserve"><value>Відтворює композиції з приблизно однаковою гучністю, використовуючи теги ReplayGain у ваших файлах. Файли без цих тегів відтворюються без коригування гучності.</value>
+        <comment>Explanation under "Volume normalization". "ReplayGain" is the name of a standard: do not translate it.</comment></data>
+  <data name="Audio_NormalizeOff" xml:space="preserve"><value>Вимк</value>
+        <comment>Entry of the "Volume normalization" list: no normalization.</comment></data>
+  <data name="Audio_NormalizeTrack" xml:space="preserve"><value>За піснею</value>
+        <comment>Entry of the "Volume normalization" list: every song is evened out on its own.</comment></data>
+  <data name="Audio_NormalizeAlbum" xml:space="preserve"><value>За альбомом</value>
+        <comment>Entry of the "Volume normalization" list: albums are evened out as a whole, songs keep their differences within one.</comment></data>
+  <data name="Audio_Curve" xml:space="preserve"><value>Експоненційна крива гучності</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Audio_CurveDescription" xml:space="preserve"><value>Забезпечує точніше регулювання на низьких рівнях гучності. Після ввімкнення звук стає тихішим за того самого положення повзунка.</value>
+        <comment>Explanation under the "Exponential volume curve" switch.</comment></data>
+  <data name="Audio_ScrollStep" xml:space="preserve"><value>Крок прокрутки гучності</value>
+        <comment>Name of a drop-down list: how much the volume changes per notch of the mouse wheel. Also its accessible name.</comment></data>
+  <data name="Audio_ScrollStepDescription" xml:space="preserve"><value>На скільки змінюється гучність за один крок прокручування коліщатка миші.</value>
+        <comment>Explanation under "Volume scroll step". The wheel is used over the volume slider.</comment></data>
   <!-- Settings: General -->
   <data name="General_Title" xml:space="preserve"><value>Загальне</value>
         <comment>Name of a settings page, in the list of pages. Holds the everyday options.</comment></data>
@@ -180,6 +214,12 @@
         <comment>Name of the setting where the user picks the app's language. Also the accessible name of the drop-down list.</comment></data>
   <data name="General_LanguageDescription" xml:space="preserve"><value>Мова програми. Частини, які не перекладені, залишаються англійською мовою.</value>
         <comment>Explanation under the language drop-down. "Parts" means screens and texts that still have no translation.</comment></data>
+  <data name="General_MachineTranslated" xml:space="preserve"><value>Включає машинний переклад</value>
+        <comment>Note under the language drop-down, shown when the language on screen was translated by a computer and may contain mistakes.</comment></data>
+  <data name="General_HelpTranslate" xml:space="preserve"><value>Долучитися до перекладу</value>
+        <comment>Name of a row with a button that opens the project's translation page. Also the accessible name of that button.</comment></data>
+  <data name="General_HelpTranslateDescription" xml:space="preserve"><value>Додавайте або виправляйте переклади на Crowdin.</value>
+        <comment>Hint under "Help translate". "Crowdin" is a product name.</comment></data>
   <data name="Language_System" xml:space="preserve"><value>За замовчуванням</value>
         <comment>First entry of the language drop-down: use the language of the operating system.</comment></data>
   <!-- Settings: Appearance -->
@@ -255,6 +295,8 @@
   <!-- Settings: Connections -->
   <data name="Connections_Title" xml:space="preserve"><value>З'єднання</value>
         <comment>Name of a settings page, in the list of pages. Holds the options that talk to outside services.</comment></data>
+  <data name="Connections_Description" xml:space="preserve"><value>Discord, Last.fm та пошук в інтернеті</value>
+        <comment>One short line under the page name "Connections" in the list of settings pages. "Discord" and "Last.fm" are product names: do not translate them.</comment></data>
   <data name="Connections_SectionDiscord" xml:space="preserve"><value>DISCORD</value>
         <comment>Small heading above the Discord settings. "Discord" is a product name: do not translate it.</comment></data>
   <data name="Connections_Presence" xml:space="preserve"><value>Покажіть те, що я слухаю</value>
@@ -276,6 +318,26 @@
   <data name="Connections_DownloadArtworkDescription" xml:space="preserve"><value>Коли метадані пісні посилаються на обкладинку, вона завантажується, як пісня показується і зберігається на цьому комп'ютері. Вебсайт, з якого він надходить, може бачити вашу IP-адресу і що ви грали в цю пісню.</value>
         <comment>Privacy explanation under the switch: keep the meaning exact. "Your address" means the user's internet (IP) address.</comment></data>
   <!-- Settings: Connections, Last.fm -->
+  <data name="LastFm_Section" xml:space="preserve"><value>LAST.FM</value>
+        <comment>Small heading above the Last.fm settings. "Last.fm" is a product name: do not translate it.</comment></data>
+  <data name="LastFm_Account" xml:space="preserve"><value>Обліковий запис</value>
+        <comment>Name of the settings row about the user's Last.fm account.</comment></data>
+  <data name="LastFm_SignedOut" xml:space="preserve"><value>Увійдіть на сайті Last.fm. Shirabe ніколи не бачить вашого пароля.</value>
+        <comment>Under "Account" when the user is not signed in. "Last.fm" and "Shirabe" are product names.</comment></data>
+  <data name="LastFm_Waiting" xml:space="preserve"><value>Надайте доступ у браузері, а потім поверніться сюди.</value>
+        <comment>Under "Account" while the app waits for the user to approve it on the website that was just opened.</comment></data>
+  <data name="LastFm_SignedInAs" xml:space="preserve"><value>Ви увійшли як {0}</value>
+        <comment>Under "Account". {0} is the user's Last.fm user name: keep it as it is.</comment></data>
+  <data name="LastFm_Unavailable" xml:space="preserve"><value>Цю збірку Shirabe створено без ключа API Last.fm.</value>
+        <comment>Under "Account" in a copy of the app that cannot use Last.fm. An API key is a code that identifies an app to a web service; a build is one compiled copy of the app.</comment></data>
+  <data name="LastFm_Connect" xml:space="preserve"><value>Під'єднати</value>
+        <comment>Button: starts signing in to Last.fm. Short.</comment></data>
+  <data name="LastFm_Cancel" xml:space="preserve"><value>Скасувати</value>
+        <comment>Button: stops waiting for the sign-in. Short.</comment></data>
+  <data name="LastFm_Disconnect" xml:space="preserve"><value>Від'єднати</value>
+        <comment>Button: signs out of Last.fm in this app. Short.</comment></data>
+  <data name="LastFm_ViewProfile" xml:space="preserve"><value>Переглянути профіль</value>
+        <comment>Button: opens the user's page on the Last.fm website. Short.</comment></data>
   <!-- Title bar: the message about the last scrobble -->
   <!-- Settings: About -->
   <data name="About_Title" xml:space="preserve"><value>Про додаток</value>
