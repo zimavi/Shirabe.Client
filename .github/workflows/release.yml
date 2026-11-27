@@ -144,14 +144,16 @@ jobs:
           hdiutil detach "$RUNNER_TEMP/mnt"
 
       # Velopack's update feed is .nupkg and releases.*.json. assets.*.json (for vpk upload) and RELEASES* (legacy,
-      # still naming the Windows package without its platform) stay out.
+      # still naming the Windows package without its platform) stay out. Globs ignore case on Windows runners, so a
+      # "RELEASES*" pattern would also drop releases.win.json.
       - uses: actions/upload-artifact@v7
         with:
           name: release-${{ matrix.rid }}
           path: |
             dist/*
             !dist/assets.*.json
-            !dist/RELEASES*
+            !dist/RELEASES
+            !dist/RELEASES-*
           if-no-files-found: error
           compression-level: 0 # installers and packages are compressed already
 
@@ -169,6 +171,13 @@ jobs:
           path: dist
           pattern: release-*
           merge-multiple: true
+
+      # Installed copies find updates through these; without one, that platform silently sees no new version.
+      - name: Check the update feeds
+        run: |
+          for platform in win linux osx; do
+            test -f "dist/releases.$platform.json" || { echo "::error::releases.$platform.json is missing"; exit 1; }
+          done
 
       # Winget and Flathub need a hash for the installers and the tarball.
       - name: SHA256 of every file
