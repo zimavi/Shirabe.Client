@@ -338,7 +338,35 @@
         <comment>Button: signs out of Last.fm in this app. Short.</comment></data>
   <data name="LastFm_ViewProfile" xml:space="preserve"><value>Переглянути профіль</value>
         <comment>Button: opens the user's page on the Last.fm website. Short.</comment></data>
+  <data name="LastFm_Scrobble" xml:space="preserve"><value>Скроблити прослухані композиції</value>
+        <comment>Name of an on/off switch, also its accessible name. To "scrobble" is Last.fm's word for adding a played song to the user's listening history; use Last.fm's wording in your language if you know it.</comment></data>
+  <data name="LastFm_ScrobbleDescription" xml:space="preserve"><value>За наявності підключення до Last.fm надсилає цьому сервісу ім’я виконавця, назву композиції, альбом, тривалість і час початку відтворення кожної композиції, яку ви слухаєте.</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "Last.fm" is a product name.</comment></data>
+  <data name="LastFm_NoStorage" xml:space="preserve"><value>Shirabe не має доступу до захищеного сховища на цьому комп’ютері, тому вам доведеться повторно входити до Last.fm після кожного запуску застосунку.</value>
+        <comment>Warning. "Secure storage" is the system's protected place for passwords and keys (Windows Credential Manager, a Linux keyring).</comment></data>
+  <data name="LastFm_NotAllowed" xml:space="preserve"><value>Доступ не можна було отримати вчасно. Спробуйте знову.</value>
+        <comment>Error after the user did not approve the app on the Last.fm website within a few minutes.</comment></data>
+  <data name="LastFm_Unreachable" xml:space="preserve"><value>Last.fm не може бути досягнуто. Перевірте своє з'єднання і спробуйте ще раз.</value>
+        <comment>Error after a failed sign-in: no internet connection, or the website does not answer.</comment></data>
+  <data name="LastFm_Failed" xml:space="preserve"><value>Не вдалося увійти в Last.fm: {0}</value>
+        <comment>Error. {0} is the reason given by Last.fm, in English.</comment></data>
+  <data name="LastFm_NotRemoved" xml:space="preserve"><value>Не вдалося видалити збережені дані входу, тому сеанс може відновитися після перезапуску застосунку. Ви можете відкликати доступ Shirabe в налаштуваннях Last.fm у розділі «Applications».</value>
+        <comment>Error after signing out. "Applications" is the name of a page in the settings of the Last.fm website; to revoke access means to take the permission away.</comment></data>
+  <data name="LastFm_Credit" xml:space="preserve"><value>На базі AudioScrobbler</value>
+        <comment>Credit that Last.fm asks for. "AudioScrobbler" is a product name: do not translate it.</comment></data>
+  <data name="LastFm_CreditDescription" xml:space="preserve"><value>Функції облікового запису надаються Last.fm.</value>
+        <comment>Under the credit "Powered by AudioScrobbler". "Last.fm" is a product name.</comment></data>
+  <data name="LastFm_Open" xml:space="preserve"><value>Відкрити Last.fm</value>
+        <comment>Button: opens the Last.fm website. "Last.fm" is a product name.</comment></data>
   <!-- Title bar: the message about the last scrobble -->
+  <data name="Scrobbler_Title" xml:space="preserve"><value>Скроблер</value>
+        <comment>Heading of a small message in the title bar. A scrobbler is the part of an app that adds played songs to the user's Last.fm listening history; use Last.fm's wording in your language if you know it.</comment></data>
+  <data name="Scrobbler_Done" xml:space="preserve"><value>Заскроблено: {0} — {1}</value>
+        <comment>Message after a song was added to the Last.fm history. {0} is the song title, {1} the artist: keep both. It is cut off when long.</comment></data>
+  <data name="Scrobbler_Ignored" xml:space="preserve"><value>Last.fm проігнорував: {0} — {1}</value>
+        <comment>Message when Last.fm received a song but did not add it to the history. {0} is the song title, {1} the artist.</comment></data>
+  <data name="Scrobbler_Failed" xml:space="preserve"><value>Не вдалося заскроблити: {0} — {1}</value>
+        <comment>Message when a song could not be sent to Last.fm. {0} is the song title, {1} the artist.</comment></data>
   <!-- Settings: About -->
   <data name="About_Title" xml:space="preserve"><value>Про додаток</value>
         <comment>Name of a settings page, in the list of pages. It shows the app's version, license and credits.</comment></data>
@@ -488,12 +516,34 @@
         <comment>Name of an on/off switch. Also its accessible name.</comment></data>
   <data name="Connections_CheckForUpdatesDescription" xml:space="preserve"><value>Під час запуску Shirabe запитує GitHub, чи вийшла новіша версія, і повідомляє вас, якщо вона доступна. GitHub бачить лише вашу IP-адресу; жодні інші дані не надсилаються. Зміни набудуть чинності під час наступного запуску Shirabe.</value>
         <comment>Privacy explanation under the switch: keep the meaning exact. "GitHub" is a product name. "Your address" means the user's internet (IP) address.</comment></data>
+  <data name="Connections_UpdateChannel" xml:space="preserve"><value>Канал оновлень</value>
+        <comment>Name of a list choosing which kind of new versions are offered. Also its accessible name.</comment></data>
+  <data name="Connections_UpdateChannelDescription" xml:space="preserve"><value>Канал «Бета» також пропонує попередні тестові версії, які можуть містити більше помилок. Після повернення до каналу «Стабільний» поточна версія зберігатиметься до виходу новішої стабільної версії. Зміна набуде чинності під час наступного запуску Shirabe.</value>
+        <comment>Explanation under the update channel list. "Beta" and "Stable" must match the names of the two choices.</comment></data>
+  <data name="Connections_UpdateChannelStable" xml:space="preserve"><value>Стабільний</value>
+        <comment>Update channel choice: only finished releases.</comment></data>
+  <data name="Connections_UpdateChannelBeta" xml:space="preserve"><value>Бета</value>
+        <comment>Update channel choice: test versions as well.</comment></data>
   <data name="Update_Title" xml:space="preserve"><value>Доступний Shirabe {0}</value>
         <comment>Title of a notification. {0} is the new version number, for example 0.2.0: keep it as it is.</comment></data>
   <data name="Update_Message" xml:space="preserve"><value>Завантажте нову версію з GitHub, або оновлення через менеджер пакетів, з яким ви встановили Shirabe.</value>
         <comment>Body of the notification about a new version. A package manager is a tool such as winget, Scoop, Homebrew or apt that installs and updates programs. "GitHub" is a product name.</comment></data>
   <data name="Update_ViewRelease" xml:space="preserve"><value>Перейти до релізу</value>
         <comment>Button of the new-version notification: opens the page where the new version can be downloaded. Short.</comment></data>
+  <data name="Update_SelfMessage" xml:space="preserve"><value>Shirabe може завантажити та встановити оновлення за вас.</value>
+        <comment>Body of the notification about a new version, shown when the app can update itself.</comment></data>
+  <data name="Update_Install" xml:space="preserve"><value>Оновити</value>
+        <comment>Button of the new-version notification: downloads the new version. A verb. Short.</comment></data>
+  <data name="Update_Downloading" xml:space="preserve"><value>Завантаження... {0}%</value>
+        <comment>Body of the update notification while the new version downloads. {0} is a number from 0 to 100: keep it as it is.</comment></data>
+  <data name="Update_Ready" xml:space="preserve"><value>Оновлення завантажено. Перезапустіть Shirabe, щоб встановити його зараз, або воно буде встановлено автоматично під час наступного запуску застосунку.</value>
+        <comment>Body of the update notification after the download has finished. "Shirabe" is the app's name.</comment></data>
+  <data name="Update_Restart" xml:space="preserve"><value>Перезапустити зараз</value>
+        <comment>Button of the update notification: closes the app, installs the new version and opens it again. Short.</comment></data>
+  <data name="Update_Failed" xml:space="preserve"><value>Не вдалося виконати оновлення. Спробуйте ще раз або завантажте його зі сторінки релізу.</value>
+        <comment>Body of the update notification when downloading or installing the new version failed.</comment></data>
+  <data name="Update_TryAgain" xml:space="preserve"><value>Спробувати знову</value>
+        <comment>Button of the update notification after a failed download: starts the download again. Short.</comment></data>
   <data name="Notification_Dismiss" xml:space="preserve"><value>Закрити</value>
         <comment>Tooltip and accessible name of the close (X) button of a notification: it removes the notification.</comment></data>
 </root>
