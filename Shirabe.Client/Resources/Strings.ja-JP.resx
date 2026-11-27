@@ -121,7 +121,85 @@
         <comment>Warning under the output device list, e.g. when headphones are unplugged.</comment></data>
   <data name="Audio_NowOutput" xml:space="preserve"><value>現在の出力先</value>
         <comment>Title of a line that shows the output device in use, its sample rate and channels.</comment></data>
+  <data name="Audio_NowSource" xml:space="preserve"><value>現在のファイル</value>
+        <comment>Title of a line that shows technical facts about the loaded audio file: format, sample rate, channels, bit rate.</comment></data>
+  <data name="Audio_Unknown" xml:space="preserve"><value>不明</value>
+        <comment>Shown when the app cannot tell which output device is in use.</comment></data>
+  <data name="Audio_KHz" xml:space="preserve"><value>{0} kHz</value>
+        <comment>A sample rate. {0} is a number such as 44.1.</comment></data>
+  <data name="Audio_Channels" xml:space="preserve"><value>チャンネル数：{0}</value>
+        <comment>Number of audio channels (2 is stereo). {0} is a number. Shown in the middle of a line of technical facts.</comment></data>
+  <data name="Audio_BitDepth" xml:space="preserve"><value>{0}ビット</value>
+        <comment>Audio bit depth. {0} is a number such as 16 or 24.</comment></data>
+  <data name="Audio_Bitrate" xml:space="preserve"><value>{0} kbps</value>
+        <comment>Audio bit rate in kilobits per second. {0} is a number.</comment></data>
+  <data name="Audio_SectionPlayback" xml:space="preserve"><value>再生</value>
+        <comment>Small heading above the settings about speed, pitch and reverb. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Audio_Speed" xml:space="preserve"><value>再生速度</value>
+        <comment>Tooltip and accessible name of the speed button in the player bar and of its slider, and the title of the menu it opens.</comment></data>
+  <data name="Audio_SpeedControl" xml:space="preserve"><value>再生速度の調整</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Audio_SpeedControlDescription" xml:space="preserve"><value>プレーヤーバーに再生速度を変更するボタンを表示し、曲を遅くしたり速くしたりして聴くことができます。オフにすると、通常の速度で再生されます。</value>
+        <comment>Explanation under the "Playback speed control" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="Audio_Slowed" xml:space="preserve"><value>低速</value>
+        <comment>Button in the speed menu that plays songs slower (0.8x). Very short: three buttons share one narrow row.</comment></data>
+  <data name="Audio_Normal" xml:space="preserve"><value>標準</value>
+        <comment>Button in the speed menu for normal speed (1x). Very short: three buttons share one narrow row.</comment></data>
+  <data name="Audio_SpedUp" xml:space="preserve"><value>高速</value>
+        <comment>Button in the speed menu that plays songs faster (1.25x). Very short: three buttons share one narrow row.</comment></data>
+  <data name="Audio_MoreSettings" xml:space="preserve"><value>オーディオ設定</value>
+        <comment>Tooltip and accessible name of the gear button in the speed menu; it opens the settings page about audio.</comment></data>
+  <data name="Audio_KeepPitch" xml:space="preserve"><value>音程を維持</value>
+        <comment>Name of an on/off switch, in the settings and in the narrow speed menu. Also its accessible name. Short.</comment></data>
+  <data name="Audio_KeepPitchDescription" xml:space="preserve"><value>音程を変えずに再生速度を変更します。オフにすると、再生速度を上げるほど音程が高くなり、下げるほど低くなります。</value>
+        <comment>Explanation under the "Keep pitch" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="Audio_Reverb" xml:space="preserve"><value>リバーブ</value>
+        <comment>Name of an on/off switch, in the settings and in the narrow speed menu. Also its accessible name. The echo of a room. Short.</comment></data>
+  <data name="Audio_ReverbDescription" xml:space="preserve"><value>再生中の音に部屋のような残響を加えます。</value>
+        <comment>Explanation under the "Reverb" switch.</comment></data>
+  <data name="Audio_NeedsEffects" xml:space="preserve"><value>音程の維持、リバーブ、イコライザーにはBASS_FXライブラリが必要ですが、読み込めませんでした。</value>
+        <comment>Warning above settings that are greyed out. "BASS_FX" is the name of a library: do not translate it.</comment></data>
+  <data name="Audio_SectionEqualizer" xml:space="preserve"><value>イコライザー</value>
+        <comment>Small heading above the equalizer settings. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Audio_Equalizer" xml:space="preserve"><value>イコライザー</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Audio_EqualizerDescription" xml:space="preserve"><value>周波数帯域ごとの音量を調整します。特定の帯域を強調すると、音の歪みを防ぐために全体の音量がその分だけ下がります。</value>
+        <comment>Explanation under the "Equalizer" switch.</comment></data>
+  <data name="Audio_EqualizerReset" xml:space="preserve"><value>イコライザーをリセット</value>
+        <comment>Button that puts every equalizer slider back to zero.</comment></data>
+  <data name="Audio_Hz" xml:space="preserve"><value>{0} Hz</value>
+        <comment>A sound frequency, the name of an equalizer slider. {0} is a number.</comment></data>
+  <data name="Audio_Decibels" xml:space="preserve"><value>{0} dB</value>
+        <comment>The value of an equalizer slider in decibels. {0} is a signed number such as +3.</comment></data>
+  <data name="Audio_SectionVolume" xml:space="preserve"><value>音量</value>
+        <comment>Small heading above the volume settings. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Audio_Normalize" xml:space="preserve"><value>音量の正規化</value>
+        <comment>Name of a drop-down list that makes songs play at a similar loudness. Also its accessible name.</comment></data>
+  <data name="Audio_NormalizeDescription" xml:space="preserve"><value>ファイル内のReplayGainタグを使用して、曲ごとの音量をほぼ一定に保ちます。タグのないファイルは音量を補正せずに再生します。</value>
+        <comment>Explanation under "Volume normalization". "ReplayGain" is the name of a standard: do not translate it.</comment></data>
+  <data name="Audio_NormalizeOff" xml:space="preserve"><value>オフ</value>
+        <comment>Entry of the "Volume normalization" list: no normalization.</comment></data>
+  <data name="Audio_NormalizeTrack" xml:space="preserve"><value>曲ごと</value>
+        <comment>Entry of the "Volume normalization" list: every song is evened out on its own.</comment></data>
+  <data name="Audio_NormalizeAlbum" xml:space="preserve"><value>アルバムごと</value>
+        <comment>Entry of the "Volume normalization" list: albums are evened out as a whole, songs keep their differences within one.</comment></data>
+  <data name="Audio_Curve" xml:space="preserve"><value>指数関数的な音量カーブ</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Audio_CurveDescription" xml:space="preserve"><value>音量が小さいときに、より細かく調整できます。オンにすると、スライダーが同じ位置でも音量が小さくなります。</value>
+        <comment>Explanation under the "Exponential volume curve" switch.</comment></data>
+  <data name="Audio_ScrollStep" xml:space="preserve"><value>スクロール時の音量変更幅</value>
+        <comment>Name of a drop-down list: how much the volume changes per notch of the mouse wheel. Also its accessible name.</comment></data>
+  <data name="Audio_ScrollStepDescription" xml:space="preserve"><value>音量スライダー上でマウスホイールを1目盛り回したときの音量の変化幅を設定します。</value>
+        <comment>Explanation under "Volume scroll step". The wheel is used over the volume slider.</comment></data>
   <!-- Settings: General -->
+  <data name="General_Title" xml:space="preserve"><value>一般</value>
+        <comment>Name of a settings page, in the list of pages. Holds the everyday options.</comment></data>
+  <data name="General_Description" xml:space="preserve"><value>起動、ウィンドウ、言語</value>
+        <comment>One short line under the page name "General" in the list of settings pages. Lists what is on the page.</comment></data>
+  <data name="General_SectionStartup" xml:space="preserve"><value>起動</value>
+        <comment>Small heading above the settings about what happens when the app starts. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="General_Resume" xml:space="preserve"><value>前回のセッションを再開する</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
   <!-- Settings: Appearance -->
   <data name="Appearance_Title" xml:space="preserve"><value>外観</value>
         <comment>Name of a settings page, in the list of pages. Holds the look of the app: colours and animations.</comment></data>
