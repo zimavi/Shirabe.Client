@@ -178,8 +178,54 @@
         <comment>Explanation under the "Background vocals" switch. Such parts appear in brackets in the lyrics text.</comment></data>
   <data name="Lyrics_BreakMarkers" xml:space="preserve"><value>歌唱のない区間のマーカー</value>
         <comment>Name of an on/off switch. The markers are three dots shown in the lyrics while the song has no singing. Also its accessible name.</comment></data>
+  <data name="Lyrics_BreakMarkersDescription" xml:space="preserve"><value>歌唱のない区間に3つの点を表示します。</value>
+        <comment>Explanation under the "Break markers" switch. An instrumental break is a part of the song without singing.</comment></data>
+  <data name="Lyrics_SectionTiming" xml:space="preserve"><value>タイミング</value>
+        <comment>Small heading above the setting that fine-tunes when lyrics light up. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Lyrics_Delay" xml:space="preserve"><value>ハイライトの遅延</value>
+        <comment>Name of the setting (a slider) that shifts the moment a lyric line is highlighted, in milliseconds. "Highlight" means the line being sung is made bright.</comment></data>
+  <data name="Lyrics_DelayDescription" xml:space="preserve"><value>ハイライトが音声より先に進む場合は値を大きくし、遅れる場合は値を小さくしてください。実際にスピーカーから音が出るタイミングは、プレーヤーが示す再生位置よりもわずかに遅れます。</value>
+        <comment>Explanation under the "Highlight delay" slider. "Raise" and "lower" refer to moving the slider.</comment></data>
+  <data name="Lyrics_DelayName" xml:space="preserve"><value>歌詞のハイライトの遅延</value>
+        <comment>Accessible name of the slider.</comment></data>
+  <data name="Lyrics_NoDelay" xml:space="preserve"><value>遅延なし</value>
+        <comment>Value shown next to the highlight delay slider when it is at zero, instead of "0 ms".</comment></data>
+  <data name="Lyrics_DelayValue" xml:space="preserve"><value>{0} ms</value>
+        <comment>{0} is a number with a sign, such as +120 or -50. "ms" is the abbreviation of milliseconds.</comment></data>
   <!-- Settings: Connections -->
+  <data name="Connections_Title" xml:space="preserve"><value>サービス連携</value>
+        <comment>Name of a settings page, in the list of pages. Holds the options that talk to outside services.</comment></data>
+  <data name="Connections_Description" xml:space="preserve"><value>Discord、Last.fm、オンライン検索</value>
+        <comment>One short line under the page name "Connections" in the list of settings pages. "Discord" and "Last.fm" are product names: do not translate them.</comment></data>
+  <data name="Connections_SectionDiscord" xml:space="preserve"><value>DISCORD</value>
+        <comment>Small heading above the Discord settings. "Discord" is a product name: do not translate it.</comment></data>
+  <data name="Connections_Presence" xml:space="preserve"><value>再生中の曲を表示する</value>
+        <comment>Name of an on/off switch that shows the current song on the user's Discord profile.</comment></data>
+  <data name="Connections_PresenceDescription" xml:space="preserve"><value>再生中の曲をDiscordプロフィールに「を再生中」カードとして表示します。Discordが起動している必要があります。</value>
+        <comment>Explanation under the switch. "Listening to" is the label Discord itself shows on the card; use Discord's wording in your language if you know it.</comment></data>
+  <data name="Connections_PresenceName" xml:space="preserve"><value>Discordプレゼンス</value>
+        <comment>Accessible name of the switch.</comment></data>
+  <data name="Connections_CoverLookup" xml:space="preserve"><value>アルバムのジャケット画像をオンラインで検索する</value>
+        <comment>Name of an on/off switch. A cover is the album artwork.</comment></data>
+  <data name="Connections_CoverLookupDescription" xml:space="preserve"><value>Discordカードに表示するジャケット画像を検索するため、アーティスト名とアルバム名をAppleのiTunes Searchに送信します。それ以外の情報がコンピューターの外部に送信されることはありません。</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "iTunes Search" is Apple's service name: do not translate it.</comment></data>
+  <data name="Connections_CoverLookupName" xml:space="preserve"><value>ジャケット画像の検索</value>
+        <comment>Accessible name of the switch.</comment></data>
+  <data name="Connections_SectionArtwork" xml:space="preserve"><value>ジャケット画像</value>
+        <comment>Small heading above the setting about downloading cover images. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Connections_DownloadArtwork" xml:space="preserve"><value>リンク先のジャケット画像をダウンロードする</value>
+        <comment>Name of an on/off switch. "Linked" means a song's metadata contains a web link to its cover image. Also its accessible name.</comment></data>
+  <data name="Connections_DownloadArtworkDescription" xml:space="preserve"><value>曲のメタデータにジャケット画像へのリンクが含まれている場合、その曲が表示される際に画像をダウンロードし、このコンピューターに保存します。ダウンロード元のウェブサイトは、あなたのIPアドレスと、その曲を再生したことを把握できます。</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "Your address" means the user's internet (IP) address.</comment></data>
   <!-- Settings: Connections, Last.fm -->
+  <data name="LastFm_Section" xml:space="preserve"><value>LAST.FM</value>
+        <comment>Small heading above the Last.fm settings. "Last.fm" is a product name: do not translate it.</comment></data>
+  <data name="LastFm_Account" xml:space="preserve"><value>アカウント</value>
+        <comment>Name of the settings row about the user's Last.fm account.</comment></data>
+  <data name="LastFm_SignedOut" xml:space="preserve"><value>Last.fmのウェブサイトでサインインしてください。シラベがパスワードを取得することはありません。</value>
+        <comment>Under "Account" when the user is not signed in. "Last.fm" and "Shirabe" are product names.</comment></data>
+  <data name="LastFm_Waiting" xml:space="preserve"><value>ブラウザーでアクセスを許可してから、この画面に戻ってください。</value>
+        <comment>Under "Account" while the app waits for the user to approve it on the website that was just opened.</comment></data>
   <!-- Title bar: the message about the last scrobble -->
   <!-- Settings: About -->
   <!-- Songs page -->
