@@ -17,13 +17,167 @@
         </value>
   </resheader>
   <!-- Sidebar -->
+  <data name="Nav_Home" xml:space="preserve"><value>ホーム</value>
+        <comment>Sidebar entry for the start page. Short: it has to fit the sidebar.</comment></data>
+  <data name="Nav_Songs" xml:space="preserve"><value>曲</value>
+        <comment>Sidebar entry and heading of the page that lists every song (track) in the user's music library.</comment></data>
+  <data name="Nav_Albums" xml:space="preserve"><value>アルバム</value>
+        <comment>Sidebar entry for the page that will list albums. Shown greyed out for now.</comment></data>
+  <data name="Nav_Artists" xml:space="preserve"><value>アーティスト</value>
+        <comment>Sidebar entry for the page that will list artists (singers, bands, musicians). Shown greyed out for now.</comment></data>
+  <data name="Nav_Playlists" xml:space="preserve"><value>プレイリスト</value>
+        <comment>Sidebar entry for the page that will list the user's own playlists. Shown greyed out for now.</comment></data>
+  <data name="Nav_Studio" xml:space="preserve"><value>スタジオ</value>
+        <comment>Sidebar entry for the editor where music metadata (credits, covers, custom fields) is created. "Studio" means a creative workspace; a feature name, so a commonly used loanword is fine.</comment></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>設定</value>
+        <comment>Sidebar entry, title of the settings page and accessible name of the sidebar button.</comment></data>
+  <data name="Nav_SectionLibrary" xml:space="preserve"><value>ライブラリ</value>
+        <comment>Small heading above the library entries in the sidebar.</comment></data>
+  <data name="Nav_SectionCreate" xml:space="preserve"><value>作成</value>
+        <comment>Small heading above the Studio entry in the sidebar.</comment></data>
+  <data name="Nav_NotAvailable" xml:space="preserve"><value>まだ利用できません</value>
+        <comment>Tooltip of a sidebar entry whose page does not exist yet.</comment></data>
   <!-- Window buttons -->
+  <data name="Window_Minimize" xml:space="preserve"><value>最小化</value>
+        <comment>Tooltip and accessible name of the title bar button that minimizes the window to the taskbar.</comment></data>
+  <data name="Window_Maximize" xml:space="preserve"><value>最大化</value>
+        <comment>Accessible name (read by screen readers) of the title bar button that makes the window fill the screen. Not shown as text.</comment></data>
+  <data name="Window_Restore" xml:space="preserve"><value>元のサイズに戻す</value>
+        <comment>Accessible name of the same button while the window is maximized: it returns the window to its previous size. Not shown as text.</comment></data>
+  <data name="Window_Close" xml:space="preserve"><value>閉じる</value>
+        <comment>Tooltip and accessible name of the title bar button that closes the window.</comment></data>
   <!-- Player bar and tray menu -->
+  <data name="Player_Shuffle" xml:space="preserve"><value>シャッフル</value>
+        <comment>Tooltip and accessible name of the button that plays the queue in random order (verb or noun, as is usual on music players).</comment></data>
+  <data name="Player_Previous" xml:space="preserve"><value>前の曲</value>
+        <comment>Tooltip of the button that goes to the previous song, and an item of the tray icon menu.</comment></data>
+  <data name="Player_Next" xml:space="preserve"><value>次の曲</value>
+        <comment>Tooltip of the button that goes to the next song, and an item of the tray icon menu.</comment></data>
+  <data name="Player_Play" xml:space="preserve"><value>再生</value>
+        <comment>Verb. Tray icon menu item that starts playback (shown while the music is paused), item of the song context menu, and accessible name of the play button on a song's cover.</comment></data>
+  <data name="Player_Pause" xml:space="preserve"><value>一時停止</value>
+        <comment>Tray icon menu item that pauses playback. Verb. Shown while the music is playing.</comment></data>
+  <data name="Player_PlayPause" xml:space="preserve"><value>再生／一時停止</value>
+        <comment>Accessible name (read by screen readers) of the one round button that switches between playing and pausing. Not shown as text.</comment></data>
+  <data name="Player_Repeat" xml:space="preserve"><value>リピート</value>
+        <comment>Accessible name of the repeat button. Its tooltip shows one of the three "Repeat: ..." texts below.</comment></data>
+  <data name="Player_RepeatOff" xml:space="preserve"><value>リピート：オフ</value>
+        <comment>Tooltip of the repeat button when nothing repeats: the queue stops after the last song.</comment></data>
+  <data name="Player_RepeatAll" xml:space="preserve"><value>リピート：全曲</value>
+        <comment>Tooltip of the repeat button when the whole queue starts over after the last song.</comment></data>
+  <data name="Player_RepeatOne" xml:space="preserve"><value>リピート：1曲</value>
+        <comment>Tooltip of the repeat button when the current song plays again and again.</comment></data>
+  <data name="Player_Lyrics" xml:space="preserve"><value>歌詞</value>
+        <comment>Tooltip and accessible name of the button that opens the panel with the words of the song (song lyrics, not poetry). Also the heading of that panel.</comment></data>
+  <data name="Player_Queue" xml:space="preserve"><value>再生キュー</value>
+        <comment>Tooltip and accessible name of the button that opens the list of songs that will play next (the play queue). Also the heading of that list.</comment></data>
+  <data name="Player_Mute" xml:space="preserve"><value>ミュート</value>
+        <comment>Accessible name of the speaker icon button that switches the sound off and on. Not shown as text.</comment></data>
+  <data name="Player_Volume" xml:space="preserve"><value>音量</value>
+        <comment>Accessible name of the volume slider (loudness). Not shown as text.</comment></data>
+  <data name="Tray_Open" xml:space="preserve"><value>シラベを開く</value>
+        <comment>Tray icon menu item that shows the main window again. "Shirabe" is the app's name: do not translate it.</comment></data>
+  <data name="Tray_Quit" xml:space="preserve"><value>終了</value>
+        <comment>Tray icon menu item that closes the app completely (closing the window only hides it to the tray).</comment></data>
   <!-- Settings: Keyboard shortcuts. The other action names in that list are the Player_* and Nav_* texts above. -->
+  <data name="Shortcuts_Title" xml:space="preserve"><value>キーボードショートカット</value>
+        <comment>Name of a settings page, in the list of pages. Keyboard shortcuts.</comment></data>
+  <data name="Shortcuts_Description" xml:space="preserve"><value>再生・画面操作のショートカットキー</value>
+        <comment>One short line under the page name "Shortcuts" in the list of settings pages. "Keys" means keyboard keys.</comment></data>
+  <data name="Shortcuts_FixedKeys" xml:space="preserve"><value>変更したいキーを選択してください。Escキーで歌詞パネルや再生キューパネルを閉じることができます。シラベのウィンドウがアクティブな間は、キーボードのメディアキーも使用できます。</value>
+        <comment>Explanation at the top of the keyboard shortcuts settings page. "Esc" is the Escape key. "Media keys" are the play/pause, next and previous keys some keyboards have.</comment></data>
+  <data name="Shortcuts_SeekBack" xml:space="preserve"><value>5秒戻る</value>
+        <comment>Name of a keyboard shortcut: moves the playing song 5 seconds back.</comment></data>
+  <data name="Shortcuts_SeekForward" xml:space="preserve"><value>5秒進む</value>
+        <comment>Name of a keyboard shortcut: moves the playing song 5 seconds ahead.</comment></data>
+  <data name="Shortcuts_VolumeUp" xml:space="preserve"><value>音量を上げる</value>
+        <comment>Name of a keyboard shortcut: makes the sound louder.</comment></data>
+  <data name="Shortcuts_VolumeDown" xml:space="preserve"><value>音量を下げる</value>
+        <comment>Name of a keyboard shortcut: makes the sound quieter.</comment></data>
+  <data name="Shortcuts_PressKey" xml:space="preserve"><value>キーを押してください…</value>
+        <comment>Text on a button while the app waits for the user to press the new keyboard shortcut. Short.</comment></data>
+  <data name="Shortcuts_NotSet" xml:space="preserve"><value>未設定</value>
+        <comment>Text on a button of an action that has no keyboard shortcut. Short.</comment></data>
+  <data name="Shortcuts_CaptureHelp" xml:space="preserve"><value>Escキーでキャンセル、Backspaceキーでショートカットを解除できます。</value>
+        <comment>Help shown while the app waits for a new keyboard shortcut. "Esc" and "Backspace" are key names.</comment></data>
+  <data name="Shortcuts_Taken" xml:space="preserve"><value>そのキーはすでに「{0}」に割り当てられています。別のキーを押すか、Escキーでキャンセルしてください。</value>
+        <comment>Shown when the pressed keyboard shortcut belongs to another action. {0} is the name of that action.</comment></data>
+  <data name="Shortcuts_ResetAll" xml:space="preserve"><value>すべてのショートカットを初期設定に戻す</value>
+        <comment>Button that brings every keyboard shortcut back to the one the app came with.</comment></data>
   <!-- Settings: Audio -->
+  <data name="Audio_Title" xml:space="preserve"><value>オーディオ</value>
+        <comment>Name of a settings page, in the list of pages.</comment></data>
+  <data name="Audio_Description" xml:space="preserve"><value>音声出力、再生、イコライザー、音量</value>
+        <comment>One short line under the page name "Audio" in the list of settings pages. Lists what is on the page.</comment></data>
+  <data name="Audio_SectionOutput" xml:space="preserve"><value>音声出力</value>
+        <comment>Small heading above the settings about where the sound goes. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Audio_Device" xml:space="preserve"><value>出力デバイス</value>
+        <comment>Name of the setting where the user picks speakers or headphones. Also the accessible name of the drop-down list.</comment></data>
+  <data name="Audio_DeviceDescription" xml:space="preserve"><value>シラベの音声を出力するスピーカーやヘッドホンを選択します。</value>
+        <comment>Explanation under "Output device". "Shirabe" is the app's name: do not translate it.</comment></data>
+  <data name="Audio_SystemDefault" xml:space="preserve"><value>システムの既定値</value>
+        <comment>First entry of the output device list: whatever the operating system is set to use.</comment></data>
+  <data name="Audio_DeviceMissing" xml:space="preserve"><value>選択したデバイスが利用できないため、システムの既定のデバイスから音声を出力しています。</value>
+        <comment>Warning under the output device list, e.g. when headphones are unplugged.</comment></data>
+  <data name="Audio_NowOutput" xml:space="preserve"><value>現在の出力先</value>
+        <comment>Title of a line that shows the output device in use, its sample rate and channels.</comment></data>
   <!-- Settings: General -->
   <!-- Settings: Appearance -->
+  <data name="Appearance_Title" xml:space="preserve"><value>外観</value>
+        <comment>Name of a settings page, in the list of pages. Holds the look of the app: colours and animations.</comment></data>
+  <data name="Appearance_Description" xml:space="preserve"><value>テーマとアクセントカラー</value>
+        <comment>One short line under the page name "Appearance" in the list of settings pages. The source uses British spelling.</comment></data>
+  <data name="Appearance_SectionTheme" xml:space="preserve"><value>テーマ</value>
+        <comment>Small heading above the theme setting. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Appearance_Theme" xml:space="preserve"><value>テーマ</value>
+        <comment>Name of the setting where the user picks a theme: a named colour scheme such as "Dark". Also the accessible name of the drop-down list.</comment></data>
+  <data name="Appearance_ThemeDescription" xml:space="preserve"><value>アプリ全体の配色を変更します。</value>
+        <comment>Explanation under the theme drop-down.</comment></data>
+  <data name="Appearance_CustomThemesHint" xml:space="preserve"><value>独自のテーマを追加するには、"name" と以下の任意のカラーキー（accent, background, sidebar, surface, surfaceHover, divider, textPrimary, textSecondary, track）を含む .json ファイルを作成し、色を #RRGGBB 形式で指定してください。ファイルを {0} に配置し、アプリを再起動してください。指定されていない色にはダークテーマの配色が使用されます。</value>
+        <comment>{0} is a folder path, or the text of Appearance_ThemesFolder. Keep the colour names (accent, background...) and "name" as they are: they are keys in the file.</comment></data>
+  <data name="Appearance_ThemesFolder" xml:space="preserve"><value>テーマフォルダー</value>
+        <comment>Inserted as {0} into Appearance_CustomThemesHint when the folder path is not known. It must read naturally right after "in" in that sentence.</comment></data>
+  <data name="Theme_NeedsName" xml:space="preserve"><value>"name" の指定が必要です</value>
+        <comment>Problem listed under the theme setting for a theme file without a name. It follows the file name and a colon, e.g. "mytheme.json: needs a "name"". Keep "name" as it is: it is a key in the file.</comment></data>
+  <data name="Theme_BadColour" xml:space="preserve"><value>"{0}" は "#RRGGBB" 形式の色ではありません</value>
+        <comment>Problem listed under the theme setting. {0} is a key of the theme file (accent, background...): do not translate it. "#RRGGBB" is the colour format: keep it.</comment></data>
+  <data name="Theme_NameTaken" xml:space="preserve"><value>「{0}」という名前のテーマはすでに存在します</value>
+        <comment>Problem listed under the theme setting. It follows the file name and a colon. {0} is the theme's name.</comment></data>
+  <data name="Appearance_SectionAccent" xml:space="preserve"><value>アクセントカラー</value>
+        <comment>Small heading above the accent colour setting (the highlight colour of buttons and sliders). Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Appearance_Follow" xml:space="preserve"><value>ジャケット画像に合わせる</value>
+        <comment>Name of an on/off switch. "Cover" is the album artwork of the song that is playing. Also the accessible name.</comment></data>
+  <data name="Appearance_FollowDescription" xml:space="preserve"><value>再生中の曲のジャケット画像に合わせてアクセントカラーを変更します。オフにすると、テーマ本来のアクセントカラーが使用されます。</value>
+        <comment>Explanation under the "Follow the cover" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="Appearance_SectionMotion" xml:space="preserve"><value>アニメーション</value>
+        <comment>Small heading above the animation setting. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Appearance_ReduceMotion" xml:space="preserve"><value>アニメーションを減らす</value>
+        <comment>Name of an on/off switch that turns animations off (an accessibility option, like the one in the operating system). Also its accessible name.</comment></data>
+  <data name="Appearance_ReduceMotionDescription" xml:space="preserve"><value>フェードおよびスライドのアニメーションを無効にします。</value>
+        <comment>Explanation under the "Reduce motion" switch.</comment></data>
   <!-- Settings: Lyrics -->
+  <data name="Lyrics_Title" xml:space="preserve"><value>歌詞</value>
+        <comment>Name of a settings page, in the list of pages. "Lyrics" means the words of a song.</comment></data>
+  <data name="Lyrics_Description" xml:space="preserve"><value>文字サイズ、ボーカル、タイミング</value>
+        <comment>One short line under the page name "Lyrics" in the list of settings pages. Lists what is on the page.</comment></data>
+  <data name="Lyrics_SectionText" xml:space="preserve"><value>テキスト</value>
+        <comment>Small heading above the settings about how the lyrics text looks. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Lyrics_TextSize" xml:space="preserve"><value>文字サイズ</value>
+        <comment>Name of the setting (a slider) for how large the lyrics are.</comment></data>
+  <data name="Lyrics_TextSizeDescription" xml:space="preserve"><value>歌詞パネルに表示される歌詞の文字サイズを変更します。</value>
+        <comment>Explanation under the "Text size" setting.</comment></data>
+  <data name="Lyrics_TextSizeName" xml:space="preserve"><value>歌詞の文字サイズ</value>
+        <comment>Accessible name of the slider.</comment></data>
+  <data name="Lyrics_TextSizeValue" xml:space="preserve"><value>{0} pt</value>
+        <comment>Value shown next to the text size slider. {0} is a whole number; "pt" is the abbreviation of typographic points.</comment></data>
+  <data name="Lyrics_SectionShown" xml:space="preserve"><value>表示内容</value>
+        <comment>Small heading above the switches that choose which parts of the lyrics are displayed. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Lyrics_BackgroundVocals" xml:space="preserve"><value>バックボーカル</value>
+        <comment>Name of an on/off switch. Background vocals are the secondary voices of a song (backing vocals, echoes, ad-libs). Also its accessible name.</comment></data>
+  <data name="Lyrics_BackgroundVocalsDescription" xml:space="preserve"><value>一部の歌詞に含まれるバックボーカル（括弧内の部分）を表示します。</value>
+        <comment>Explanation under the "Background vocals" switch. Such parts appear in brackets in the lyrics text.</comment></data>
+  <data name="Lyrics_BreakMarkers" xml:space="preserve"><value>歌唱のない区間のマーカー</value>
+        <comment>Name of an on/off switch. The markers are three dots shown in the lyrics while the song has no singing. Also its accessible name.</comment></data>
   <!-- Settings: Connections -->
   <!-- Settings: Connections, Last.fm -->
   <!-- Title bar: the message about the last scrobble -->
