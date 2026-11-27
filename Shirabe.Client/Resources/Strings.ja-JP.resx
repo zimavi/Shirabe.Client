@@ -200,6 +200,28 @@
         <comment>Small heading above the settings about what happens when the app starts. Keep it uppercase if the language has letter case.</comment></data>
   <data name="General_Resume" xml:space="preserve"><value>前回のセッションを再開する</value>
         <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="General_ResumeDescription" xml:space="preserve"><value>シラベの起動時に、前回の曲を停止した位置から一時停止状態で復元し、音量、シャッフル、リピートの設定も引き継ぎます。オフにすると、これらの情報は保持されません。</value>
+        <comment>Explanation under the "Resume last session" switch. "Off" means the switch is turned off.</comment></data>
+  <data name="General_SectionWindow" xml:space="preserve"><value>ウィンドウ</value>
+        <comment>Small heading above the settings about the app's window. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="General_KeepInTray" xml:space="preserve"><value>システムトレイに常駐する</value>
+        <comment>Name of an on/off switch. Also its accessible name. "Tray" is the system tray (notification area) with the app's small icon.</comment></data>
+  <data name="General_KeepInTrayDescription" xml:space="preserve"><value>ウィンドウを閉じても非表示になるだけで、音楽の再生は続きます。システムトレイのアイコンからウィンドウを再表示できます。オフにすると、ウィンドウを閉じたときにシラベが終了します。システムトレイのないデスクトップ環境では、この設定をオフにしてください。</value>
+        <comment>Explanation under the "Keep running in the tray" switch. "Off" means the switch is turned off. "Tray" is the system tray (notification area).</comment></data>
+  <data name="General_SectionLanguage" xml:space="preserve"><value>言語</value>
+        <comment>Small heading above the language setting. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="General_Language" xml:space="preserve"><value>言語</value>
+        <comment>Name of the setting where the user picks the app's language. Also the accessible name of the drop-down list.</comment></data>
+  <data name="General_LanguageDescription" xml:space="preserve"><value>アプリの表示言語を変更します。まだ翻訳されていない部分は英語で表示されます。</value>
+        <comment>Explanation under the language drop-down. "Parts" means screens and texts that still have no translation.</comment></data>
+  <data name="General_MachineTranslated" xml:space="preserve"><value>機械翻訳が含まれています</value>
+        <comment>Note under the language drop-down, shown when the language on screen was translated by a computer and may contain mistakes.</comment></data>
+  <data name="General_HelpTranslate" xml:space="preserve"><value>翻訳に協力する</value>
+        <comment>Name of a row with a button that opens the project's translation page. Also the accessible name of that button.</comment></data>
+  <data name="General_HelpTranslateDescription" xml:space="preserve"><value>Crowdinで翻訳を追加・修正できます。</value>
+        <comment>Hint under "Help translate". "Crowdin" is a product name.</comment></data>
+  <data name="Language_System" xml:space="preserve"><value>システムの既定値</value>
+        <comment>First entry of the language drop-down: use the language of the operating system.</comment></data>
   <!-- Settings: Appearance -->
   <data name="Appearance_Title" xml:space="preserve"><value>外観</value>
         <comment>Name of a settings page, in the list of pages. Holds the look of the app: colours and animations.</comment></data>
@@ -304,12 +326,224 @@
         <comment>Under "Account" when the user is not signed in. "Last.fm" and "Shirabe" are product names.</comment></data>
   <data name="LastFm_Waiting" xml:space="preserve"><value>ブラウザーでアクセスを許可してから、この画面に戻ってください。</value>
         <comment>Under "Account" while the app waits for the user to approve it on the website that was just opened.</comment></data>
+  <data name="LastFm_SignedInAs" xml:space="preserve"><value>{0} としてサインイン中</value>
+        <comment>Under "Account". {0} is the user's Last.fm user name: keep it as it is.</comment></data>
+  <data name="LastFm_Unavailable" xml:space="preserve"><value>このシラベのビルドにはLast.fmのAPIキーが含まれていません。</value>
+        <comment>Under "Account" in a copy of the app that cannot use Last.fm. An API key is a code that identifies an app to a web service; a build is one compiled copy of the app.</comment></data>
+  <data name="LastFm_Connect" xml:space="preserve"><value>接続</value>
+        <comment>Button: starts signing in to Last.fm. Short.</comment></data>
+  <data name="LastFm_Cancel" xml:space="preserve"><value>キャンセル</value>
+        <comment>Button: stops waiting for the sign-in. Short.</comment></data>
+  <data name="LastFm_Disconnect" xml:space="preserve"><value>接続解除</value>
+        <comment>Button: signs out of Last.fm in this app. Short.</comment></data>
+  <data name="LastFm_ViewProfile" xml:space="preserve"><value>プロフィールを表示</value>
+        <comment>Button: opens the user's page on the Last.fm website. Short.</comment></data>
+  <data name="LastFm_Scrobble" xml:space="preserve"><value>再生した曲をスクロブルする</value>
+        <comment>Name of an on/off switch, also its accessible name. To "scrobble" is Last.fm's word for adding a played song to the user's listening history; use Last.fm's wording in your language if you know it.</comment></data>
+  <data name="LastFm_ScrobbleDescription" xml:space="preserve"><value>Last.fmとの接続中は、再生した曲のアーティスト名、曲名、アルバム名、曲の長さ、再生開始時刻をLast.fmに送信します。</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "Last.fm" is a product name.</comment></data>
+  <data name="LastFm_NoStorage" xml:space="preserve"><value>このコンピューターにはシラベが利用できる安全なストレージがないため、シラベを起動するたびにLast.fmにサインインし直す必要があります。</value>
+        <comment>Warning. "Secure storage" is the system's protected place for passwords and keys (Windows Credential Manager, a Linux keyring).</comment></data>
+  <data name="LastFm_NotAllowed" xml:space="preserve"><value>制限時間内にアクセスが許可されませんでした。もう一度お試しください。</value>
+        <comment>Error after the user did not approve the app on the Last.fm website within a few minutes.</comment></data>
+  <data name="LastFm_Unreachable" xml:space="preserve"><value>Last.fmに接続できませんでした。インターネット接続を確認し、もう一度お試しください。</value>
+        <comment>Error after a failed sign-in: no internet connection, or the website does not answer.</comment></data>
+  <data name="LastFm_Failed" xml:space="preserve"><value>Last.fmへのサインインに失敗しました：{0}</value>
+        <comment>Error. {0} is the reason given by Last.fm, in English.</comment></data>
+  <data name="LastFm_NotRemoved" xml:space="preserve"><value>保存されたサインイン情報を削除できなかったため、アプリを再起動するとサインイン状態に戻る可能性があります。Last.fmの設定にある「アプリケーション」（Applications）から、シラベへのアクセス許可を取り消すことができます。</value>
+        <comment>Error after signing out. "Applications" is the name of a page in the settings of the Last.fm website; to revoke access means to take the permission away.</comment></data>
+  <data name="LastFm_Credit" xml:space="preserve"><value>AudioScrobblerを利用しています</value>
+        <comment>Credit that Last.fm asks for. "AudioScrobbler" is a product name: do not translate it.</comment></data>
+  <data name="LastFm_CreditDescription" xml:space="preserve"><value>アカウント関連の機能はLast.fmによって提供されています。</value>
+        <comment>Under the credit "Powered by AudioScrobbler". "Last.fm" is a product name.</comment></data>
+  <data name="LastFm_Open" xml:space="preserve"><value>Last.fmを開く</value>
+        <comment>Button: opens the Last.fm website. "Last.fm" is a product name.</comment></data>
   <!-- Title bar: the message about the last scrobble -->
+  <data name="Scrobbler_Title" xml:space="preserve"><value>スクロブラー</value>
+        <comment>Heading of a small message in the title bar. A scrobbler is the part of an app that adds played songs to the user's Last.fm listening history; use Last.fm's wording in your language if you know it.</comment></data>
+  <data name="Scrobbler_Done" xml:space="preserve"><value>スクロブル済み：{0} — {1}</value>
+        <comment>Message after a song was added to the Last.fm history. {0} is the song title, {1} the artist: keep both. It is cut off when long.</comment></data>
+  <data name="Scrobbler_Ignored" xml:space="preserve"><value>Last.fmがスキップしました：{0} — {1}</value>
+        <comment>Message when Last.fm received a song but did not add it to the history. {0} is the song title, {1} the artist.</comment></data>
+  <data name="Scrobbler_Failed" xml:space="preserve"><value>スクロブルに失敗しました：{0} — {1}</value>
+        <comment>Message when a song could not be sent to Last.fm. {0} is the song title, {1} the artist.</comment></data>
   <!-- Settings: About -->
+  <data name="About_Title" xml:space="preserve"><value>アプリについて</value>
+        <comment>Name of a settings page, in the list of pages. It shows the app's version, license and credits.</comment></data>
+  <data name="About_Description" xml:space="preserve"><value>バージョン、ライセンス、クレジット</value>
+        <comment>One short line under the page name "About" in the list of settings pages.</comment></data>
+  <data name="About_SectionApp" xml:space="preserve"><value>シラベ</value>
+        <comment>Small heading above the version and links. "Shirabe" is the product name: do not translate it. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_Tagline" xml:space="preserve"><value>音楽の魅力は、再生ボタンだけでは引き出せない。</value>
+        <comment>The project's motto, shown at the top of the About page. Translate the idea, not word for word. "Play button" is the button that starts a song.</comment></data>
+  <data name="About_Version" xml:space="preserve"><value>バージョン</value>
+        <comment>Name of the row that shows the app's version number, for example 0.1.0.</comment></data>
+  <data name="About_VersionDescription" xml:space="preserve"><value>不具合を報告する際は、このバージョン番号をお知らせください。</value>
+        <comment>Short hint under "Version".</comment></data>
+  <data name="About_Commit" xml:space="preserve"><value>ビルド</value>
+        <comment>Name of the row that shows the short code (a git commit hash such as ce863a5e7) identifying the exact source code this build was made from.</comment></data>
+  <data name="About_CommitDescription" xml:space="preserve"><value>このビルドの作成に使用されたソースコードを特定する識別子です。</value>
+        <comment>Short hint under "Build".</comment></data>
+  <data name="About_License" xml:space="preserve"><value>ライセンス</value>
+        <comment>Name of the row that tells under which license the app is released.</comment></data>
+  <data name="About_LicenseDescription" xml:space="preserve"><value>シラベは、Apache License 2.0の下で公開されている無料のオープンソースソフトウェアです。</value>
+        <comment>Hint under "License". "Apache License 2.0" is the official license name: do not translate it.</comment></data>
+  <data name="About_Source" xml:space="preserve"><value>ソースコード</value>
+        <comment>Name of a row with a button that opens the project's page on GitHub.</comment></data>
+  <data name="About_SourceDescription" xml:space="preserve"><value>シラベはGitHubでオープンに開発されています。</value>
+        <comment>Hint under "Source code". "GitHub" is a product name.</comment></data>
+  <data name="About_ReportProblem" xml:space="preserve"><value>不具合を報告する</value>
+        <comment>Name of a row with a button that opens the project's issue tracker on GitHub.</comment></data>
+  <data name="About_ReportProblemDescription" xml:space="preserve"><value>不具合を見つけたり、アイデアがあったりする場合は、GitHubでIssueを作成してください。</value>
+        <comment>Hint under "Report a problem". An "issue" is a report on GitHub's issue tracker.</comment></data>
+  <data name="About_Open" xml:space="preserve"><value>開く</value>
+        <comment>Button that opens a web page in the browser. Short: it sits at the right end of a row.</comment></data>
+  <data name="About_SectionCredits" xml:space="preserve"><value>クレジット</value>
+        <comment>Small heading above the list of people. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_Author" xml:space="preserve"><value>開発者・メンテナー</value>
+        <comment>Role of the person named in the row's description. The name itself is not translated.</comment></data>
+  <data name="About_SectionAudio" xml:space="preserve"><value>オーディオエンジン</value>
+        <comment>Small heading above the notice about the audio library used to play music. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_AudioNotice" xml:space="preserve"><value>音声の再生にはBASS（Copyright © 1999-2026 Un4seen Developments Ltd.）を使用しています。BASSはプロプライエタリソフトウェアです。シラベのライセンスの適用対象外であり、Un4seenが定める無償・非商用利用の条件に従って使用しています。</value>
+        <comment>Legal notice: keep the meaning exact. "BASS" and "Un4seen Developments Ltd." are names: do not translate them. "Proprietary" means not open source.</comment></data>
+  <data name="About_AudioWebsite" xml:space="preserve"><value>BASSのウェブサイト</value>
+        <comment>Name of a row with a button that opens the BASS audio library's website. "BASS" is a product name.</comment></data>
+  <data name="About_AudioWebsiteDescription" xml:space="preserve"><value>Un4seen Developments</value>
+        <comment>Hint under "BASS website": the company that makes BASS. A company name: do not translate it.</comment></data>
+  <data name="About_SectionThirdParty" xml:space="preserve"><value>サードパーティコンポーネント</value>
+        <comment>Small heading above the list of open-source libraries and resources the app is built with. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="About_ThirdPartyIntro" xml:space="preserve"><value>シラベは、以下のオープンソースコンポーネントを使用して開発されています。各コンポーネントは、それぞれのライセンスに従って使用されています。</value>
+        <comment>Sentence above the list of components. "Open-source" means the source code is public and free to use.</comment></data>
+  <data name="About_CopyHint" xml:space="preserve"><value>クリックしてコピー</value>
+        <comment>Tooltip of the version and build buttons: clicking one copies its text to the clipboard.</comment></data>
+  <data name="About_Copied" xml:space="preserve"><value>コピー済み</value>
+        <comment>Shown for a moment on the version or build button after its text was copied to the clipboard. Short: it replaces the button's text.</comment></data>
   <!-- Songs page -->
+  <data name="Common_UnknownArtist" xml:space="preserve"><value>不明なアーティスト</value>
+        <comment>Shown in place of the artist's name when a song has none (song list, queue, player bar).</comment></data>
+  <data name="Songs_Cancel" xml:space="preserve"><value>キャンセル</value>
+        <comment>Button that stops the scan of a music folder that is in progress.</comment></data>
+  <data name="Songs_AddFolder" xml:space="preserve"><value>フォルダーを追加</value>
+        <comment>Button that opens a dialog to choose a folder with music; the app then scans it and adds the songs to the library.</comment></data>
+  <data name="Songs_Summary" xml:space="preserve"><value>ライブラリ内：{0:N0} 曲</value>
+        <comment>Line under the page heading "Songs". {0:N0} is the number of songs, formatted with thousands separators: keep {0:N0} as it is. Worded without a counted noun on purpose, so it needs no plural forms.</comment></data>
+  <data name="Songs_ColTitle" xml:space="preserve"><value>曲名</value>
+        <comment>Column heading of the song list: the song's title. Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_ColArtist" xml:space="preserve"><value>アーティスト</value>
+        <comment>Column heading of the song list: the performer. Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_ColAlbum" xml:space="preserve"><value>アルバム</value>
+        <comment>Column heading of the song list: the album the song is on. Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_ColTime" xml:space="preserve"><value>時間</value>
+        <comment>Column heading of the song list: the song's length (duration). Keep it uppercase if the language has letter case. Short.</comment></data>
+  <data name="Songs_PlayNext" xml:space="preserve"><value>次に再生</value>
+        <comment>Item of the song context menu: puts the song right after the one that is playing.</comment></data>
+  <data name="Songs_AddToQueue" xml:space="preserve"><value>再生キューに追加</value>
+        <comment>Item of the song context menu: puts the song at the end of the play queue.</comment></data>
+  <data name="Songs_Properties" xml:space="preserve"><value>プロパティ</value>
+        <comment>Item of the song context menu: opens a dialog with the song's details, tags and custom fields.</comment></data>
+  <data name="Songs_EmptyTitle" xml:space="preserve"><value>まだ曲がありません</value>
+        <comment>Heading shown on the Songs page while the library is empty.</comment></data>
+  <data name="Songs_EmptyHint" xml:space="preserve"><value>フォルダーを追加すると、シラベがその中の音楽を検索します。</value>
+        <comment>Hint under "No songs yet". "Shirabe" is the app's name: do not translate it.</comment></data>
+  <data name="Songs_ChooseFolder" xml:space="preserve"><value>音楽フォルダーを選択</value>
+        <comment>Title of the operating system's folder dialog opened by "Add folder".</comment></data>
+  <data name="Songs_LoadFailed" xml:space="preserve"><value>ライブラリを読み込めませんでした：{0}</value>
+        <comment>Error line on the Songs page. {0} is the technical reason, often in English.</comment></data>
+  <data name="Songs_ScanLooking" xml:space="preserve"><value>音楽ファイルを検索中…</value>
+        <comment>Status while a folder scan starts, before the number of files is known.</comment></data>
+  <data name="Songs_ScanProgress" xml:space="preserve"><value>スキャン中：{0:N0} / {1:N0} 件</value>
+        <comment>Status during a folder scan: {0} files done, {1} files in total. Keep {0:N0} and {1:N0} as they are.</comment></data>
+  <data name="Songs_ScanCancelled" xml:space="preserve"><value>スキャンがキャンセルされました</value>
+        <comment>Status after the user stopped a folder scan.</comment></data>
+  <data name="Songs_ScanFailed" xml:space="preserve"><value>{0} をスキャンできませんでした：{1}</value>
+        <comment>Error line on the Songs page. {0} is a folder path, {1} the technical reason, often in English.</comment></data>
+  <data name="Songs_ScanFinished" xml:space="preserve"><value>スキャン完了：{0}</value>
+        <comment>Summary after a folder scan. {0} is a list of results separated by commas, made from the "Songs_Scan..." texts, e.g. "3 added, 1 updated, 10 unchanged".</comment></data>
+  <data name="Songs_ScanAdded" xml:space="preserve"><value>{0:N0} 件追加</value>
+        <comment>Part of the scan summary: how many new songs were found. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanUpdated" xml:space="preserve"><value>{0:N0} 件更新</value>
+        <comment>Part of the scan summary: how many songs were already known but changed (for example retagged). Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanUnchanged" xml:space="preserve"><value>{0:N0} 件変更なし</value>
+        <comment>Part of the scan summary: how many songs were already known and had not changed. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanMissing" xml:space="preserve"><value>{0:N0} 件見つからず</value>
+        <comment>Part of the scan summary: how many known songs have disappeared from the folder. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanFailedFiles" xml:space="preserve"><value>{0:N0} 件読み込み不可</value>
+        <comment>Part of the scan summary: how many files were skipped because they are damaged or not audio. Keep {0:N0} as it is.</comment></data>
+  <data name="Songs_ScanDocumentProblems" xml:space="preserve"><value>メタデータドキュメントの問題：{0:N0} 件</value>
+        <comment>Part of the scan summary: how many metadata documents (small .shirabe.json files or tags that describe a song) were damaged or broke the format's rules. Keep {0:N0} as it is.</comment></data>
   <!-- Queue panel -->
+  <data name="Queue_Clear" xml:space="preserve"><value>クリア</value>
+        <comment>Small button in the queue panel that empties the queue.</comment></data>
+  <data name="Queue_ClearTip" xml:space="preserve"><value>再生中の曲以外をすべて削除</value>
+        <comment>Tooltip of the "Clear" button of the queue panel.</comment></data>
+  <data name="Queue_Remove" xml:space="preserve"><value>再生キューから削除</value>
+        <comment>Tooltip and accessible name of the small X button on a queue row.</comment></data>
+  <data name="Queue_EmptyTitle" xml:space="preserve"><value>再生キューは空です</value>
+        <comment>Heading shown in the queue panel when no songs are queued.</comment></data>
+  <data name="Queue_EmptyHint" xml:space="preserve"><value>曲の一覧から曲を再生すると、再生キューが作成されます。</value>
+        <comment>Hint under "The queue is empty". "One" means a queue.</comment></data>
   <!-- Lyrics panel -->
+  <data name="LyricsPanel_NothingPlaying" xml:space="preserve"><value>再生中の曲はありません</value>
+        <comment>Heading shown in the lyrics panel while no song is loaded.</comment></data>
+  <data name="LyricsPanel_NoLyrics" xml:space="preserve"><value>この曲には歌詞がありません</value>
+        <comment>Heading shown in the lyrics panel when the loaded song has no lyrics.</comment></data>
+  <data name="LyricsPanel_PlayHint" xml:space="preserve"><value>曲を再生すると、ここに歌詞が表示されます。</value>
+        <comment>Hint under "Nothing is playing".</comment></data>
+  <data name="LyricsPanel_AddHint" xml:space="preserve"><value>音楽ファイルと同じ名前の .lrc または .ttml ファイルを同じフォルダーに置くか、音楽ファイルのタグに歌詞を追加してください。</value>
+        <comment>Hint under "No lyrics for this song". ".lrc" and ".ttml" are file extensions: keep them. "Tags" are the information stored inside the audio file (title, artist, lyrics...).</comment></data>
   <!-- Home page -->
+  <data name="Home_DropTitle" xml:space="preserve"><value>ここに音楽ファイルをドロップ</value>
+        <comment>Large text on the start page's drop area. Read together with Home_DropHint: "Drop an audio file here" + "to start listening".</comment></data>
+  <data name="Home_DropHint" xml:space="preserve"><value>して再生を開始</value>
+        <comment>Second line under Home_DropTitle. It continues the sentence of the line above it.</comment></data>
   <!-- Player messages and startup problems -->
+  <data name="Player_NothingPlaying" xml:space="preserve"><value>再生中の曲はありません</value>
+        <comment>Title in the player bar while no song is loaded.</comment></data>
+  <data name="Player_CannotPlay" xml:space="preserve"><value>{0} を再生できません：{1}</value>
+        <comment>Error in the player bar. {0} is a song title, {1} the technical reason, often in English.</comment></data>
+  <data name="Player_CannotPlayAgain" xml:space="preserve"><value>{0} を再度再生できません：{1}</value>
+        <comment>Error in the player bar when a song could not be loaded again after the app released its file for a moment. {0} is a song title, {1} the technical reason, often in English.</comment></data>
+  <data name="Player_FileGone" xml:space="preserve"><value>{0} を再生できません。ファイルが移動または削除されています。フォルダーを再度追加して、ライブラリを更新してください。</value>
+        <comment>Error in the player bar. {0} is a song title.</comment></data>
+  <data name="Startup_AudioEngine" xml:space="preserve"><value>オーディオエンジンを起動できませんでした：{0}&#10;&#10;native/README.md を参照してください。</value>
+        <comment>Error shown on the start page when the sound library (BASS) is missing. {0} is the technical reason, often in English. Keep the line breaks and "native/README.md" (a file name).</comment></data>
+  <data name="Startup_LibraryOpen" xml:space="preserve"><value>音楽ライブラリを開けませんでした（{0}）：{1}</value>
+        <comment>Error shown on the start page. {0} is the path of the library's database file, {1} the technical reason, often in English.</comment></data>
   <!-- Notifications and updates -->
+  <data name="Connections_SectionUpdates" xml:space="preserve"><value>アップデート</value>
+        <comment>Small heading above the setting about checking for new versions. Keep it uppercase if the language has letter case.</comment></data>
+  <data name="Connections_CheckForUpdates" xml:space="preserve"><value>アップデートを確認する</value>
+        <comment>Name of an on/off switch. Also its accessible name.</comment></data>
+  <data name="Connections_CheckForUpdatesDescription" xml:space="preserve"><value>シラベの起動時に、新しいバージョンが公開されているかをGitHubに問い合わせ、公開されていれば通知します。GitHubはあなたのIPアドレスを把握できますが、それ以外の情報は送信されません。この設定はシラベの次回起動時から適用されます。</value>
+        <comment>Privacy explanation under the switch: keep the meaning exact. "GitHub" is a product name. "Your address" means the user's internet (IP) address.</comment></data>
+  <data name="Connections_UpdateChannel" xml:space="preserve"><value>アップデートチャンネル</value>
+        <comment>Name of a list choosing which kind of new versions are offered. Also its accessible name.</comment></data>
+  <data name="Connections_UpdateChannelDescription" xml:space="preserve"><value>「ベータ」では、不具合が多い可能性のあるテスト版も提供されます。「安定版」に戻すと、現在のバージョンより新しい安定版が公開されるまで、現在のバージョンが維持されます。この設定はシラベの次回起動時から適用されます。</value>
+        <comment>Explanation under the update channel list. "Beta" and "Stable" must match the names of the two choices.</comment></data>
+  <data name="Connections_UpdateChannelStable" xml:space="preserve"><value>安定版</value>
+        <comment>Update channel choice: only finished releases.</comment></data>
+  <data name="Connections_UpdateChannelBeta" xml:space="preserve"><value>ベータ</value>
+        <comment>Update channel choice: test versions as well.</comment></data>
+  <data name="Update_Title" xml:space="preserve"><value>シラベ {0} が利用可能です</value>
+        <comment>Title of a notification. {0} is the new version number, for example 0.2.0: keep it as it is.</comment></data>
+  <data name="Update_Message" xml:space="preserve"><value>GitHubから新しいバージョンをダウンロードするか、シラベのインストールに使用したパッケージマネージャーでアップデートしてください。</value>
+        <comment>Body of the notification about a new version. A package manager is a tool such as winget, Scoop, Homebrew or apt that installs and updates programs. "GitHub" is a product name.</comment></data>
+  <data name="Update_ViewRelease" xml:space="preserve"><value>リリースを表示</value>
+        <comment>Button of the new-version notification: opens the page where the new version can be downloaded. Short.</comment></data>
+  <data name="Update_SelfMessage" xml:space="preserve"><value>シラベでアップデートのダウンロードとインストールができます。</value>
+        <comment>Body of the notification about a new version, shown when the app can update itself.</comment></data>
+  <data name="Update_Install" xml:space="preserve"><value>アップデート</value>
+        <comment>Button of the new-version notification: downloads the new version. A verb. Short.</comment></data>
+  <data name="Update_Downloading" xml:space="preserve"><value>ダウンロード中… {0}%</value>
+        <comment>Body of the update notification while the new version downloads. {0} is a number from 0 to 100: keep it as it is.</comment></data>
+  <data name="Update_Ready" xml:space="preserve"><value>ダウンロードが完了しました。今すぐインストールするにはシラベを再起動してください。再起動しない場合は、次回起動時に自動的にインストールされます。</value>
+        <comment>Body of the update notification after the download has finished. "Shirabe" is the app's name.</comment></data>
+  <data name="Update_Restart" xml:space="preserve"><value>今すぐ再起動</value>
+        <comment>Button of the update notification: closes the app, installs the new version and opens it again. Short.</comment></data>
+  <data name="Update_Failed" xml:space="preserve"><value>アップデートに失敗しました。もう一度お試しいただくか、リリースページからダウンロードしてください。</value>
+        <comment>Body of the update notification when downloading or installing the new version failed.</comment></data>
+  <data name="Update_TryAgain" xml:space="preserve"><value>再試行</value>
+        <comment>Button of the update notification after a failed download: starts the download again. Short.</comment></data>
+  <data name="Notification_Dismiss" xml:space="preserve"><value>通知を閉じる</value>
+        <comment>Tooltip and accessible name of the close (X) button of a notification: it removes the notification.</comment></data>
 </root>
