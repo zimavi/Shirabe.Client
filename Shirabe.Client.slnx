@@ -4,6 +4,5 @@
   <Project Path="Shirabe.Client/Shirabe.Client.csproj" />
   <Project Path="Shirabe.Core/Shirabe.Core.csproj" />
   <Project Path="Shirabe.Library/Shirabe.Library.csproj" />
-  <Project Path="Shirabe.Metadata/Shirabe.Metadata.csproj" />
   <Project Path="Shirabe.Tests/Shirabe.Tests.csproj" />
 </Solution>

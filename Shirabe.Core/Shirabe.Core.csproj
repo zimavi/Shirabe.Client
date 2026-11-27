@@ -7,6 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Shirabe.Metadata\Shirabe.Metadata.csproj"/>
+      <PackageReference Include="Shirabe.Metadata"/>
     </ItemGroup>
 </Project>

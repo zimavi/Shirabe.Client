@@ -125,9 +125,11 @@ You can tune the text size, background vocals, break markers and timing in **Set
 | `Shirabe.Core`           | The small interfaces everything else shares (playback, library, lyrics, metadata) |
 | `Shirabe.Audio`          | Playback, using BASS                                                              |
 | `Shirabe.Library`        | The local library: SQLite, scanning, reading tags                                 |
-| `Shirabe.Metadata`       | The metadata format: reading, checking and writing documents                      |
 | `Shirabe.Tests`          | Tests                                                                             |
 | `packaging`              | Icons and installer files                                                         |
+
+The metadata format (reading, checking and writing documents) is a package of its own,
+[Shirabe.Metadata](https://github.com/zimavi/Shirabe.Metadata).
 
 `CLAUDE.md` has the longer story of where the project is meant to go.
 
