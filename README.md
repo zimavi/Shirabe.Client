@@ -66,7 +66,8 @@ downloaded from the page above.
   settings**: quit Shirabe (from its tray icon) and copy that folder somewhere else first. After installing the new
   version, quit it too, delete any `library.db*` files in `%LOCALAPPDATA%\ShirabeData`, then copy `library.db*`,
   `settings.json`, `session.json`, `artwork` and `themes` from your copy into that folder.
-- **Linux:** some desktops have no system tray. "Keep running in the tray" is therefore off by default there.
+- **Linux:** some desktops have no system tray. "Keep running in the tray" is therefore off by default there. Also, FLAC
+  doesn't play here.
 
 ## Build from source
 
