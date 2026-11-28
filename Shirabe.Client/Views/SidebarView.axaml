@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="232" d:DesignHeight="600"
              x:Class="Shirabe.Client.Views.SidebarView"
              x:DataType="vm:MainViewModel">
-    <!-- Home and Songs exist. Albums, Artists and Playlists are shown disabled until their pages are built. -->
+    <!-- Home, Songs and Albums exist. Artists and Playlists are shown disabled until their pages are built. -->
     <Border Background="{DynamicResource SidebarBrush}" Padding="12,0,12,16">
         <DockPanel>
             <!-- Pinned to the bottom -->
@@ -44,8 +44,9 @@
                         <TextBlock Text="{loc:T Nav_Songs}" />
                     </StackPanel>
                 </Button>
-                <Button Classes="nav" IsEnabled="False" ToolTip.Tip="{loc:T Nav_NotAvailable}"
-                        ToolTip.ShowOnDisabled="True">
+                <Button Classes="nav" Classes.selected="{Binding IsAlbumsSelected}"
+                        Command="{Binding ShowAlbumsCommand}"
+                        AutomationProperties.Name="{loc:T Nav_Albums}">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <PathIcon Data="{DynamicResource Icon.Album}" Width="18" Height="18" />
                         <TextBlock Text="{loc:T Nav_Albums}" />

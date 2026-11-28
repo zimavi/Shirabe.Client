@@ -197,6 +197,26 @@ public partial class PlayerViewModel : ViewModelBase
         else _queue.PlayNext(track);
     }
 
+    /// <summary><see cref="EnqueueAsync(TrackSummary)"/> for several songs, kept in their order.</summary>
+    public async Task EnqueueAsync(IReadOnlyList<TrackSummary> tracks)
+    {
+        if (tracks.Count == 0) return;
+        if (_queue.Current is null) await PlayTracksAsync(tracks, 0);
+        else
+            foreach (var track in tracks)
+                _queue.Enqueue(track);
+    }
+
+    /// <summary><see cref="PlayNextAsync(TrackSummary)"/> for several songs, kept in their order.</summary>
+    public async Task PlayNextAsync(IReadOnlyList<TrackSummary> tracks)
+    {
+        if (tracks.Count == 0) return;
+        if (_queue.Current is null) await PlayTracksAsync(tracks, 0);
+        else
+            foreach (var track in tracks.Reverse())
+                _queue.PlayNext(track); // each goes in front of the one before
+    }
+
     /// <summary>What <see cref="RestoreAsync"/> needs to bring the player back after a restart.</summary>
     public PlayerSession Capture() =>
         new(Volume, _lastAudibleVolume, IsShuffleOn, Repeat, CurrentTrack, PositionSeconds);
@@ -288,7 +308,10 @@ public partial class PlayerViewModel : ViewModelBase
             case nameof(AppSettings.PlaybackSpeed) or nameof(AppSettings.PlaybackSpeedControl):
                 ApplySpeed();
                 foreach (var property in (string[])
-                         [nameof(SpeedText), nameof(IsSpeedChanged), nameof(IsSlowed), nameof(IsNormalSpeed), nameof(IsSpedUp)])
+                         [
+                             nameof(SpeedText), nameof(IsSpeedChanged), nameof(IsSlowed), nameof(IsNormalSpeed),
+                             nameof(IsSpedUp)
+                         ])
                     OnPropertyChanged(property);
                 break;
             case nameof(AppSettings.KeepPitch): _player.KeepPitch = _settings.KeepPitch; break;

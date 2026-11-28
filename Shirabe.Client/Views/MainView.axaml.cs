@@ -60,7 +60,7 @@ public partial class MainView : UserControl
     {
         if (IsNavigationKey(e)) RunShortcut(e);
         else if (e is { Key: Key.Escape, KeyModifiers: KeyModifiers.None } && DataContext is MainViewModel viewModel)
-            e.Handled = viewModel.ClosePanel(); // dialogs handle Esc themselves, before it gets here
+            e.Handled = viewModel.GoBack(); // dialogs handle Esc themselves, before it gets here
     }
 
     private static bool IsNavigationKey(KeyEventArgs e) =>

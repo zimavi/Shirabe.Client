@@ -55,6 +55,11 @@ public partial class AppSettings : ObservableObject
     [JsonConverter(typeof(JsonStringEnumConverter<UpdateChannel>))]
     public partial UpdateChannel UpdateChannel { get; set; }
 
+    /// <summary>The order of the Albums page.</summary>
+    [ObservableProperty]
+    [JsonConverter(typeof(JsonStringEnumConverter<AlbumSort>))]
+    public partial AlbumSort AlbumSort { get; set; }
+
     /// <summary>Size of the lyrics text in points; the lyrics panel keeps it between 12 and 32.</summary>
     [ObservableProperty]
     public partial double LyricsTextSize { get; set; } = 17;

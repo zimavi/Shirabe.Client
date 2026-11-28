@@ -1,6 +1,8 @@
 using System.Text;
 using System.Text.Json;
+
 using Microsoft.EntityFrameworkCore;
+
 using Shirabe.Core.Library;
 using Shirabe.Core.Metadata;
 using Shirabe.Library.Model;
@@ -20,44 +22,57 @@ public sealed partial class LocalLibrary : IDocumentStore
 
     private sealed record FoundDocument(string Origin, MetadataDocument Document);
 
-    public async Task<IReadOnlyList<StoredDocument>> GetDocumentsAsync(Guid recordingId, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<StoredDocument>> GetDocumentsAsync(Guid recordingId,
+        CancellationToken cancellationToken = default)
     {
         await using var db = new LibraryDbContext(_options);
-        var rows = await db.MetadataDocuments.AsNoTracking().Where(d => d.RecordingId == recordingId).ToListAsync(cancellationToken);
+        var rows = await db.MetadataDocuments.AsNoTracking().Where(d => d.RecordingId == recordingId)
+            .ToListAsync(cancellationToken);
 
         static int Rank(string layer) => Array.IndexOf(LayerOrder, layer) is var i and >= 0 ? i : LayerOrder.Length;
-        return [.. rows.OrderBy(r => Rank(r.Layer)).ThenBy(r => r.Origin, StringComparer.Ordinal)
-            .Select(r => new StoredDocument(r.Origin, r.Layer, r.Json, r.Revision, r.ErrorCount, r.LoadedUtc))];
+        return
+        [
+            .. rows.OrderBy(r => Rank(r.Layer)).ThenBy(r => r.Origin, StringComparer.Ordinal)
+                .Select(r => new StoredDocument(r.Origin, r.Layer, r.Json, r.Revision, r.ErrorCount, r.LoadedUtc))
+        ];
     }
 
     /// <summary>
-    /// Lets the documents say what they say (standard, section 10.3): title, artist, album, cover link and a page link come
-    /// from the canonical document, then the community one, and the tags fill whatever none of them has. Worked out when the
-    /// list is read, so a scan, an apply or an edit shows at once and nothing needs undoing when a document goes away.
-    /// Documents that break the standard are not relied on, and personal ones are never merged into the list automatically.
+    /// What the documents say about each song that has any (standard, section 10.3): the canonical document comes first,
+    /// then the community one. Documents that break the standard are not relied on, and personal ones are never merged
+    /// into the lists automatically.
     /// </summary>
-    private async Task<IReadOnlyList<TrackSummary>> WithDocumentsAsync(
-        LibraryDbContext db, List<TrackSummary> tracks, CancellationToken ct)
+    private async Task<Dictionary<Guid, Resolved>> ResolveDocumentsAsync(LibraryDbContext db, CancellationToken ct)
     {
         var rows = await db.MetadataDocuments.AsNoTracking()
             .Where(d => d.ErrorCount == 0 && (d.Layer == "canonical" || d.Layer == "community"))
             .Select(d => new { d.RecordingId, d.Layer, d.Origin, d.Json })
             .ToListAsync(ct);
-        if (rows.Count == 0) return tracks;
 
         // The person's own choice first, then what the files say; the sidecar is the newer of the two kinds in a file.
-        static int OriginRank(string origin) => origin switch { DocumentOrigin.Applied => 0, DocumentOrigin.Sidecar => 1, _ => 2 };
-        var byRecording = rows.GroupBy(r => r.RecordingId).ToDictionary(g => g.Key, g => g
+        static int OriginRank(string origin) =>
+            origin switch { DocumentOrigin.Applied => 0, DocumentOrigin.Sidecar => 1, _ => 2 };
+
+        return rows.GroupBy(r => r.RecordingId).ToDictionary(g => g.Key, g => Resolution.Resolve(g
             .OrderBy(r => r.Layer == "canonical" ? 0 : 1).ThenBy(r => OriginRank(r.Origin))
             .Select(r => MetadataDocument.TryParseFile(r.Json, out var parsed, out _) ? parsed[0] : null)
-            .OfType<MetadataDocument>().ToList());
+            .OfType<MetadataDocument>()));
+    }
+
+    /// <summary>
+    /// Lets the documents say what they say: title, artist, album, cover link and a page link come from them, and the tags
+    /// fill whatever none of them has. Worked out when the list is read, so a scan, an apply or an edit shows at once and
+    /// nothing needs undoing when a document goes away.
+    /// </summary>
+    private IReadOnlyList<TrackSummary> WithDocuments(List<TrackSummary> tracks, Dictionary<Guid, Resolved> documents)
+    {
+        if (documents.Count == 0) return tracks;
 
         var retitled = false;
         for (var i = 0; i < tracks.Count; i++)
         {
-            if (!byRecording.TryGetValue(tracks[i].RecordingId, out var documents)) continue;
+            if (!documents.TryGetValue(tracks[i].RecordingId, out var said)) continue;
 
-            var said = Resolution.Resolve(documents);
             var track = tracks[i];
             tracks[i] = track with
             {
@@ -77,10 +92,13 @@ public sealed partial class LocalLibrary : IDocumentStore
         }
 
         // The query sorted by the tags' titles; only a changed title can break that order.
-        return retitled ? [.. tracks.OrderBy(t => t.Title, StringComparer.OrdinalIgnoreCase).ThenBy(t => t.RecordingId)] : tracks;
+        return retitled
+            ? [.. tracks.OrderBy(t => t.Title, StringComparer.OrdinalIgnoreCase).ThenBy(t => t.RecordingId)]
+            : tracks;
     }
 
-    public async Task<IReadOnlyList<string>> RefreshFromFileAsync(Guid recordingId, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<string>> RefreshFromFileAsync(Guid recordingId,
+        CancellationToken cancellationToken = default)
     {
         await using var db = new LibraryDbContext(_options);
         var source = await db.MediaSources.Where(s => s.RecordingId == recordingId)
@@ -106,7 +124,8 @@ public sealed partial class LocalLibrary : IDocumentStore
 
         var (found, problems) = ReadFileDocuments(path, embedded, sidecar: true, embedded: true);
         var rows = ToRows(recordingId, found, problems);
-        await ReplaceStoredAsync(db, recordingId, [DocumentOrigin.Sidecar, DocumentOrigin.Embedded], rows, null, cancellationToken);
+        await ReplaceStoredAsync(db, recordingId, [DocumentOrigin.Sidecar, DocumentOrigin.Embedded], rows, null,
+            cancellationToken);
         source.SidecarStamp = SidecarStampOf(path);
         await db.SaveChangesAsync(cancellationToken);
         return problems;
@@ -117,15 +136,19 @@ public sealed partial class LocalLibrary : IDocumentStore
     {
         var errors = document.Validate().Where(p => p.IsError).ToList();
         if (errors.Count > 0)
-            throw new ArgumentException($"The document does not follow the standard ({errors.Count} error{(errors.Count == 1 ? "" : "s")}), for example: {errors[0].Path}: {errors[0].Message}", nameof(document));
+            throw new ArgumentException(
+                $"The document does not follow the standard ({errors.Count} error{(errors.Count == 1 ? "" : "s")}), for example: {errors[0].Path}: {errors[0].Message}",
+                nameof(document));
         if (origin is not (DocumentOrigin.Sidecar or DocumentOrigin.Embedded))
-            throw new ArgumentException("Documents are written to the sidecar file or into the audio file.", nameof(origin));
+            throw new ArgumentException("Documents are written to the sidecar file or into the audio file.",
+                nameof(origin));
 
         string path;
         await using (var db = new LibraryDbContext(_options))
         {
             var uri = await db.MediaSources.AsNoTracking().Where(s => s.RecordingId == recordingId)
-                          .OrderBy(s => s.IsMissing).ThenBy(s => s.Uri).Select(s => s.Uri).FirstOrDefaultAsync(cancellationToken)
+                          .OrderBy(s => s.IsMissing).ThenBy(s => s.Uri).Select(s => s.Uri)
+                          .FirstOrDefaultAsync(cancellationToken)
                       ?? throw new InvalidOperationException("That song is not in the library.");
             if (!Uri.TryCreate(uri, UriKind.Absolute, out var location) || !location.IsFile)
                 throw new InvalidOperationException("This song does not come from a file on this computer.");
@@ -142,11 +165,13 @@ public sealed partial class LocalLibrary : IDocumentStore
         return message;
     }
 
-    private static async Task<string> WriteSidecarAsync(string audioPath, MetadataDocument document, CancellationToken ct)
+    private static async Task<string> WriteSidecarAsync(string audioPath, MetadataDocument document,
+        CancellationToken ct)
     {
         var sidecar = SidecarFile.PathFor(audioPath);
         var existing = File.Exists(sidecar) ? await File.ReadAllTextAsync(sidecar, ct) : null;
-        if (!SidecarFile.TryMerge(existing, document, out var json, out var problem)) throw new InvalidOperationException(problem);
+        if (!SidecarFile.TryMerge(existing, document, out var json, out var problem))
+            throw new InvalidOperationException(problem);
 
         var temp = sidecar + ".tmp"; // write beside, then swap, so a crash cannot leave half a file
         await File.WriteAllTextAsync(temp, json, ct);
@@ -159,7 +184,8 @@ public sealed partial class LocalLibrary : IDocumentStore
     /// if the tag is not what was written, or anything else about the song (its title, artist, album, numbers, length,
     /// cover) changed, the copy is put back. The copy is deleted when all is well.
     /// </summary>
-    private static async Task<string> WriteEmbeddedAsync(string audioPath, MetadataDocument document, CancellationToken ct)
+    private static async Task<string> WriteEmbeddedAsync(string audioPath, MetadataDocument document,
+        CancellationToken ct)
     {
         FileTags before;
         try
@@ -171,12 +197,16 @@ public sealed partial class LocalLibrary : IDocumentStore
             throw new InvalidOperationException($"The audio file cannot be read, so nothing was written: {ex.Message}");
         }
 
-        if (!SidecarFile.TryMerge(before.EmbeddedDocument, document, out var json, out var problem)) throw new InvalidOperationException(problem);
-        if (json.Length > MaxDocumentSize) throw new InvalidOperationException("The document is too large to be written into the audio file.");
+        if (!SidecarFile.TryMerge(before.EmbeddedDocument, document, out var json, out var problem))
+            throw new InvalidOperationException(problem);
+        if (json.Length > MaxDocumentSize)
+            throw new InvalidOperationException("The document is too large to be written into the audio file.");
 
-        var backup = Path.Combine(Path.GetTempPath(), $"shirabe-backup-{Guid.NewGuid():N}{Path.GetExtension(audioPath)}");
+        var backup = Path.Combine(Path.GetTempPath(),
+            $"shirabe-backup-{Guid.NewGuid():N}{Path.GetExtension(audioPath)}");
         File.Copy(audioPath, backup);
-        File.SetAttributes(backup, FileAttributes.Normal); // a read-only audio file must not make its copy impossible to delete
+        File.SetAttributes(backup,
+            FileAttributes.Normal); // a read-only audio file must not make its copy impossible to delete
         var keepBackup = false;
         try
         {
@@ -240,7 +270,8 @@ public sealed partial class LocalLibrary : IDocumentStore
     private static bool SameSong(FileTags a, FileTags b) =>
         (a.Title, a.Artist, a.AlbumArtist, a.Album, a.Year, a.DiscNumber, a.TrackNumber)
         == (b.Title, b.Artist, b.AlbumArtist, b.Album, b.Year, b.DiscNumber, b.TrackNumber)
-        && Math.Abs((a.Duration ?? TimeSpan.Zero).TotalMilliseconds - (b.Duration ?? TimeSpan.Zero).TotalMilliseconds) < 5
+        && Math.Abs((a.Duration ?? TimeSpan.Zero).TotalMilliseconds - (b.Duration ?? TimeSpan.Zero).TotalMilliseconds) <
+        5
         && (a.Cover ?? []).AsSpan().SequenceEqual(b.Cover ?? []);
 
     public async Task<IReadOnlyList<ApplyOutcome>> ApplyAsync(
@@ -248,7 +279,9 @@ public sealed partial class LocalLibrary : IDocumentStore
     {
         var errors = document.Validate().Where(p => p.IsError).ToList();
         if (errors.Count > 0)
-            throw new ArgumentException($"The document does not follow the standard ({errors.Count} error{(errors.Count == 1 ? "" : "s")}), for example: {errors[0].Path}: {errors[0].Message}", nameof(document));
+            throw new ArgumentException(
+                $"The document does not follow the standard ({errors.Count} error{(errors.Count == 1 ? "" : "s")}), for example: {errors[0].Path}: {errors[0].Message}",
+                nameof(document));
 
         await using (var db = new LibraryDbContext(_options))
             if (!await db.Recordings.AnyAsync(r => r.Id == recordingId, cancellationToken))
@@ -271,14 +304,16 @@ public sealed partial class LocalLibrary : IDocumentStore
         {
             if (!key.Contains(':'))
             {
-                outcomes.Add(Skipped($"\"{key}\" is a core field of the standard. Your own fields cannot hold those yet, so it is left in the document."));
+                outcomes.Add(Skipped(
+                    $"\"{key}\" is a core field of the standard. Your own fields cannot hold those yet, so it is left in the document."));
                 continue;
             }
 
             var written = document.Definitions.TryGetValue(key, out var d) ? d : FieldDefinition.Infer(key, value);
             if (written is null)
             {
-                outcomes.Add(Skipped($"\"{key}\" has no definition, and its value is not text, a number, yes/no, a link, or a list of one of those."));
+                outcomes.Add(Skipped(
+                    $"\"{key}\" has no definition, and its value is not text, a number, yes/no, a link, or a list of one of those."));
                 continue;
             }
 
@@ -286,7 +321,8 @@ public sealed partial class LocalLibrary : IDocumentStore
             var definition = isNew ? written : mine!;
             if (!isNew && (mine!.Type != written.Type || mine.Multiple != written.Multiple))
             {
-                outcomes.Add(Skipped($"\"{definition.DisplayName}\" is {Kind(mine)} here, but {Kind(written)} in the document."));
+                outcomes.Add(Skipped(
+                    $"\"{definition.DisplayName}\" is {Kind(mine)} here, but {Kind(written)} in the document."));
                 continue;
             }
 
@@ -304,11 +340,13 @@ public sealed partial class LocalLibrary : IDocumentStore
                     continue;
                 }
 
-                outcomes.Add(new ApplyOutcome(ApplyKind.Set, $"Replace \"{definition.DisplayName}\": {Describe(before.Value)} becomes {Describe(value)}."));
+                outcomes.Add(new ApplyOutcome(ApplyKind.Set,
+                    $"Replace \"{definition.DisplayName}\": {Describe(before.Value)} becomes {Describe(value)}."));
             }
             else
             {
-                outcomes.Add(new ApplyOutcome(ApplyKind.Set, $"Set \"{definition.DisplayName}\" to {Describe(value)}{(isNew ? " (a new field)" : "")}."));
+                outcomes.Add(new ApplyOutcome(ApplyKind.Set,
+                    $"Set \"{definition.DisplayName}\" to {Describe(value)}{(isNew ? " (a new field)" : "")}."));
             }
 
             plan.Add((definition, isNew, value));
@@ -340,7 +378,10 @@ public sealed partial class LocalLibrary : IDocumentStore
 
         if (existing is null)
         {
-            existing = new StoredMetadataDocument { RecordingId = recordingId, Origin = DocumentOrigin.Applied, Layer = layer, Json = "" };
+            existing = new StoredMetadataDocument
+            {
+                RecordingId = recordingId, Origin = DocumentOrigin.Applied, Layer = layer, Json = ""
+            };
             db.MetadataDocuments.Add(existing);
         }
 
@@ -380,7 +421,8 @@ public sealed partial class LocalLibrary : IDocumentStore
 
         void Parse(string json, string origin, string what)
         {
-            if (!MetadataDocument.TryParseFile(json, out var documents, out var error)) problems.Add($"{what} is not a metadata document: {error}");
+            if (!MetadataDocument.TryParseFile(json, out var documents, out var error))
+                problems.Add($"{what} is not a metadata document: {error}");
             else found.AddRange(documents.Select(d => new FoundDocument(origin, d)));
         }
 
@@ -390,8 +432,10 @@ public sealed partial class LocalLibrary : IDocumentStore
             try
             {
                 var info = new FileInfo(path);
-                if (info.Exists && info.Length > MaxDocumentSize) problems.Add("The sidecar file is far larger than a metadata document, so it was not read.");
-                else if (info.Exists) Parse(File.ReadAllText(path, Encoding.UTF8), DocumentOrigin.Sidecar, "The sidecar file");
+                if (info.Exists && info.Length > MaxDocumentSize)
+                    problems.Add("The sidecar file is far larger than a metadata document, so it was not read.");
+                else if (info.Exists)
+                    Parse(File.ReadAllText(path, Encoding.UTF8), DocumentOrigin.Sidecar, "The sidecar file");
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
@@ -401,7 +445,9 @@ public sealed partial class LocalLibrary : IDocumentStore
 
         if (embedded && embeddedJson is not null)
         {
-            if (embeddedJson.Length > MaxDocumentSize) problems.Add("The metadata tag in the audio file is far larger than a metadata document, so it was not read.");
+            if (embeddedJson.Length > MaxDocumentSize)
+                problems.Add(
+                    "The metadata tag in the audio file is far larger than a metadata document, so it was not read.");
             else Parse(embeddedJson, DocumentOrigin.Embedded, "The metadata tag in the audio file");
         }
 
@@ -409,7 +455,8 @@ public sealed partial class LocalLibrary : IDocumentStore
     }
 
     /// <summary>One row per origin and layer. When a file holds two documents of the same layer the newest is kept, and that is reported.</summary>
-    private static List<StoredMetadataDocument> ToRows(Guid recordingId, IEnumerable<FoundDocument> found, List<string> problems)
+    private static List<StoredMetadataDocument> ToRows(Guid recordingId, IEnumerable<FoundDocument> found,
+        List<string> problems)
     {
         var rows = new Dictionary<(string Origin, string Layer), StoredMetadataDocument>();
         foreach (var (origin, document) in found)
@@ -443,10 +490,12 @@ public sealed partial class LocalLibrary : IDocumentStore
     /// documents) saves a delete per file during a scan; null always deletes.
     /// </summary>
     private static async Task ReplaceStoredAsync(
-        LibraryDbContext db, Guid recordingId, string[] origins, List<StoredMetadataDocument> rows, ISet<Guid>? withDocuments, CancellationToken ct)
+        LibraryDbContext db, Guid recordingId, string[] origins, List<StoredMetadataDocument> rows,
+        ISet<Guid>? withDocuments, CancellationToken ct)
     {
         if (withDocuments is null || withDocuments.Contains(recordingId))
-            await db.MetadataDocuments.Where(d => d.RecordingId == recordingId && origins.Contains(d.Origin)).ExecuteDeleteAsync(ct);
+            await db.MetadataDocuments.Where(d => d.RecordingId == recordingId && origins.Contains(d.Origin))
+                .ExecuteDeleteAsync(ct);
 
         foreach (var row in rows) db.MetadataDocuments.Add(row);
         if (rows.Count > 0) withDocuments?.Add(recordingId);
@@ -465,7 +514,8 @@ public sealed partial class LocalLibrary : IDocumentStore
             JsonValueKind.True => "yes",
             JsonValueKind.False => "no",
             JsonValueKind.Array => string.Join(", ", value.EnumerateArray().Select(Describe)),
-            JsonValueKind.Object when value.TryGetProperty("url", out var url) && url.ValueKind == JsonValueKind.String => url.GetString()!,
+            JsonValueKind.Object when value.TryGetProperty("url", out var url) && url.ValueKind == JsonValueKind.String
+                => url.GetString()!,
             _ => value.GetRawText(),
         };
         return text.Length > 80 ? text[..80] + "..." : text;

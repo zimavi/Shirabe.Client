@@ -576,5 +576,8 @@ public sealed class StudioNewAndEditTests : IDisposable
     {
         public Task<IReadOnlyList<TrackSummary>> GetTracksAsync(CancellationToken cancellationToken = default) =>
             throw new InvalidOperationException("database is locked");
+
+        public Task<IReadOnlyList<AlbumSummary>> GetAlbumsAsync(CancellationToken cancellationToken = default) =>
+            throw new InvalidOperationException("database is locked");
     }
 }

@@ -236,7 +236,8 @@ public partial class App : Application
             // Studio writes through the player-aware store: the song that is playing is open, and a file that is open cannot be written to.
             var shell = new MainViewModel(playerViewModel, songs, null, settings: settings,
                 studioFactory: () => studio(library, new PlayerAwareDocumentStore(library, playerViewModel)),
-                lyricsSource: new LocalLyricsSource());
+                lyricsSource: new LocalLyricsSource(),
+                albums: new AlbumsViewModel(library, playerViewModel, appSettings));
             if (account is not null)
                 StartScrobbling(new Scrobbler(playerViewModel, appSettings, account, lastFm!, library), shell);
             return shell;

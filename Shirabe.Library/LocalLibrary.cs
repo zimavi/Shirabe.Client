@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Shirabe.Core.Library;
 using Shirabe.Core.Metadata;
 using Shirabe.Library.Model;
+using Shirabe.Metadata;
 
 namespace Shirabe.Library;
 
@@ -74,6 +75,12 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
     public async Task<IReadOnlyList<TrackSummary>> GetTracksAsync(CancellationToken cancellationToken = default)
     {
         await using var db = new LibraryDbContext(_options);
+        return await LoadTracksAsync(db, await ResolveDocumentsAsync(db, cancellationToken), cancellationToken);
+    }
+
+    private async Task<IReadOnlyList<TrackSummary>> LoadTracksAsync(
+        LibraryDbContext db, Dictionary<Guid, Resolved> documents, CancellationToken cancellationToken)
+    {
         var tracks = await db.Recordings
             .AsNoTracking()
             .Where(r => r.Sources.Any(s => !s.IsMissing))
@@ -90,7 +97,7 @@ public sealed partial class LocalLibrary : ILibrary, IFolderScanner, IMetadataSt
                 r.ArtworkFile == null ? null : Path.Combine(_artwork.Directory, r.ArtworkFile)))
             .ToListAsync(cancellationToken);
 
-        return await WithDocumentsAsync(db, tracks, cancellationToken);
+        return WithDocuments(tracks, documents);
     }
 
     public Task<ScanResult> ScanFolderAsync(

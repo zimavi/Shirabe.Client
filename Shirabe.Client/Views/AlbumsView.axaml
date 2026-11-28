@@ -1,0 +1,178 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Shirabe.Client.ViewModels"
+             xmlns:lib="using:Shirabe.Core.Library"
+             xmlns:conv="using:Shirabe.Client.Converters"
+             xmlns:views="using:Shirabe.Client.Views"
+             xmlns:loc="using:Shirabe.Client.Localization"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
+             x:Class="Shirabe.Client.Views.AlbumsView"
+             x:DataType="vm:AlbumsViewModel">
+    <Panel>
+        <!-- All albums -->
+        <Grid RowDefinitions="Auto,Auto,*" Margin="32,16,32,0" IsVisible="{Binding !IsAlbumOpen}">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Spacing="2">
+                    <TextBlock Classes="page-title" Text="{loc:T Nav_Albums}" />
+                    <TextBlock Text="{Binding Summary}" Foreground="{DynamicResource TextSecondaryBrush}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <TextBox Width="240" Text="{Binding SearchText}" PlaceholderText="{loc:T Albums_Search}"
+                             AutomationProperties.Name="{loc:T Albums_Search}" />
+                    <ComboBox MinWidth="110" SelectedIndex="{Binding SortIndex}" ToolTip.Tip="{loc:T Albums_SortBy}"
+                              AutomationProperties.Name="{loc:T Albums_SortBy}">
+                        <!-- In the order of the AlbumSort enum -->
+                        <ComboBoxItem Content="{loc:T Albums_SortTitle}" />
+                        <ComboBoxItem Content="{loc:T Albums_SortArtist}" />
+                        <ComboBoxItem Content="{loc:T Albums_SortYear}" />
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+
+            <TextBlock Grid.Row="1" Text="{Binding ErrorMessage}" FontSize="12" Foreground="IndianRed"
+                       TextWrapping="Wrap" Margin="0,12,0,0"
+                       IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+            <Panel Grid.Row="2" Margin="-8,12,-8,0">
+                <ScrollViewer x:Name="GridScroll" HorizontalScrollBarVisibility="Disabled">
+                    <!-- A list of rows: the stack panel builds only the rows in sight, however many albums there are. -->
+                    <ItemsControl x:Name="AlbumGrid" ItemsSource="{Binding Rows}">
+                        <ItemsControl.ContextMenu>
+                            <ContextMenu x:Name="AlbumMenu" Opening="OnMenuOpening">
+                                <MenuItem Header="{loc:T Player_Play}" Click="OnPlayClick" />
+                                <MenuItem Header="{loc:T Songs_PlayNext}" Click="OnPlayNextClick" />
+                                <MenuItem Header="{loc:T Songs_AddToQueue}" Click="OnAddToQueueClick" />
+                            </ContextMenu>
+                        </ItemsControl.ContextMenu>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:AlbumRow">
+                                <ItemsControl ItemsSource="{Binding Albums}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="8" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <!-- 176 wide plus the spacing: AlbumsView.axaml.cs counts columns with that -->
+                                        <DataTemplate x:DataType="lib:AlbumSummary">
+                                            <Panel Classes="album-tile" Width="176" Margin="0,0,0,8">
+                                                <Button Classes="album" AutomationProperties.Name="{Binding Title}"
+                                                        Command="{Binding $parent[views:AlbumsView].((vm:AlbumsViewModel)DataContext).OpenCommand}"
+                                                        CommandParameter="{Binding}">
+                                                    <StackPanel Width="160">
+                                                        <views:CoverView Width="160" Height="160"
+                                                                         ArtworkPath="{Binding ArtworkPath}" />
+                                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold"
+                                                                   Margin="0,8,0,0"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   ToolTip.Tip="{Binding Title}" />
+                                                        <TextBlock Text="{Binding Artist}" FontSize="12"
+                                                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   IsVisible="{Binding Artist, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                                        <TextBlock Text="{loc:T Common_UnknownArtist}" FontSize="12"
+                                                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   IsVisible="{Binding Artist, Converter={x:Static ObjectConverters.IsNull}}" />
+                                                    </StackPanel>
+                                                </Button>
+                                                <!-- In the lower right corner of the cover; visible only while the tile is hovered -->
+                                                <Button Classes="cover-play" Focusable="False"
+                                                        HorizontalAlignment="Left" VerticalAlignment="Top"
+                                                        Margin="116,116,0,0"
+                                                        Command="{Binding $parent[views:AlbumsView].((vm:AlbumsViewModel)DataContext).PlayCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        AutomationProperties.Name="{loc:T Player_Play}">
+                                                    <PathIcon Data="{DynamicResource Icon.Play}" />
+                                                </Button>
+                                            </Panel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <!-- No album in the library -->
+                <StackPanel Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center"
+                            IsVisible="{Binding ShowEmptyState}">
+                    <PathIcon Data="{DynamicResource Icon.Album}" Width="40" Height="40"
+                              Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" />
+                    <TextBlock Text="{loc:T Albums_EmptyTitle}" FontSize="18" FontWeight="SemiBold"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="{loc:T Albums_EmptyHint}" TextWrapping="Wrap" TextAlignment="Center"
+                               Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" />
+                </StackPanel>
+
+                <TextBlock Text="{loc:T Albums_NoMatches}" IsVisible="{Binding ShowNoMatches}"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Panel>
+        </Grid>
+
+        <!-- The open album -->
+        <Grid RowDefinitions="Auto,Auto,*" Margin="32,16,32,0" IsVisible="{Binding IsAlbumOpen}">
+            <Button Grid.Row="0" Classes="quiet" Content="{loc:T Albums_Back}" Command="{Binding BackCommand}"
+                    Padding="14,8" />
+
+            <Grid Grid.Row="1" ColumnDefinitions="Auto,*" Margin="0,16,0,16">
+                <views:CoverView Grid.Column="0" Width="180" Height="180"
+                                 ArtworkPath="{Binding OpenAlbum.ArtworkPath}" />
+                <StackPanel Grid.Column="1" Spacing="4" Margin="24,0,0,0" VerticalAlignment="Bottom">
+                    <TextBlock Classes="page-title" Text="{Binding OpenAlbum.Title}" TextWrapping="Wrap"
+                               MaxLines="2" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Text="{Binding OpenAlbum.Artist}" FontSize="16"
+                               TextTrimming="CharacterEllipsis"
+                               IsVisible="{Binding OpenAlbum.Artist, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    <TextBlock Text="{loc:T Common_UnknownArtist}" FontSize="16"
+                               IsVisible="{Binding OpenAlbum.Artist, Converter={x:Static ObjectConverters.IsNull}}" />
+                    <TextBlock Text="{Binding OpenAlbum.Year}" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
+                        <Button x:Name="PlayButton" Classes="accent" Content="{loc:T Player_Play}"
+                                Command="{Binding PlayCommand}" CommandParameter="{Binding OpenAlbum}" />
+                        <Button Classes="quiet" Content="{loc:T Albums_Shuffle}" Padding="16,8"
+                                Command="{Binding ShuffleCommand}" CommandParameter="{Binding OpenAlbum}" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+
+            <ListBox Grid.Row="2" x:Name="TrackList" Classes="songs" ItemsSource="{Binding OpenRows}"
+                     SelectionMode="Single" DoubleTapped="OnTrackDoubleTapped">
+                <ListBox.DataTemplates>
+                    <DataTemplate DataType="vm:AlbumDiscHeading">
+                        <TextBlock Classes="section" Text="{Binding Text}" Margin="0,12,0,4" />
+                    </DataTemplate>
+                    <DataTemplate DataType="lib:AlbumTrack">
+                        <Grid ColumnDefinitions="44,3*,2*,56" Margin="0,4">
+                            <TextBlock Grid.Column="0" Text="{Binding TrackNumber}" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Grid.Column="1" Text="{Binding Track.Title}" FontWeight="SemiBold"
+                                       VerticalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis" Margin="0,0,12,0" />
+                            <TextBlock Grid.Column="2" Text="{Binding Track.Artist}" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       TextTrimming="CharacterEllipsis" Margin="0,0,12,0"
+                                       IsVisible="{Binding Track.Artist, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            <TextBlock Grid.Column="2" Text="{loc:T Common_UnknownArtist}"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       TextTrimming="CharacterEllipsis" Margin="0,0,12,0"
+                                       IsVisible="{Binding Track.Artist, Converter={x:Static ObjectConverters.IsNull}}" />
+                            <TextBlock Grid.Column="3" VerticalAlignment="Center"
+                                       Text="{Binding Track.Duration, Converter={x:Static conv:TimeSpanTextConverter.Instance}}"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" TextAlignment="Right" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.DataTemplates>
+            </ListBox>
+        </Grid>
+    </Panel>
+</UserControl>

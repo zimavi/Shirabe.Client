@@ -14,16 +14,19 @@
                                Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}"
                                Value="{TemplateBinding Value, Mode=TwoWay}">
                             <Track.DecreaseButton>
-                                <RepeatButton Name="PART_DecreaseButton" Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Center" Padding="0">
+                                <RepeatButton Name="PART_DecreaseButton" Focusable="False"
+                                              HorizontalAlignment="Stretch" VerticalAlignment="Center" Padding="0">
                                     <RepeatButton.Template>
                                         <ControlTemplate>
-                                            <Border Height="4" CornerRadius="2" Margin="0,0,-6,0" Background="{DynamicResource AccentBrush}" />
+                                            <Border Height="4" CornerRadius="2" Margin="0,0,-6,0"
+                                                    Background="{DynamicResource AccentBrush}" />
                                         </ControlTemplate>
                                     </RepeatButton.Template>
                                 </RepeatButton>
                             </Track.DecreaseButton>
                             <Track.IncreaseButton>
-                                <RepeatButton Name="PART_IncreaseButton" Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Center" Padding="0">
+                                <RepeatButton Name="PART_IncreaseButton" Focusable="False"
+                                              HorizontalAlignment="Stretch" VerticalAlignment="Center" Padding="0">
                                     <RepeatButton.Template>
                                         <ControlTemplate>
                                             <Border Height="4" Background="Transparent" />
@@ -272,11 +275,36 @@
         <Setter Property="Foreground" Value="White" />
         <Setter Property="CornerRadius" Value="{DynamicResource RadiusSmall}" />
     </Style>
-    <Style Selector="Button.cover-play:pointerover /template/ ContentPresenter#PART_ContentPresenter, Button.cover-play:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Style
+        Selector="Button.cover-play:pointerover /template/ ContentPresenter#PART_ContentPresenter, Button.cover-play:pressed /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="#99000000" />
         <Setter Property="Foreground" Value="White" />
     </Style>
     <Style Selector="ListBox.songs ListBoxItem:pointerover Button.cover-play">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <!-- Albums grid: a tile is a flat button, with the play button of its cover as a sibling on top -->
+    <Style Selector="Button.album">
+        <Setter Property="Padding" Value="8" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
+    </Style>
+    <Style Selector="Button.album /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource RadiusMedium}" />
+    </Style>
+    <Style Selector="Button.album:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+    </Style>
+    <Style Selector="Panel.album-tile Button.cover-play">
+        <Setter Property="Width" Value="44" />
+        <Setter Property="Height" Value="44" />
+    </Style>
+    <Style Selector="Panel.album-tile Button.cover-play /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="CornerRadius" Value="22" />
+    </Style>
+    <Style Selector="Panel.album-tile:pointerover Button.cover-play">
         <Setter Property="Opacity" Value="1" />
     </Style>
 
@@ -314,7 +342,8 @@
         <Setter Property="Padding" Value="0" />
         <Setter Property="Margin" Value="0,7" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="HorizontalContentAlignment" Value="Stretch" /> <!-- so the second singer's lines can sit on the right -->
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <!-- so the second singer's lines can sit on the right -->
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
     </Style>
     <Style Selector="Button.lyric-line:pointerover /template/ ContentPresenter#PART_ContentPresenter">
@@ -419,7 +448,8 @@
             </Transitions>
         </Setter>
     </Style>
-    <Style Selector=".motion Button.nav /template/ ContentPresenter#PART_ContentPresenter, .motion ListBox.songs ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
+    <Style
+        Selector=".motion Button.nav /template/ ContentPresenter#PART_ContentPresenter, .motion Button.album /template/ ContentPresenter#PART_ContentPresenter, .motion ListBox.songs ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Transitions">
             <Transitions>
                 <BrushTransition Property="Background" Duration="0:0:0.12" />
@@ -455,7 +485,8 @@
     <Style Selector="views|SettingRow">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="{DynamicResource RadiusMedium}" Padding="16,12">
+                <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="{DynamicResource RadiusMedium}"
+                        Padding="16,12">
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Spacing="2" VerticalAlignment="Center" Margin="0,0,24,0">
                             <TextBlock Text="{TemplateBinding Title}" FontWeight="SemiBold" TextWrapping="Wrap" />

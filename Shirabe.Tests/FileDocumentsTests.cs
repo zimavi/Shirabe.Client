@@ -1,12 +1,18 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
+
+using ATL;
+
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+
 using Shirabe.Core.Library;
 using Shirabe.Core.Metadata;
 using Shirabe.Library;
 using Shirabe.Metadata;
+
 using Xunit;
 
 namespace Shirabe.Tests;
@@ -39,14 +45,16 @@ public sealed class FileDocumentsTests : IDisposable
     private static string Doc(string layer, int revision = 1, string title = "A title", string field = "")
     {
         var fields = $"\"title\": \"{title}\"" + (field.Length > 0 ? $", {field}" : "");
-        var definitions = field.Contains("local:mood") ? """, "definitions": { "local:mood": { "type": "text", "label": "Mood" } }""" : "";
+        var definitions = field.Contains("local:mood")
+            ? """, "definitions": { "local:mood": { "type": "text", "label": "Mood" } }"""
+            : "";
         return $$"""
-            { "format": "shirabe.metadata", "version": "0.1",
-              "subject": { "type": "recording", "id": "0192f0a8-7c1e-7a53-9d0e-3b6f2a1c4d55" },
-              "layer": "{{layer}}", "source": { "kind": "{{(layer == "personal" ? "user" : "artist")}}", "name": "Someone", "created": "2026-03-02T09:00:00Z" },
-              "revision": {{revision}}{{definitions}},
-              "fields": { {{fields}} } }
-            """;
+                 { "format": "shirabe.metadata", "version": "0.1",
+                   "subject": { "type": "recording", "id": "0192f0a8-7c1e-7a53-9d0e-3b6f2a1c4d55" },
+                   "layer": "{{layer}}", "source": { "kind": "{{(layer == "personal" ? "user" : "artist")}}", "name": "Someone", "created": "2026-03-02T09:00:00Z" },
+                   "revision": {{revision}}{{definitions}},
+                   "fields": { {{fields}} } }
+                 """;
     }
 
     private string Song(string fixture, string name)
@@ -60,12 +68,13 @@ public sealed class FileDocumentsTests : IDisposable
     {
         var path = SidecarFile.PathFor(audioPath);
         File.WriteAllText(path, json);
-        File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddMinutes(Random.Shared.Next(1, 600))); // a clock that moved, even for a fast test
+        File.SetLastWriteTimeUtc(path,
+            DateTime.UtcNow.AddMinutes(Random.Shared.Next(1, 600))); // a clock that moved, even for a fast test
     }
 
     private static void Embed(string audioPath, string json)
     {
-        var track = new ATL.Track(audioPath);
+        var track = new Track(audioPath);
         track.AdditionalFields["SHIRABE_METADATA"] = json;
         Assert.True(track.Save());
     }
@@ -84,9 +93,14 @@ public sealed class FileDocumentsTests : IDisposable
 
     // ---- the songs show what the documents say ----
 
-    private const string ArtistA = """ "credits": [ { "role": "artist", "artist": { "name": "Artist From Doc" } }, { "role": "guitar", "artist": { "name": "Guitarist" } } ] """;
+    private const string ArtistA =
+        """ "credits": [ { "role": "artist", "artist": { "name": "Artist From Doc" } }, { "role": "guitar", "artist": { "name": "Guitarist" } } ] """;
+
     private const string Release = """ "releases": [ { "title": "Album From Doc" } ] """;
-    private const string Cover = """ "artwork": [ { "url": "https://example.com/back.jpg", "role": "back" }, { "url": "https://example.com/front.jpg", "role": "front" } ] """;
+
+    private const string Cover =
+        """ "artwork": [ { "url": "https://example.com/back.jpg", "role": "back" }, { "url": "https://example.com/front.jpg", "role": "front" } ] """;
+
     private const string Link = """ "links": [ { "url": "https://example.com/story", "label": "The story" } ] """;
 
     [Fact]
@@ -99,14 +113,16 @@ public sealed class FileDocumentsTests : IDisposable
         var track = Assert.Single(await _library.GetTracksAsync(Ct));
         Assert.Equal(("Doc Title", "Artist From Doc"), (track.Title, track.Artist));
         Assert.Equal("Album X", track.Album); // no releases in the document: the tag stays
-        Assert.Equal(("https://example.com/front.jpg", "https://example.com/story", "The story"), (track.CoverUrl, track.LinkUrl, track.LinkLabel));
+        Assert.Equal(("https://example.com/front.jpg", "https://example.com/story", "The story"),
+            (track.CoverUrl, track.LinkUrl, track.LinkLabel));
     }
 
     [Fact]
     public async Task The_artist_document_comes_before_the_community_one_field_by_field()
     {
         var path = Song("a1.flac", "a1.flac");
-        Sidecar(path, $"[{Doc("community", title: "Community Title", field: Release)}, {Doc("canonical", title: "Canonical Title")}]");
+        Sidecar(path,
+            $"[{Doc("community", title: "Community Title", field: Release)}, {Doc("canonical", title: "Canonical Title")}]");
 
         await Scan();
 
@@ -118,8 +134,11 @@ public sealed class FileDocumentsTests : IDisposable
     public async Task Documents_that_break_the_standard_and_personal_ones_do_not_change_the_songs()
     {
         var path = Song("a1.flac", "a1.flac");
-        Sidecar(path, $"[{Doc("personal", title: "My Title")}, {Doc("community", title: "Broken", field: "\"nonsense\": 1")}]");
-        Embed(Song("c1.mp3", "c1.mp3"), Doc("canonical", title: "http link", field: """ "links": [ { "url": "http://example.com/x", "label": "Plain http" } ] """));
+        Sidecar(path,
+            $"[{Doc("personal", title: "My Title")}, {Doc("community", title: "Broken", field: "\"nonsense\": 1")}]");
+        Embed(Song("c1.mp3", "c1.mp3"),
+            Doc("canonical", title: "http link",
+                field: """ "links": [ { "url": "http://example.com/x", "label": "Plain http" } ] """));
 
         await Scan();
 
@@ -157,6 +176,84 @@ public sealed class FileDocumentsTests : IDisposable
         Assert.Equal("Chosen by me", (await _library.GetTracksAsync(Ct)).Single().Title);
     }
 
+    // ---- albums ----
+
+    [Fact]
+    public async Task Albums_group_the_playable_songs_by_release_in_track_order()
+    {
+        Song("a2.flac", "a2.flac");
+        Song("a1.flac", "a1.flac");
+        Song("b1.flac", "b1.flac"); // no album tag
+        var other = Song("c1.mp3", "c1.mp3");
+        await Scan();
+
+        var albums = (await _library.GetAlbumsAsync(Ct)).OrderBy(a => a.Title).ToList();
+
+        Assert.Equal([("Album X", "Artist A", 2020), ("Album Y", "Various Artists", 2019)],
+            albums.Select(a => (a.Title, a.Artist!, a.Year!.Value)));
+        Assert.Equal(["First Song", "Second Song"], albums[0].Tracks.Select(t => t.Track.Title));
+        Assert.Equal([1, 2], albums[0].Tracks.Select(t => t.TrackNumber));
+
+        File.Delete(other);
+        await Scan();
+        Assert.Equal("Album X", Assert.Single(await _library.GetAlbumsAsync(Ct)).Title);
+    }
+
+    [Fact]
+    public async Task An_album_takes_a_documents_name_only_when_all_its_songs_agree()
+    {
+        var one = Song("a1.flac", "a1.flac");
+        var two = Song("a2.flac", "a2.flac");
+        Sidecar(one, Doc("canonical", field: Release));
+        await Scan();
+        Assert.Equal("Album X", Assert.Single(await _library.GetAlbumsAsync(Ct)).Title);
+
+        Sidecar(two, Doc("canonical", field: Release));
+        await Scan();
+        Assert.Equal("Album From Doc", Assert.Single(await _library.GetAlbumsAsync(Ct)).Title);
+    }
+
+    [Fact]
+    public async Task Songs_without_an_album_tag_are_grouped_by_the_album_and_main_artist_of_their_documents()
+    {
+        static string By(string artist, string release, string featured = "") => Doc("canonical", field:
+            $$""" "credits": [ { "role": "artist", "artist": { "name": "{{artist}}" } }{{featured}} ], "releases": [ {{release}} ] """);
+
+        // Fixtures without an album tag, so only the documents put them on an album.
+        Sidecar(Song("b1.flac", "one.flac"),
+            By("Aria", """{ "title": "Doc Album", "track": 2 }""",
+                """, { "role": "featured", "artist": { "name": "Guest" } }"""));
+        Sidecar(Song("b1.flac", "two.flac"), By("aria", """{ "title": "DOC ALBUM", "date": "2023-04", "track": 1 }"""));
+        Sidecar(Song("b1.flac", "other.flac"), By("Somebody Else", """{ "title": "Doc Album" }"""));
+        Song("b1.flac", "none.flac");
+        await Scan();
+
+        var albums = (await _library.GetAlbumsAsync(Ct)).OrderBy(a => a.Artist, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        Assert.Equal(2, albums.Count);
+        Assert.Equal([1, 2], albums[0].Tracks.Select(t => t.TrackNumber));
+        Assert.Equal(2023, albums[0].Year);
+        Assert.Equal(("Somebody Else", (int?)null), (albums[1].Artist, albums[1].Year));
+        Assert.Equal(albums.Select(a => a.Id).Order(), (await _library.GetAlbumsAsync(Ct)).Select(a => a.Id).Order());
+    }
+
+    [Fact]
+    public async Task A_song_whose_document_names_a_tag_album_joins_it_and_the_tags_win_over_its_numbers()
+    {
+        var tagged = Song("a1.flac", "a1.flac"); // Album X by Artist A, 2020, track 1
+        Sidecar(tagged,
+            Doc("canonical", field: """ "releases": [ { "title": "album x", "date": "1999", "track": 9 } ] """));
+        Sidecar(Song("b1.flac", "loose.flac"), Doc("canonical", field:
+            """ "credits": [ { "role": "artist", "artist": { "name": "Artist A" } } ], "releases": [ { "title": "Album X", "track": 5 } ] """));
+        await Scan();
+
+        var album = Assert.Single(await _library.GetAlbumsAsync(Ct));
+
+        Assert.Equal(2020, album.Year);
+        Assert.Equal([1, 5], album.Tracks.Select(t => t.TrackNumber));
+    }
+
     // ---- loading right away, at scan time ----
 
     [Fact]
@@ -168,7 +265,8 @@ public sealed class FileDocumentsTests : IDisposable
 
         Assert.Empty(result.DocumentProblems!);
         var stored = Assert.Single(await _library.GetDocumentsAsync(await IdOf("First Song"), Ct));
-        Assert.Equal((DocumentOrigin.Sidecar, "canonical", 3, 0), (stored.Origin, stored.Layer, stored.Revision, stored.ErrorCount));
+        Assert.Equal((DocumentOrigin.Sidecar, "canonical", 3, 0),
+            (stored.Origin, stored.Layer, stored.Revision, stored.ErrorCount));
         Assert.True(stored.IsValid);
         Assert.Contains("From the sidecar", stored.Json);
     }
@@ -198,7 +296,10 @@ public sealed class FileDocumentsTests : IDisposable
 
         var stored = await _library.GetDocumentsAsync(await IdOf("First Song"), Ct);
         Assert.Equal(
-            [(DocumentOrigin.Sidecar, "personal"), (DocumentOrigin.Embedded, "canonical"), (DocumentOrigin.Sidecar, "community")],
+            [
+                (DocumentOrigin.Sidecar, "personal"), (DocumentOrigin.Embedded, "canonical"),
+                (DocumentOrigin.Sidecar, "community")
+            ],
             stored.Select(d => (d.Origin, d.Layer)));
     }
 
@@ -225,7 +326,8 @@ public sealed class FileDocumentsTests : IDisposable
         var again = await Scan();
 
         Assert.Equal((0, 1), (again.Updated, again.Unchanged));
-        Assert.Equal(before.Single().LoadedUtc, (await _library.GetDocumentsAsync(await IdOf("First Song"), Ct)).Single().LoadedUtc);
+        Assert.Equal(before.Single().LoadedUtc,
+            (await _library.GetDocumentsAsync(await IdOf("First Song"), Ct)).Single().LoadedUtc);
     }
 
     [Fact]
@@ -308,7 +410,8 @@ public sealed class FileDocumentsTests : IDisposable
     [Fact]
     public async Task Two_documents_of_one_layer_keep_the_newest_and_say_so()
     {
-        Sidecar(Song("a1.flac", "a1.flac"), $"[{Doc("canonical", revision: 5, title: "Newest")}, {Doc("canonical", revision: 2, title: "Older")}]");
+        Sidecar(Song("a1.flac", "a1.flac"),
+            $"[{Doc("canonical", revision: 5, title: "Newest")}, {Doc("canonical", revision: 2, title: "Older")}]");
 
         var result = await Scan();
 
@@ -335,7 +438,8 @@ public sealed class FileDocumentsTests : IDisposable
         var path = Song("a1.flac", "a1.flac");
         await Scan();
         var id = await IdOf("First Song");
-        Assert.True(MetadataDocument.TryParseFile(Doc("canonical", revision: 7, title: "Kept"), out var attached, out _));
+        Assert.True(
+            MetadataDocument.TryParseFile(Doc("canonical", revision: 7, title: "Kept"), out var attached, out _));
         await _library.ApplyAsync(id, attached.Single(), dryRun: false, Ct);
 
         Sidecar(path, Doc("canonical", revision: 1, title: "From the folder"));
@@ -345,7 +449,8 @@ public sealed class FileDocumentsTests : IDisposable
         await Scan();
 
         var stored = await _library.GetDocumentsAsync(id, Ct);
-        Assert.Equal([DocumentOrigin.Applied, DocumentOrigin.Embedded], stored.Select(d => d.Origin).Order(StringComparer.Ordinal));
+        Assert.Equal([DocumentOrigin.Applied, DocumentOrigin.Embedded],
+            stored.Select(d => d.Origin).Order(StringComparer.Ordinal));
         Assert.Equal(7, stored.Single(d => d.Origin == DocumentOrigin.Applied).Revision);
     }
 
@@ -363,9 +468,11 @@ public sealed class FileDocumentsTests : IDisposable
         {
             old.GetService<IMigrator>().Migrate("AddMetadataFields"); // before documents existed
             await old.Database.ExecuteSqlInterpolatedAsync(
-                $"INSERT INTO Recordings (Id, Title, Duration, ArtworkFile) VALUES ({recordingId.ToString().ToUpperInvariant()}, 'Old Title', NULL, NULL)", Ct);
+                $"INSERT INTO Recordings (Id, Title, Duration, ArtworkFile) VALUES ({recordingId.ToString().ToUpperInvariant()}, 'Old Title', NULL, NULL)",
+                Ct);
             await old.Database.ExecuteSqlInterpolatedAsync(
-                $"INSERT INTO MediaSources (Id, RecordingId, Uri, SizeBytes, ModifiedUtcTicks, IsMissing, ScannerVersion) VALUES ({Guid.CreateVersion7().ToString().ToUpperInvariant()}, {recordingId.ToString().ToUpperInvariant()}, {new Uri(path).AbsoluteUri}, {info.Length}, {info.LastWriteTimeUtc.Ticks}, 0, 1)", Ct);
+                $"INSERT INTO MediaSources (Id, RecordingId, Uri, SizeBytes, ModifiedUtcTicks, IsMissing, ScannerVersion) VALUES ({Guid.CreateVersion7().ToString().ToUpperInvariant()}, {recordingId.ToString().ToUpperInvariant()}, {new Uri(path).AbsoluteUri}, {info.Length}, {info.LastWriteTimeUtc.Ticks}, 0, 1)",
+                Ct);
         }
 
         var upgraded = LocalLibrary.Open(oldPath);
@@ -374,7 +481,10 @@ public sealed class FileDocumentsTests : IDisposable
 
         Assert.Equal(1, result.Updated); // the file did not change, but the old scanner never looked for documents
         Assert.Contains("Waiting", Assert.Single(await upgraded.GetDocumentsAsync(recordingId, Ct)).Json);
-        Assert.Equal((0, 1), ((await upgraded.ScanFolderAsync(_music, cancellationToken: Ct)) is var again ? (again.Updated, again.Unchanged) : default));
+        Assert.Equal((0, 1),
+            ((await upgraded.ScanFolderAsync(_music, cancellationToken: Ct)) is var again
+                ? (again.Updated, again.Unchanged)
+                : default));
     }
 
     // ---- loading when a song is opened ----
@@ -444,12 +554,12 @@ public sealed class FileDocumentsTests : IDisposable
     }
 
     private static string Personal(string fields, string definitions = "") => $$"""
-        { "format": "shirabe.metadata", "version": "0.1",
-          "subject": { "type": "recording", "id": "0192f0a8-7c1e-7a53-9d0e-3b6f2a1c4d55" },
-          "layer": "personal", "source": { "kind": "user", "created": "2026-11-22T18:04:00Z" }, "revision": 1
-          {{(definitions.Length > 0 ? $", \"definitions\": {{ {definitions} }}" : "")}},
-          "fields": { {{fields}} } }
-        """;
+                                                                                { "format": "shirabe.metadata", "version": "0.1",
+                                                                                  "subject": { "type": "recording", "id": "0192f0a8-7c1e-7a53-9d0e-3b6f2a1c4d55" },
+                                                                                  "layer": "personal", "source": { "kind": "user", "created": "2026-11-22T18:04:00Z" }, "revision": 1
+                                                                                  {{(definitions.Length > 0 ? $", \"definitions\": {{ {definitions} }}" : "")}},
+                                                                                  "fields": { {{fields}} } }
+                                                                                """;
 
     [Fact]
     public async Task A_dry_run_says_what_would_happen_and_changes_nothing()
@@ -479,7 +589,8 @@ public sealed class FileDocumentsTests : IDisposable
         var fields = (await _library.GetFieldsAsync(id, Ct)).ToDictionary(f => f.Definition.Key);
         Assert.Equal("""["calm","late"]""", fields["local:mood"].Value.GetRawText());
         Assert.Equal("Mood", fields["local:mood"].Definition.Label);
-        Assert.Equal(FieldType.Number, fields["local:bpm"].Definition.Type); // inferred: the document gave no definition
+        Assert.Equal(FieldType.Number,
+            fields["local:bpm"].Definition.Type); // inferred: the document gave no definition
         Assert.Equal(FieldType.Boolean, fields["local:live"].Definition.Type);
     }
 
@@ -505,29 +616,36 @@ public sealed class FileDocumentsTests : IDisposable
             "\"title\": \"A core field\", \"local:bpm\": \"fast\", \"local:same\": \"x\", \"local:odd\": { \"deep\": 1 }, \"local:good\": \"yes\"",
             "\"local:bpm\": { \"type\": \"number\" }"));
         // the value "fast" is not a number, so the document itself breaks the standard: fix that part and keep the rest of the case
-        var node = System.Text.Json.Nodes.JsonNode.Parse(document.ToJson())!.AsObject();
+        var node = JsonNode.Parse(document.ToJson())!.AsObject();
         node["fields"]!["local:bpm"] = 100;
         Assert.True(MetadataDocument.TryParseFile(node.ToJsonString(), out var fixedDocument, out _));
-        await _library.SaveDefinitionAsync(new FieldDefinition("local:bpm", FieldType.Text), Ct);   // here it is text, in the document a number
+        await _library.SaveDefinitionAsync(new FieldDefinition("local:bpm", FieldType.Text),
+            Ct); // here it is text, in the document a number
         await _library.SaveDefinitionAsync(new FieldDefinition("local:same", FieldType.Text), Ct);
         await _library.SetFieldAsync(id, "local:same", Json("\"x\""), Ct);
 
         var outcomes = await _library.ApplyAsync(id, fixedDocument.Single(), dryRun: false, Ct);
 
         Assert.Contains(outcomes, o => o.Kind == ApplyKind.Skip && o.Text.Contains("\"title\" is a core field"));
-        Assert.Contains(outcomes, o => o.Kind == ApplyKind.Skip && o.Text.Contains("\"local:bpm\" is a text here, but a number in the document"));
-        Assert.Contains(outcomes, o => o.Kind == ApplyKind.Skip && o.Text.Contains("\"local:same\" already has this value"));
+        Assert.Contains(outcomes,
+            o => o.Kind == ApplyKind.Skip &&
+                 o.Text.Contains("\"local:bpm\" is a text here, but a number in the document"));
+        Assert.Contains(outcomes,
+            o => o.Kind == ApplyKind.Skip && o.Text.Contains("\"local:same\" already has this value"));
         Assert.Contains(outcomes, o => o.Kind == ApplyKind.Skip && o.Text.Contains("\"local:odd\" has no definition"));
         Assert.Contains(outcomes, o => o.Kind == ApplyKind.Set && o.Text.Contains("local:good"));
-        Assert.Equal(["local:good", "local:same"], (await _library.GetFieldsAsync(id, Ct)).Select(f => f.Definition.Key).Order());
+        Assert.Equal(["local:good", "local:same"],
+            (await _library.GetFieldsAsync(id, Ct)).Select(f => f.Definition.Key).Order());
     }
 
     [Fact]
     public async Task A_document_that_breaks_the_standard_is_refused_before_anything_is_written()
     {
-        var (id, document) = await Setup(Personal("\"mood\": \"calm\"")); // a field without a namespace that is not core
+        var (id, document) =
+            await Setup(Personal("\"mood\": \"calm\"")); // a field without a namespace that is not core
 
-        var ex = await Assert.ThrowsAsync<ArgumentException>(() => _library.ApplyAsync(id, document, dryRun: false, Ct));
+        var ex = await Assert.ThrowsAsync<ArgumentException>(() =>
+            _library.ApplyAsync(id, document, dryRun: false, Ct));
 
         Assert.Contains("does not follow the standard", ex.Message);
         Assert.Contains("fields.mood", ex.Message);
@@ -539,7 +657,8 @@ public sealed class FileDocumentsTests : IDisposable
     {
         var (_, document) = await Setup(Personal("\"local:mood\": \"calm\""));
 
-        await Assert.ThrowsAsync<InvalidOperationException>(() => _library.ApplyAsync(Guid.NewGuid(), document, dryRun: false, Ct));
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _library.ApplyAsync(Guid.NewGuid(), document, dryRun: false, Ct));
     }
 
     [Fact]
@@ -558,7 +677,8 @@ public sealed class FileDocumentsTests : IDisposable
     public async Task An_artists_document_is_kept_whole_as_another_layer_and_a_newer_one_replaces_it()
     {
         var (id, first) = await Setup(Doc("canonical", revision: 1, title: "Version one"));
-        Assert.True(MetadataDocument.TryParseFile(Doc("canonical", revision: 2, title: "Version two"), out var second, out _));
+        Assert.True(MetadataDocument.TryParseFile(Doc("canonical", revision: 2, title: "Version two"), out var second,
+            out _));
 
         var preview = await _library.ApplyAsync(id, first, dryRun: true, Ct);
         Assert.Equal(ApplyKind.Keep, Assert.Single(preview).Kind);
@@ -567,7 +687,8 @@ public sealed class FileDocumentsTests : IDisposable
         Assert.Empty(await _library.GetDocumentsAsync(id, Ct));
 
         await _library.ApplyAsync(id, first, dryRun: false, Ct);
-        Assert.Contains("replaces the one kept before (revision 1)", (await _library.ApplyAsync(id, second.Single(), dryRun: true, Ct))[0].Text);
+        Assert.Contains("replaces the one kept before (revision 1)",
+            (await _library.ApplyAsync(id, second.Single(), dryRun: true, Ct))[0].Text);
         await _library.ApplyAsync(id, second.Single(), dryRun: false, Ct);
 
         var stored = Assert.Single(await _library.GetDocumentsAsync(id, Ct));

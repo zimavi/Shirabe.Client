@@ -17,6 +17,14 @@ internal sealed class FakeLibrary : ILibrary
         if (Failure is not null) throw Failure;
         return Task.FromResult<IReadOnlyList<TrackSummary>>(Tracks.ToList());
     }
+
+    public List<AlbumSummary> Albums { get; set; } = [];
+
+    public Task<IReadOnlyList<AlbumSummary>> GetAlbumsAsync(CancellationToken cancellationToken = default)
+    {
+        if (Failure is not null) throw Failure;
+        return Task.FromResult<IReadOnlyList<AlbumSummary>>(Albums.ToList());
+    }
 }
 
 internal sealed class FakeScanner : IFolderScanner

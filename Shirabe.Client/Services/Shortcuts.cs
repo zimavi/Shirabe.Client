@@ -17,6 +17,7 @@ public enum ShortcutAction
     Queue,
     Home,
     Songs,
+    Albums,
     Studio,
     Settings,
 }
@@ -49,7 +50,8 @@ public static class Shortcuts
             ShortcutAction.Queue => command + (mac ? "U" : "Q"), // Cmd+Q quits an app on macOS
             ShortcutAction.Home => command + "D1",
             ShortcutAction.Songs => command + "D2",
-            ShortcutAction.Studio => command + "D3",
+            ShortcutAction.Albums => command + "D3",
+            ShortcutAction.Studio => command + "D4",
             ShortcutAction.Settings => command + "OemComma",
             _ => "",
         };
@@ -72,6 +74,7 @@ public static class Shortcuts
         ShortcutAction.Queue => "Player_Queue",
         ShortcutAction.Home => "Nav_Home",
         ShortcutAction.Songs => "Nav_Songs",
+        ShortcutAction.Albums => "Nav_Albums",
         ShortcutAction.Studio => "Nav_Studio",
         _ => "Nav_Settings",
     };

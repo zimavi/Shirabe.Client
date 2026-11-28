@@ -1,7 +1,7 @@
 using Shirabe.Client.Studio;
 using Shirabe.Core.Library;
-using Shirabe.Core.Metadata;
 using Shirabe.Metadata;
+
 using Xunit;
 
 namespace Shirabe.Tests;
@@ -21,16 +21,18 @@ public sealed class StudioApplyTests : IDisposable
 
     public void Dispose() => Directory.Delete(_folder, recursive: true);
 
-    private static TrackSummary Track(string title, string? artist = "Artist", string? album = "Album", Guid? id = null) =>
+    private static TrackSummary Track(string title, string? artist = "Artist", string? album = "Album",
+        Guid? id = null) =>
         new(id ?? Guid.NewGuid(), title, artist, album, null, $"file:///C:/music/{title}.flac");
 
-    private static MetadataDocument Document(string subjectId = "0192f0a8-7c1e-7a53-9d0e-3b6f2a1c4d55", string layer = "personal") =>
+    private static MetadataDocument Document(string subjectId = "0192f0a8-7c1e-7a53-9d0e-3b6f2a1c4d55",
+        string layer = "personal") =>
         ApplyViewModelTests.Parse($$"""
-            { "format": "shirabe.metadata", "version": "0.1",
-              "subject": { "type": "recording", "id": "{{subjectId}}" },
-              "layer": "{{layer}}", "source": { "kind": "user", "created": "2026-11-22T18:04:00Z" }, "revision": 1,
-              "fields": { "local:mood": "calm" } }
-            """);
+                                    { "format": "shirabe.metadata", "version": "0.1",
+                                      "subject": { "type": "recording", "id": "{{subjectId}}" },
+                                      "layer": "{{layer}}", "source": { "kind": "user", "created": "2026-11-22T18:04:00Z" }, "revision": 1,
+                                      "fields": { "local:mood": "calm" } }
+                                    """);
 
     // ---- the song picker ----
 
@@ -39,8 +41,7 @@ public sealed class StudioApplyTests : IDisposable
     {
         var songs = new[]
         {
-            Track("Poker Face", "Lady Gaga", "The Fame"),
-            Track("Bad Romance", "Lady Gaga", "The Fame Monster"),
+            Track("Poker Face", "Lady Gaga", "The Fame"), Track("Bad Romance", "Lady Gaga", "The Fame Monster"),
             Track("Силуэты", "Группа", "Альбом"),
         };
         var dialog = new StudioApplyViewModel(_store, songs, Document(), "Doc");
@@ -49,7 +50,7 @@ public sealed class StudioApplyTests : IDisposable
         dialog.Filter = "gaga";
         Assert.Equal(["Poker Face", "Bad Romance"], dialog.Songs.Select(t => t.Title));
 
-        dialog.Filter = "lady monster";   // every word has to match, in any field
+        dialog.Filter = "lady monster"; // every word has to match, in any field
         Assert.Equal(["Bad Romance"], dialog.Songs.Select(t => t.Title));
 
         dialog.Filter = "силу";
@@ -75,7 +76,8 @@ public sealed class StudioApplyTests : IDisposable
     public async Task A_document_that_names_a_song_of_this_library_preselects_it_and_previews_at_once()
     {
         var mine = Track("The one it is about");
-        var dialog = new StudioApplyViewModel(_store, [Track("Other"), mine], Document(subjectId: mine.RecordingId.ToString()), "Doc");
+        var dialog = new StudioApplyViewModel(_store, [Track("Other"), mine],
+            Document(subjectId: mine.RecordingId.ToString()), "Doc");
 
         await dialog.PreviewLoading;
 
@@ -148,11 +150,11 @@ public sealed class StudioApplyTests : IDisposable
     }
 
     private const string Valid = """
-        { "format": "shirabe.metadata", "version": "0.1",
-          "subject": { "type": "recording", "id": "0192f0a8-7c1e-7a53-9d0e-3b6f2a1c4d55" },
-          "layer": "personal", "source": { "kind": "user", "created": "2026-11-22T18:04:00Z" }, "revision": 1,
-          "fields": { "local:mood": "calm" } }
-        """;
+                                 { "format": "shirabe.metadata", "version": "0.1",
+                                   "subject": { "type": "recording", "id": "0192f0a8-7c1e-7a53-9d0e-3b6f2a1c4d55" },
+                                   "layer": "personal", "source": { "kind": "user", "created": "2026-11-22T18:04:00Z" }, "revision": 1,
+                                   "fields": { "local:mood": "calm" } }
+                                 """;
 
     [Fact]
     public async Task A_valid_document_can_be_applied_when_studio_has_a_library_and_not_otherwise()
@@ -209,6 +211,9 @@ public sealed class StudioApplyTests : IDisposable
     private sealed class ThrowingLibrary : ILibrary
     {
         public Task<IReadOnlyList<TrackSummary>> GetTracksAsync(CancellationToken cancellationToken = default) =>
+            throw new InvalidOperationException("database is locked");
+
+        public Task<IReadOnlyList<AlbumSummary>> GetAlbumsAsync(CancellationToken cancellationToken = default) =>
             throw new InvalidOperationException("database is locked");
     }
 }

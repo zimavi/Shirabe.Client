@@ -23,16 +23,18 @@ public partial class MainViewModel : ViewModelBase
     /// <param name="settings">Null in tests: the settings page then works on defaults that are not saved.</param>
     /// <param name="studioFactory">Builds Studio when it is first opened, so listeners who never open it pay nothing. Null: no Studio.</param>
     /// <param name="lyricsSource">Where lyrics come from. Null: the lyrics panel always says there are none.</param>
+    /// <param name="albums">Null when the music library could not be opened.</param>
     public MainViewModel(PlayerViewModel? player, SongsViewModel? songs, string? startupError,
         string? libraryNotice = null,
         SettingsViewModel? settings = null, Func<StudioViewModel>? studioFactory = null,
-        ILyricsSource? lyricsSource = null)
+        ILyricsSource? lyricsSource = null, AlbumsViewModel? albums = null)
     {
         Settings = settings ?? new SettingsViewModel(new AppSettings(), new ThemeCatalog([], []));
         Lyrics = player is null ? null : new LyricsViewModel(player, lyricsSource, Settings.Settings);
         _studioFactory = studioFactory;
         Player = player;
         Songs = songs;
+        Albums = albums;
         StartupError = startupError;
         _home = new HomeViewModel(libraryNotice);
         CurrentPage = _home;
@@ -61,6 +63,8 @@ public partial class MainViewModel : ViewModelBase
 
     public SongsViewModel? Songs { get; }
 
+    public AlbumsViewModel? Albums { get; }
+
     /// <summary>The lyrics panel's content; null when there is no player.</summary>
     public LyricsViewModel? Lyrics { get; }
 
@@ -76,12 +80,14 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsHomeSelected), nameof(IsSongsSelected), nameof(IsSettingsSelected),
-        nameof(IsStudioSelected))]
+        nameof(IsStudioSelected), nameof(IsAlbumsSelected))]
     public partial ViewModelBase CurrentPage { get; set; }
 
     public bool IsHomeSelected => CurrentPage is HomeViewModel;
 
     public bool IsSongsSelected => CurrentPage is SongsViewModel;
+
+    public bool IsAlbumsSelected => CurrentPage is AlbumsViewModel;
 
     public bool IsSettingsSelected => CurrentPage is SettingsViewModel;
 
@@ -90,6 +96,8 @@ public partial class MainViewModel : ViewModelBase
     public bool HasStudio => _studioFactory is not null;
 
     public bool HasLibrary => Songs is not null;
+
+    public bool HasAlbums => Albums is not null;
 
     private const double SeekSeconds = 5;
     private const double VolumeStep = 0.05;
@@ -118,6 +126,7 @@ public partial class MainViewModel : ViewModelBase
                     ShortcutAction.Queue => Player.ToggleQueueCommand,
                     ShortcutAction.Home => ShowHomeCommand,
                     ShortcutAction.Songs => ShowSongsCommand,
+                    ShortcutAction.Albums => ShowAlbumsCommand,
                     ShortcutAction.Studio => ShowStudioCommand,
                     ShortcutAction.Settings => ShowSettingsCommand,
                     _ => throw new ArgumentOutOfRangeException(nameof(action)),
@@ -134,6 +143,15 @@ public partial class MainViewModel : ViewModelBase
     {
         if (Player is null || !(Player.IsQueueOpen || Player.IsLyricsOpen)) return false;
         Player.IsQueueOpen = Player.IsLyricsOpen = false;
+        return true;
+    }
+
+    /// <summary>Escape: closes the queue or lyrics panel, else leaves the open album. False when there was neither.</summary>
+    public bool GoBack()
+    {
+        if (ClosePanel()) return true;
+        if (CurrentPage is not AlbumsViewModel { IsAlbumOpen: true } albums) return false;
+        albums.BackCommand.Execute(null);
         return true;
     }
 
@@ -157,6 +175,15 @@ public partial class MainViewModel : ViewModelBase
     }
 
     private StudioViewModel GetStudio() => _studio ??= _studioFactory!();
+
+    /// <summary>Comes back to where the person was; asked for while already there, shows the list of albums.</summary>
+    [RelayCommand(CanExecute = nameof(HasAlbums))]
+    private async Task ShowAlbumsAsync()
+    {
+        if (CurrentPage == Albums) Albums!.BackCommand.Execute(null);
+        CurrentPage = Albums!;
+        await Albums!.LoadAsync();
+    }
 
     [RelayCommand(CanExecute = nameof(HasLibrary))]
     private async Task ShowSongsAsync()

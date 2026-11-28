@@ -563,4 +563,30 @@
         <comment>Button of the update notification after a failed download: starts the download again. Short.</comment></data>
     <data name="Notification_Dismiss" xml:space="preserve"><value>Dismiss</value>
         <comment>Tooltip and accessible name of the close (X) button of a notification: it removes the notification.</comment></data>
+    <data name="Albums_Summary" xml:space="preserve"><value>In the library: {0}</value>
+        <comment>Under the Albums page heading. {0} is the number of albums.</comment></data>
+    <data name="Albums_Search" xml:space="preserve"><value>Search albums and songs</value>
+        <comment>Placeholder and accessible name of the search box on the Albums page.</comment></data>
+    <data name="Albums_SortBy" xml:space="preserve"><value>Sort by</value>
+        <comment>Accessible name and tooltip of the drop-down that orders the albums.</comment></data>
+    <data name="Albums_SortTitle" xml:space="preserve"><value>Title</value>
+        <comment>Choice of the album sort drop-down: order by album title.</comment></data>
+    <data name="Albums_SortArtist" xml:space="preserve"><value>Artist</value>
+        <comment>Choice of the album sort drop-down: order by album artist.</comment></data>
+    <data name="Albums_SortYear" xml:space="preserve"><value>Year</value>
+        <comment>Choice of the album sort drop-down: order by release year, newest first.</comment></data>
+    <data name="Albums_EmptyTitle" xml:space="preserve"><value>No albums yet</value>
+        <comment>Heading shown on the Albums page when the library has no albums.</comment></data>
+    <data name="Albums_EmptyHint" xml:space="preserve"><value>Add a music folder on the Songs page. Songs with no album appear only there.</value>
+        <comment>Shown under the heading of the empty Albums page. "Songs" is the name of the page.</comment></data>
+    <data name="Albums_NoMatches" xml:space="preserve"><value>No albums match your search.</value>
+        <comment>Shown on the Albums page when the search finds nothing.</comment></data>
+    <data name="Albums_LoadFailed" xml:space="preserve"><value>Could not load the albums: {0}</value>
+        <comment>Error on the Albums page. {0} is the technical reason.</comment></data>
+    <data name="Albums_Back" xml:space="preserve"><value>Back to albums</value>
+        <comment>Button on an open album that returns to the list of all albums.</comment></data>
+    <data name="Albums_Shuffle" xml:space="preserve"><value>Shuffle</value>
+        <comment>Button on an open album: plays its songs in random order. A verb.</comment></data>
+    <data name="Albums_Disc" xml:space="preserve"><value>Disc {0}</value>
+        <comment>Heading above the songs of one disc of an album with several discs. {0} is the disc number.</comment></data>
 </root>
